@@ -4,10 +4,9 @@ import {
   Toolbar, 
   Typography, 
   Button, 
-  IconButton, 
-  MenuIcon
+  IconButton
 } from '@mui/material';
-
+import {MenuIcon} from '@mui/icons-material';
 
 function Navbar(){
   return (
