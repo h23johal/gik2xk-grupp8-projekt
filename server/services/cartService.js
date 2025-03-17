@@ -53,7 +53,7 @@ async function addToCart(user_id, product_id, amount) {
     });
 
     if (!created) {
-      cartRow.amount += amount;
+      cartRow.amount = Number(cartRow.amount) + Number(amount);
       await cartRow.save();
     }
 
