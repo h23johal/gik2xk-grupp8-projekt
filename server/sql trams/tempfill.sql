@@ -17,3 +17,51 @@ INSERT INTO ratings (product_id, rating, created_at, updated_at) VALUES
 (3, 4.5, NOW(), NOW()),
 (4, 3.5, NOW(), NOW()),
 (5, 5.0, NOW(), NOW());
+
+
+-- Insert sample users
+INSERT INTO users (first_name, last_name, email, password, created_at, updated_at) VALUES
+('Sarah', 'Johnson', 'sarah.j@example.com', 'password123', NOW(), NOW()),
+('Michael', 'Smith', 'mike.smith@example.com', 'password123', NOW(), NOW()),
+('Emma', 'Davis', 'emma.d@example.com', 'password123', NOW(), NOW()),
+('David', 'Wilson', 'david.w@example.com', 'password123', NOW(), NOW()),
+('Jennifer', 'Brown', 'jen.brown@example.com', 'password123', NOW(), NOW());
+
+-- Add comment field to ratings table if it doesn't exist
+ALTER TABLE ratings ADD COLUMN IF NOT EXISTS comment TEXT;
+ALTER TABLE ratings ADD COLUMN IF NOT EXISTS username VARCHAR(100);
+
+-- Insert detailed ratings with comments for Gaming Laptop (product_id = 1)
+INSERT INTO ratings (product_id, rating, comment, username, created_at, updated_at) VALUES
+(1, 5.0, 'This gaming laptop exceeded all my expectations. The GPU handles even the most demanding games with ease, and the cooling system is surprisingly quiet. Battery life is decent for a gaming laptop too!', 'Sarah J.', NOW(), NOW()),
+(1, 4.8, 'Great performance for the price. Build quality is excellent and the display is gorgeous with vibrant colors. My only minor complaint is that the keyboard could have better travel.', 'Mike S.', NOW(), NOW()),
+(1, 4.2, 'Solid gaming performance but runs a bit hot during extended sessions. The speakers are surprisingly good for a laptop. Overall happy with my purchase.', 'Emma D.', NOW(), NOW()),
+(1, 3.5, 'Good specs on paper but I experienced some driver issues. Customer support was helpful in resolving them. Decent laptop once everything was properly configured.', 'David W.', NOW(), NOW());
+
+-- Insert ratings for Wireless Headphones (product_id = 2)
+INSERT INTO ratings (product_id, rating, comment, username, created_at, updated_at) VALUES
+(2, 5.0, 'The noise cancellation on these headphones is absolutely incredible. I use them during my commute and can barely hear any outside noise. Battery life lasts me a full week of daily use.', 'Jennifer B.', NOW(), NOW()),
+(2, 4.7, 'Very comfortable even for long listening sessions. Sound quality is excellent with deep bass and clear highs. The companion app allows for nice customization.', 'Sarah J.', NOW(), NOW()),
+(2, 4.0, 'Good headphones but the ear cushions could be more plush. Noise cancellation works well in most environments. Bluetooth connection is stable.', 'David W.', NOW(), NOW()),
+(2, 3.8, 'Sound quality is great but I find them a bit tight on my head after a few hours. Battery life matches what was advertised.', 'Mike S.', NOW(), NOW());
+
+-- Insert ratings for Smart Watch (product_id = 3)
+INSERT INTO ratings (product_id, rating, comment, username, created_at, updated_at) VALUES
+(3, 4.9, 'This smart watch has transformed my fitness routine. The heart rate monitor is accurate when compared to my gym equipment, and the sleep tracking provides valuable insights.', 'Emma D.', NOW(), NOW()),
+(3, 4.6, 'Excellent battery life - almost a week on a single charge with moderate use. The screen is bright and responsive, and the fitness tracking features work very well.', 'Jennifer B.', NOW(), NOW()),
+(3, 4.3, 'Good fitness tracker with an intuitive interface. The notifications from my phone are useful without being intrusive. Water resistance works as advertised during swimming.', 'Sarah J.', NOW(), NOW()),
+(3, 3.7, 'Decent smartwatch but the companion app could use some improvements. Step counting seems accurate but I question the sleep tracking sometimes.', 'Mike S.', NOW(), NOW());
+
+-- Insert ratings for 4K Monitor (product_id = 4)
+INSERT INTO ratings (product_id, rating, comment, username, created_at, updated_at) VALUES
+(4, 4.8, 'Stunning display quality with excellent color accuracy right out of the box. No dead pixels and minimal backlight bleed. Perfect for both work and entertainment.', 'David W.', NOW(), NOW()),
+(4, 4.5, 'The clarity of this 4K monitor is impressive. Text is sharp and colors are vibrant. The adjustable stand makes it easy to find a comfortable viewing position.', 'Jennifer B.', NOW(), NOW()),
+(4, 4.0, 'Good monitor for the price. The HDR performance is decent though not as impressive as higher-end models. Very satisfied for productivity work and casual gaming.', 'Emma D.', NOW(), NOW()),
+(4, 3.2, 'Picture quality is good but I had some issues with the menu interface being counterintuitive. The built-in speakers are mediocre at best.', 'Sarah J.', NOW(), NOW());
+
+-- Insert ratings for Mechanical Keyboard (product_id = 5)
+INSERT INTO ratings (product_id, rating, comment, username, created_at, updated_at) VALUES
+(5, 5.0, 'This mechanical keyboard has transformed my typing experience. The tactile feedback is satisfying and the RGB lighting is customizable to an impressive degree.', 'Mike S.', NOW(), NOW()),
+(5, 4.9, 'Exceptional build quality with a solid metal frame. The switches have a perfect amount of resistance and the sound is satisfying without being too loud for an office environment.', 'David W.', NOW(), NOW()),
+(5, 4.7, 'Love this keyboard! The key caps feel durable and the RGB effects are fun to customize. Typing for long periods is comfortable with the included wrist rest.', 'Emma D.', NOW(), NOW()),
+(5, 4.2, 'Good mechanical feel and responsive keys. The software to customize the lighting has a learning curve but offers extensive options once you figure it out.', 'Jennifer B.', NOW(), NOW());

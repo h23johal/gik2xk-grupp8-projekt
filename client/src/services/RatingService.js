@@ -28,7 +28,20 @@ export async function getOne(id) {
   } 
 }
 
+export async function getProductRatings(productId) {
+  try {  
+    const response = await axios.get(`/ratings/${productId}`);
 
+    if (response.status === 200) { return response.data; }
+    else {
+      console.log(response);
+      return { ratings: [], avgScore: 0 };
+    }
+  } catch (e) {
+    e?.response ? console.log(e.response.data) : console.log(e);
+    return { ratings: [], avgScore: 0 };
+  } 
+}
 
   // useEffect(() => {
   //   axios.get(`http://localhost:5002/products/${id}`)

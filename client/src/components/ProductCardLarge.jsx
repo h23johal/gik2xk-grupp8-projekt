@@ -1,27 +1,57 @@
 // foto
 // description
 
-import React, { useState, useEffect } from "react";
-import { getById } from "../services/ProductService";
+// import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 
-function ProductGrid() {
-  const [products, setProduct] = useState([]);
+// function ProductCardLarge({ product }) {
+//   return (
+//     <Card>
+//       <CardMedia
+//         component="img"
+//         height="400"
+//         image={product.imageUrl}
+//         alt={product.title}
+//       />
+//       <CardContent>
+//         <Typography variant="h4">{product.title}</Typography>
+//         <Typography variant="body1">{product.description}</Typography>
+//       </CardContent>
+//     </Card>
+//   );
+// }
 
-  useEffect(() => {
-    getById()
-      .then(data => setProduct(data))
-      .catch(err => console.error("Error fetching products:", err));
-  }, []);
+// export default ProductCardLarge;
 
+import { Card, CardContent, CardMedia, Typography, Box } from '@mui/material';
+
+function ProductCardLarge({ product }) {
   return (
-    <Grid container spacing={2}>
-      {products.map(product => (
-        <Grid key={product.id} item xs={12} sm={6} md={4} lg={3}>
-          <ProductCardSmall product={product} />
-        </Grid>
-      ))}
-    </Grid>
+    <Card sx={{
+      maxWidth: '100%',
+      m: { xs: 1, sm: 2 },
+      borderRadius: 2,
+      bgcolor: 'background.paper',
+      boxShadow: 3
+    }}>
+      <CardMedia
+        component="img"
+        sx={{ 
+          height: { xs: '20vh', sm: '30vh', md: '40vh' },
+          objectFit: 'contain'
+        }}
+        image={product.imageUrl}
+        alt={product.title}
+      />
+      <CardContent>
+        <Typography variant="h5" component="h1" gutterBottom>
+          {product.title}
+        </Typography>
+        <Typography variant="body1">
+          {product.description}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 }
 
-export default ProductGrid;
+export default ProductCardLarge;

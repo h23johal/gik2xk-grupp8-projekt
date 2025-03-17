@@ -55,6 +55,10 @@ db.Rating = require('./rating')(sequelize, DataTypes);
 db.User.hasMany(db.Cart, { foreignKey: 'user_id', as: 'carts' });
 db.Cart.belongsTo(db.User, { foreignKey: 'user_id', as: 'user' });
 
+// User → Rating (1:M)
+db.User.hasMany(db.Rating, { foreignKey: 'user_id', as: 'ratings' });
+db.Rating.belongsTo(db.User, { foreignKey: 'user_id', as: 'user' });
+
 // Cart → CartRow (1:M)
 db.Cart.hasMany(db.CartRow, { foreignKey: 'cart_id', as: 'rows' });
 db.CartRow.belongsTo(db.Cart, { foreignKey: 'cart_id', as: 'cart' });
@@ -66,6 +70,7 @@ db.CartRow.belongsTo(db.Product, { foreignKey: 'product_id', as: 'product' });
 // Product → Rating (1:M)
 db.Product.hasMany(db.Rating, { foreignKey: 'product_id', as: 'ratings' });
 db.Rating.belongsTo(db.Product, { foreignKey: 'product_id', as: 'product' });
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
