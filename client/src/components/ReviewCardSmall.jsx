@@ -23,7 +23,7 @@ function ReviewCardSmall({ review, onClick }) {
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle1" fontWeight="medium">
-            {review.username}
+            {review.first_name}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
             {review.created_at 
