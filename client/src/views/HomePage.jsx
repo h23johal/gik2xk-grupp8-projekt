@@ -13,26 +13,131 @@
 
 // export default HomePage;
 
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, Divider, Paper } from '@mui/material';
 import ProductGrid from '../components/productGrid';
 
 function HomePage() {
   return (
-    <Container maxWidth="lg" sx={{ py: 8, position: 'relative', overflow: 'hidden' }}>
-      <Box sx={{ 
-          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.05), transparent 60%)',
-          pointerEvents: 'none',
-          zIndex: -1
-        }} />
-      <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 200 }}>
-        Explore the Ethereal
-      </Typography>
-      <Typography variant="body1" color="text.secondary" align="center" sx={{ mb: 5 }}>
-        Contemporary tech with airy depth—like wisps of smoke.
-      </Typography>
-      <ProductGrid />
-    </Container>
+    <Box sx={{ 
+      pt: 6, 
+      pb: 8,
+      background: '#F0F0F0',
+      minHeight: 'calc(100vh - 70px)'
+    }}>
+      <Container maxWidth="lg">
+        <Box sx={{ 
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          mb: 6
+        }}>
+          <Typography 
+            variant="h4" 
+            component="h1" 
+            sx={{ 
+              color: 'text.primary',
+              fontWeight: 300,
+              textAlign: 'center',
+              mb: 2,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase'
+            }}
+          >
+            Engineered Beyond Limits
+          </Typography>
+          
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              color: 'text.secondary',
+              textAlign: 'center',
+              maxWidth: 600,
+              fontWeight: 300,
+              mb: 3
+            }}
+          >
+            Where technology transcends function, becoming an art form
+          </Typography>
+          
+          <Box sx={{ 
+            width: 40, 
+            height: 2, 
+            backgroundColor: 'primary.main', 
+            mb: 5 
+          }} />
+        </Box>
+        
+        {/* <Paper elevation={0} sx={{ 
+          p: 4, 
+          mb: 6,
+          backgroundColor: '#FFFFFF',
+          // borderRadius: 2,
+          overflow: 'hidden',
+          boxShadow: '0px 4px 20px rgba(0,0,0,0.05)'
+        }}>
+          
+        </Paper> */}
+        <ProductGrid />
+        <Box sx={{ 
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 4,
+          mt: 6
+        }}>
+          <Box sx={{ flex: '1 1 300px' }}>
+            <Typography 
+              variant="h5" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 300,
+                mb: 2
+              }}
+            >
+              Exceptional Quality
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                color: 'text.secondary',
+                lineHeight: 1.8,
+                mb: 2
+              }}
+            >
+              We curate only the finest technological innovations that offer both 
+              superior performance and exceptional design. Each product represents 
+              our unwavering commitment to excellence.
+            </Typography>
+          </Box>
+          
+          <Box sx={{ flex: '1 1 300px' }}>
+            <Typography 
+              variant="h5" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 300,
+                mb: 2
+              }}
+            >
+              Lifetime Service
+            </Typography>
+            <Typography 
+              variant="body1" 
+              sx={{ 
+                color: 'text.secondary',
+                lineHeight: 1.8,
+                mb: 2
+              }}
+            >
+              When you invest in our collection, you're not just acquiring a device—you're 
+              gaining a lifelong relationship. Our dedicated support ensures your technology 
+              remains as exceptional as the day you first experienced it.
+            </Typography>
+          </Box>
+        </Box>
+      </Container>
+    </Box>
   );
 }
 
