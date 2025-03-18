@@ -59,9 +59,28 @@ async function addRating(product_id, user_id, rating) {
 
 async function getProductRatings(product_id) {
   try {
-    const ratings = await db.Rating.findAll({ where: { product_id } });
+    const ratings = await db.Rating.findAll({
+      where: { product_id },
+      include: [{ 
+        model: db.User, 
+        as: 'user',
+        attributes: ['first_name'] 
+      }] 
+    });
+
+    const formattedRatings = ratings.map(rating => ({
+      id: rating.id,
+      rating: rating.rating,
+      comment: rating.comment,
+      product_id: rating.product_id,
+      username: rating.user 
+        ? rating.user.first_name.trim() 
+        : "Anonymous",
+      created_at: rating.created_at
+    }));
+
     const avgScore = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length || 0;
-    return createOkObjectSuccess({ ratings, avgScore });
+    return createOkObjectSuccess({ ratings: formattedRatings, avgScore });
   } catch (error) {
     return createResponseError(error.status, error.message);
   }
