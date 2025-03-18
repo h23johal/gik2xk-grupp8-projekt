@@ -57,6 +57,65 @@
 //   );
 // }
 // export default ReviewCarousel;
+// import { useState, useEffect } from "react";
+// // import { Box, Typography } from "@mui/material";
+// // import { getProductRatings } from "../services/RatingService";
+// // import ReviewCardSmall from "./ReviewCardSmall";
+
+// function ReviewCarousel({ productId, onReviewClick }) {
+//   const [reviews, setReviews] = useState([]);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     getProductRatings(productId)
+//       .then(response => {
+//         // Only include reviews that have comments
+//         const reviewList = (response?.data?.ratings || [])
+//           .filter(review => review.comment && review.comment.trim().length > 0)
+//           .sort((a, b) => b.rating - a.rating)
+//           .slice(0, 5);
+          
+//         setReviews(reviewList);
+//         setLoading(false);
+//       })
+//       .catch(err => {
+//         console.error("Error fetching reviews:", err);
+//         setReviews([]);
+//         setLoading(false);
+//       });
+//   }, [productId]);
+
+//   if (loading) return <Typography>Loading reviews...</Typography>;
+//   if (reviews.length === 0) return <Typography>No reviews yet</Typography>;
+
+//   return (
+//     <Box
+//       sx={{
+//         display: 'flex',
+//         gap: 1,
+//         py: 1,
+//         overflow: 'auto',
+//         width: '100%',
+//         scrollSnapType: 'x mandatory',
+//         '& > *': {
+//           scrollSnapAlign: 'center',
+//         },
+//         '::-webkit-scrollbar': { display: 'none' },
+//       }}
+//     >
+//       {reviews.map((review) => (
+//         <ReviewCardSmall 
+//           key={review.id}
+//           review={review}
+//           onClick={onReviewClick}
+//         />
+//       ))}
+//     </Box>
+//   );
+// }
+
+// export default ReviewCarousel;
+
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { getProductRatings } from "../services/RatingService";
@@ -69,12 +128,8 @@ function ReviewCarousel({ productId, onReviewClick }) {
   useEffect(() => {
     getProductRatings(productId)
       .then(response => {
-        // Only include reviews that have comments
-        const reviewList = (response?.data?.ratings || [])
-          .filter(review => review.comment && review.comment.trim().length > 0)
-          .sort((a, b) => b.rating - a.rating)
-          .slice(0, 5);
-          
+        // Directly use response.ratings instead of response.data.ratings
+        const reviewList = response.ratings || [];
         setReviews(reviewList);
         setLoading(false);
       })
@@ -100,7 +155,7 @@ function ReviewCarousel({ productId, onReviewClick }) {
         '& > *': {
           scrollSnapAlign: 'center',
         },
-        '::-webkit-scrollbar': { display: 'none' },
+        '::-webkit-scrollbar': { display: 'scrollbar' },
       }}
     >
       {reviews.map((review) => (

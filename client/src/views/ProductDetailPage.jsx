@@ -34,7 +34,7 @@
 // import ProductCardLarge from '../components/ProductCardLarge';
 // import ReviewCarousel from '../components/ReviewCarousel';
 // import ReviewAccordion from '../components/ReviewAccordion';
-// import { Grid } from '@mui/material';
+// import Grid from '@mui/material/Grid2';
 // import AddToCart from '../components/AddToCart';
 
 // function ProductDetailPage() {
@@ -98,6 +98,7 @@
 // }
 
 // export default ProductDetailPage;
+
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { getOne } from '../services/ProductService';

@@ -67,13 +67,16 @@ async function getProductRatings(product_id) {
         attributes: ['first_name'] 
       }] 
     });
+
     const formattedRatings = ratings.map(rating => ({
       id: rating.id,
       rating: rating.rating,
       comment: rating.comment,
       product_id: rating.product_id,
-      username: rating.user ? rating.user.first_name : "Anonymous",
-      createdAt: rating.created_at
+      username: rating.user 
+        ? rating.user.first_name.trim() 
+        : "Anonymous",
+      created_at: rating.created_at
     }));
 
     const avgScore = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length || 0;

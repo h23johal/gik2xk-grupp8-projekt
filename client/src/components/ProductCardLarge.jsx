@@ -37,7 +37,7 @@ function ProductCardLarge({ product }) {
         component="img"
         sx={{ 
           height: { xs: '20vh', sm: '30vh', md: '40vh' },
-          objectFit: 'contain'
+           objectFit: 'cover',
         }}
         image={product.imageUrl}
         alt={product.title}
