@@ -1,20 +1,5 @@
-// import { Container, Typography } from '@mui/material';
-// import ProductGrid from '../components/productGrid';
-
-// function HomePage() {
-
-//   return (
-//     <Container>
-//       <Typography variant="h4" gutterBottom>Our Products</Typography>
-//         <ProductGrid />
-//     </Container>
-//   );
-// }
-
-// export default HomePage;
-
-import { Container, Typography, Box, Divider, Paper } from '@mui/material';
-import ProductGrid from '../components/productGrid';
+import { Container, Typography, Box } from '@mui/material';
+import ProductGrid from '../components/product/ProductGrid';
 
 function HomePage() {
   return (
@@ -66,17 +51,7 @@ function HomePage() {
             mb: 5 
           }} />
         </Box>
-        
-        {/* <Paper elevation={0} sx={{ 
-          p: 4, 
-          mb: 6,
-          backgroundColor: '#FFFFFF',
-          // borderRadius: 2,
-          overflow: 'hidden',
-          boxShadow: '0px 4px 20px rgba(0,0,0,0.05)'
-        }}>
-          
-        </Paper> */}
+
         <ProductGrid />
         <Box sx={{ 
           display: 'flex',

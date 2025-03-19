@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { getOne } from '../services/ProductService';
-import ProductCardLarge from '../components/ProductCardLarge';
-import ReviewCarousel from '../components/ReviewCarousel';
-import ReviewAccordion from '../components/ReviewAccordion';
-import AddToCart from '../components/AddToCart';
+import ProductCardLarge from '../components/product/ProductCardLarge';
+import ReviewCarousel from '../components/review/ReviewCarousel';
+import ReviewAccordion from '../components/review/ReviewAccordion';
+import AddToCart from '../components/cart/AddToCart';
 import Grid from '@mui/material/Grid2';
 
 function ProductDetailPage() {

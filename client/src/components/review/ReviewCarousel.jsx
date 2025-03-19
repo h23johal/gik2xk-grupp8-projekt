@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import { getProductReviews } from "../services/RatingService";
+import { getProductReviews } from "../../services/RatingService";
 import ReviewCardSmall from "./ReviewCardSmall";
 
 function ReviewCarousel({ productId, onReviewClick }) {
