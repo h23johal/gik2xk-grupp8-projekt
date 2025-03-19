@@ -1,25 +1,3 @@
-// module.exports = (sequelize, DataTypes) => {
-//     return sequelize.define('Rating', {
-//       id: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         autoIncrement: true
-//       },
-//       rating: {
-//         type: DataTypes.DOUBLE,
-//         allowNull: false
-//       },
-//       product_id: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false
-//       }
-//     }, {
-//       timestamps: true,
-//       tableName: 'ratings',
-//       underscored: true
-//     });
-//   };
-  
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Rating', {
     id: {
@@ -42,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    anonymous: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     }
   }, {
     timestamps: true,
