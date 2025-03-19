@@ -6,8 +6,17 @@ import {
   removeProduct,
   updateProduct,
 } from "../services/ProductService";
-import { Box, Button, Container, Chip, TextField, Typography } from "@mui/material";
-import ProductGridManagement from "../components/product/management/ProductGridManagement";
+import {
+  Box,
+  Button,
+  Container,
+  Chip,
+  TextField,
+  Typography,
+} from "@mui/material";
+
+import ProductGrid from "../components/product/ProductGrid";
+import ProductCardManagementSmall from "../components/product/management/ProductCardManagementSmall";
 import ProductManagementCreate from "../components/product/management/ProductManagementCreate";
 // import CategoryTag from '../components/CategoryTag';
 
@@ -94,7 +103,11 @@ function ProductManagement() {
       >
         {/* Main Content - Product Grid */}
         <Box sx={{ flex: 1 }}>
-          <ProductGridManagement />
+          <ProductGrid
+            renderContent={(product) => (
+              <ProductCardManagementSmall product={product} />
+            )}
+          />
         </Box>
 
         {/* Sidebar - Product Form */}

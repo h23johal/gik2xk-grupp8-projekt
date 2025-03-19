@@ -1,4 +1,4 @@
-import ProductCardManagementSmall from "./ProductCardManagementSmall";
+/* import ProductCardManagementSmall from "./ProductCardManagementSmall";
 import Grid from "@mui/material/Grid2";
 import React, { useState, useEffect } from "react";
 import { getAll } from "../../../services/ProductService";
@@ -24,3 +24,4 @@ function ProductGridManagement() {
 }
 
 export default ProductGridManagement;
+ */

@@ -15,6 +15,7 @@
 
 import { Container, Typography, Box, Divider, Paper } from "@mui/material";
 import ProductGrid from "../components/product/ProductGrid";
+import ProductCardSmall from "../components/product/ProductCardSmall";
 
 function HomePage() {
   return (
@@ -83,7 +84,9 @@ function HomePage() {
         }}>
           
         </Paper> */}
-        <ProductGrid />
+        <ProductGrid
+          renderContent={(product) => <ProductCardSmall product={product} />}
+        />
         <Box
           sx={{
             display: "flex",

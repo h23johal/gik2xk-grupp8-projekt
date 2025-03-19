@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid2";
 import React, { useState, useEffect } from "react";
 import { getAll } from "../../services/ProductService";
 
-function ProductGrid() {
+function ProductGrid({ renderContent }) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -16,7 +16,8 @@ function ProductGrid() {
     <Grid container spacing={2}>
       {products.map((product) => (
         <Grid key={product.id}>
-          <ProductCardSmall product={product} />
+          {renderContent(product)}
+          {/* <ProductCardSmall product={product} /> */}
         </Grid>
       ))}
     </Grid>
