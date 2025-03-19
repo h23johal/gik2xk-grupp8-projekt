@@ -2,13 +2,15 @@
 import { Box, Typography, Button, TextField } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useState } from 'react';
+import { useCart } from '../context/CartContext'; // Hämta kundvagnsdata
 
 function AddToCart({ product }) {
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart(); // Hämta funktionen för att lägga till i kundvagnen
 
   const handleAddToCart = () => {
+    addToCart({ ...product, quantity }); // Lägg till produkten med antal
     console.log(`Added ${quantity} of product ${product.id} to cart`);
-    // Placeholder for actual cart functionality
   };
 
   return (
@@ -48,7 +50,7 @@ function AddToCart({ product }) {
           variant="contained" 
           color="primary"
           startIcon={<ShoppingCartIcon />}
-          onClick={handleAddToCart}
+          onClick={handleAddToCart} // Använd `addToCart`
           sx={{ flexGrow: 1 }}
         >
           Add to Cart
