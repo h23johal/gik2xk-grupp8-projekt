@@ -30,7 +30,7 @@ export async function getOne(id) {
 
 export async function getProductRatings(productId) {
   try {  
-    const response = await axios.get(`/ratings/${productId}`);
+    const response = await axios.get(`/ratings/products/${productId}/ratings`);
     return response.data;
   } catch (e) {
     console.error('Error fetching product ratings:', e);
@@ -40,10 +40,11 @@ export async function getProductRatings(productId) {
 
 export async function getProductReviews(productId) {
   try {  
-    const response = await axios.get(`/ratings/product/${productId}/reviews`);
+    const response = await axios.get(`/ratings/products/${productId}/reviews`);
     return response.data;
   } catch (e) {
     console.error('Error fetching product reviews:', e);
     return { reviews: [] };
   } 
 }
+

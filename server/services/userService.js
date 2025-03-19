@@ -40,11 +40,48 @@ async function update(user) {
 }
 
 async function destroy(id) {
+  //start a transaction to ensure all operations succeed or fail together
+  const transaction = await db.sequelize.transaction();
+
   try {
-    const deleted = await db.User.destroy({ where: { id } });
-    if (!deleted) return createResponseError(404, "Användare ej hittad");
+    //anonymize user ratings
+    await db.Rating.update(
+      {
+        user_id: null,
+        anonymous: true
+      },
+      {
+        where: { user_id: id },
+        transaction      
+      }
+    );
+
+    //delete active user cart
+    await db.Cart.destroy({
+      where: { 
+        user_id: id
+      },
+      transaction
+    });
+
+    //delete user
+    const deleted = await db.User.destroy({ 
+      where: { id },
+      transaction
+    });
+
+    //check if user was deleted (if faulty or concurrent requests mess this up)
+    if (!deleted) {
+      await transaction.rollback();
+      return createResponseError(404, "Användare ej hittad");
+    }
+
+    //commit the transaction
+    await transaction.commit();
     return createResponseMessage(200, "Användaren raderades");
   } catch (error) {
+    //if an error occurs, rollback the transaction
+    await transaction.rollback();
     return createResponseError(error.status, error.message);
   }
 }

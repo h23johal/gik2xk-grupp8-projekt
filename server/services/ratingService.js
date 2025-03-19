@@ -1,6 +1,5 @@
 const db = require("../models");
 const { createOkObjectSuccess, createResponseError, createResponseMessage } = require("../helpers/responseHelper");
-const { get } = require("../routes/ratingRoutes");
 
 async function getAll() {
   try {
@@ -49,6 +48,7 @@ async function destroy(id) {
     return createResponseError(error.status, error.message);
   }
 }
+
 async function addRating(product_id, user_id, rating) {
   try {
     const ratingScore = await db.Rating.create({ product_id, user_id, rating });
@@ -73,7 +73,10 @@ async function getProductRatings(product_id) {
 async function getProductReviews(product_id) {
   try {
     const reviews = await db.Rating.findAll({
-      where: { product_id },
+      where: {
+         product_id,
+         comment: { [db.Sequelize.Op.ne]: null }, //check for comments
+      },
       include: [{ 
         model: db.User, 
         as: 'user',
