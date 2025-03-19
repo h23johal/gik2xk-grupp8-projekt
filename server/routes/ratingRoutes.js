@@ -6,9 +6,6 @@ router.get('/', (req, res) => {
   ratingService.getAll().then(result => res.status(result.status).json(result.data));
 });
 
-/* router.get('/:id', (req, res) => {
-  ratingService.getById(req.params.id).then(result => res.status(result.status).json(result.data));
-}); */
 
 router.post('/', (req, res) => {
   ratingService.create(req.body).then(result => res.status(result.status).json(result.data));
@@ -31,6 +28,11 @@ router.post('/add', (req, res) => {
 
 router.get('/:product_id', (req, res) => {
   ratingService.getProductRatings(req.params.product_id)
+    .then(result => res.status(result.status).json(result.data));
+});
+
+router.get('/reviews/:product_id', (req, res) => {
+  ratingService.getProductReviews(req.params.product_id)
     .then(result => res.status(result.status).json(result.data));
 });
 
