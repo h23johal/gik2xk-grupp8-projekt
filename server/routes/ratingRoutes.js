@@ -6,10 +6,6 @@ router.get('/', (req, res) => {
   ratingService.getAll().then(result => res.status(result.status).json(result.data));
 });
 
-/* router.get('/:id', (req, res) => {
-  ratingService.getById(req.params.id).then(result => res.status(result.status).json(result.data));
-}); */
-
 router.post('/', (req, res) => {
   ratingService.create(req.body).then(result => res.status(result.status).json(result.data));
 });
@@ -29,8 +25,24 @@ router.post('/add', (req, res) => {
     .then(result => res.status(result.status).json(result.data));
 });
 
-router.get('/:product_id', (req, res) => {
-  ratingService.getProductRatings(req.params.product_id)
+
+router.get('/products/:productId/ratings', (req, res) => {
+  ratingService.getProductRatings(req.params.productId)
+    .then(result => res.status(result.status).json(result.data));
+});
+
+router.get('/products/:productId/ratings/:ratingId', (req, res) => {
+  ratingService.getProductRatingById(req.params.productId, req.params.ratingId)
+    .then(result => res.status(result.status).json(result.data));
+});
+
+router.get('/products/:productId/reviews', (req, res) => {
+  ratingService.getProductReviews(req.params.productId)
+    .then(result => res.status(result.status).json(result.data));
+});
+
+router.get('/products/:productId/reviews/:reviewId', (req, res) => {
+  ratingService.getProductReviewById(req.params.productId, req.params.reviewId)
     .then(result => res.status(result.status).json(result.data));
 });
 

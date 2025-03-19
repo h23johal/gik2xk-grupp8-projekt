@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     }
   }, {
+    paranoid: true, //soft delete
     timestamps: true,
     underscored: true
   });

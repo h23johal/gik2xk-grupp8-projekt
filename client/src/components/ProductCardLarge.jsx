@@ -1,28 +1,4 @@
-// foto
-// description
-
-// import { Card, CardContent, CardMedia, Typography } from '@mui/material';
-
-// function ProductCardLarge({ product }) {
-//   return (
-//     <Card>
-//       <CardMedia
-//         component="img"
-//         height="400"
-//         image={product.imageUrl}
-//         alt={product.title}
-//       />
-//       <CardContent>
-//         <Typography variant="h4">{product.title}</Typography>
-//         <Typography variant="body1">{product.description}</Typography>
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
-// export default ProductCardLarge;
-
-import { Card, CardContent, CardMedia, Typography, Box } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 
 function ProductCardLarge({ product }) {
   return (

@@ -23,11 +23,11 @@ function ReviewCardSmall({ review, onClick }) {
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle1" fontWeight="medium">
-            {review.first_name}
+            {review.user.first_name}
           </Typography>
           <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            {review.created_at 
-              ? new Date(review.created_at).toLocaleDateString() 
+            {review.createdAt 
+              ? new Date(review.createdAt).toLocaleDateString() 
               : "No Date"}
           </Typography>
         </Box>
