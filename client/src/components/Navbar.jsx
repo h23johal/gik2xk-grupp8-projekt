@@ -28,7 +28,7 @@ function Navbar(){
           >
             {/* <MenuIcon /> */}
           </IconButton>
-          
+
           {/* Titel */}
           <Typography variant="h6" component="div" sx={{ mr: 2 }}>
             News
@@ -41,6 +41,17 @@ function Navbar(){
 
           {/* Låt de vänstra elementen vara i grupp */}
           <Box sx={{ flexGrow: 1 }} />
+
+          {/* Product Management (Temporary) */}
+          <Button
+            color="inherit"
+            component={Link}
+            to="/admin"
+            sx={{ mr: 2 }} // Adds spacing before the cart icon
+          >
+            Product Management
+          </Button>
+
           {/* Kundvagnsikon med länk till /cart */}
           <IconButton component={Link} to="/cart" color="inherit">
             <Badge badgeContent={cartCount} color="error">

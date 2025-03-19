@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import ProductDetail from './views/ProductDetailPage.jsx'
+import ProductDetailManagement from "./views/ProductDetailManagementPage.jsx";
 import HomePage from './views/HomePage.jsx'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
@@ -10,6 +11,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import { CartProvider } from "./context/CartContext";
 import CartPage from "./views/CartPage";
+import ProductManagement from "./views/ProductManagementPage.jsx";
 
 
 
@@ -31,7 +33,14 @@ const router = createBrowserRouter([
         element: <ProductDetail />
       },
       { path: "/cart/", element: <CartPage /> },
-      
+      {
+        path: '/admin',
+        element: <ProductManagement />
+      },
+      {
+        path: '/admin/:id',
+        element: <ProductDetailManagement />
+      }
       // {
       //   path: '/products/:id/edit/',
       //   element: <ProductEdit />

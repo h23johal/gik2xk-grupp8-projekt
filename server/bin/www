@@ -25,7 +25,7 @@ const db = require('../models/');
 // Synkronisera databasen (ta bort { force: true } om du inte vill återställa databasen varje gång)
 db.sequelize
 .sync()
-// .sync({force: true})
+//.sync({force: true})
 .then(() => {
   console.log('Databasen är synkad');
   app.listen(port, () => {
