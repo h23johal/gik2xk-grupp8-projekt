@@ -730,6 +730,7 @@ const theme = createTheme({
     '0 2px 4px rgba(94, 107, 174, 0.1)',
     '0 4px 8px rgba(224, 145, 169, 0.1)',
     '0 8px 16px rgba(94, 107, 174, 0.1)',
+    '0 10px 20px rgba(94, 107, 174, 0.15)',
   ],
 });
 
