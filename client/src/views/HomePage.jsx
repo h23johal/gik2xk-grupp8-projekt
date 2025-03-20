@@ -1,21 +1,6 @@
-// import { Container, Typography } from '@mui/material';
-// import ProductGrid from '../components/productGrid';
-
-// function HomePage() {
-
-//   return (
-//     <Container>
-//       <Typography variant="h4" gutterBottom>Our Products</Typography>
-//         <ProductGrid />
-//     </Container>
-//   );
-// }
-
-// export default HomePage;
-
-import { Container, Typography, Box, Divider, Paper } from "@mui/material";
-import ProductGrid from "../components/product/ProductGrid";
-import ProductCardSmall from "../components/product/ProductCardSmall";
+import { Container, Typography, Box } from '@mui/material';
+import ProductGrid from '../components/product/ProductGrid';
+import ProductCardSmall from '../components/product/ProductCardSmall';
 
 function HomePage() {
   return (
@@ -73,35 +58,25 @@ function HomePage() {
             }}
           />
         </Box>
-
-        {/* <Paper elevation={0} sx={{ 
-          p: 4, 
-          mb: 6,
-          backgroundColor: '#FFFFFF',
-          // borderRadius: 2,
-          overflow: 'hidden',
-          boxShadow: '0px 4px 20px rgba(0,0,0,0.05)'
-        }}>
-          
-        </Paper> */}
         <ProductGrid
-          renderContent={(product) => <ProductCardSmall product={product} />}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: 4,
-            mt: 6,
-          }}
-        >
-          <Box sx={{ flex: "1 1 300px" }}>
-            <Typography
-              variant="h5"
-              gutterBottom
-              sx={{
+            renderContent={(product) => (
+              <ProductCardSmall product={product} />
+            )}
+          />
+        {/* <ProductGrid /> */}
+        <Box sx={{ 
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 4,
+          mt: 6
+        }}>
+          <Box sx={{ flex: '1 1 300px' }}>
+            <Typography 
+              variant="h5" 
+              gutterBottom 
+              sx={{ 
                 fontWeight: 300,
                 mb: 2,
               }}

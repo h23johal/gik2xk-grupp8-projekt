@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       autoIncrement: true
     },
-    payed: {
+    paid: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
@@ -17,5 +17,4 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     underscored: true
   });
-
 };

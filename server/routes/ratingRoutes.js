@@ -25,7 +25,6 @@ router.post('/add', (req, res) => {
     .then(result => res.status(result.status).json(result.data));
 });
 
-
 router.get('/products/:productId/ratings', (req, res) => {
   ratingService.getProductRatings(req.params.productId)
     .then(result => res.status(result.status).json(result.data));
