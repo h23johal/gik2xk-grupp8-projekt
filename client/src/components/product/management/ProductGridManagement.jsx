@@ -1,9 +1,9 @@
-import ProductCardSmall from "./ProductCardSmall";
+/* import ProductCardManagementSmall from "./ProductCardManagementSmall";
 import Grid from "@mui/material/Grid2";
 import React, { useState, useEffect } from "react";
-import { getAll } from "../../services/ProductService";
+import { getAll } from "../../../services/ProductService";
 
-function ProductGrid({ renderContent }) {
+function ProductGridManagement() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -13,15 +13,15 @@ function ProductGrid({ renderContent }) {
   }, []);
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} >
       {products.map((product) => (
         <Grid key={product.id}>
-          {renderContent(product)}
-          {/* <ProductCardSmall product={product} /> */}
+          <ProductCardManagementSmall product={product} />
         </Grid>
       ))}
     </Grid>
   );
 }
 
-export default ProductGrid;
+export default ProductGridManagement;
+ */

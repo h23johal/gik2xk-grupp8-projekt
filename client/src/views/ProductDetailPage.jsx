@@ -16,11 +16,11 @@ function ProductDetailPage() {
 
   useEffect(() => {
     getOne(id)
-      .then(data => {
+      .then((data) => {
         setProduct(data);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error fetching product:", err);
         setLoading(false);
       });
@@ -42,25 +42,22 @@ function ProductDetailPage() {
   return (
     <Grid container spacing={2} sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
       <Grid item xs={12}>
-        <ReviewCarousel 
-          productId={id} 
-          onReviewClick={handleReviewClick} 
-        />
+        <ReviewCarousel productId={id} onReviewClick={handleReviewClick} />
       </Grid>
-      
+
       <Grid item xs={12} md={8}>
         <ProductCardLarge product={product} />
       </Grid>
-      
+
       <Grid item xs={12} md={4}>
         <AddToCart product={product} />
       </Grid>
-      
+
       <Grid item xs={12}>
-        <ReviewAccordion 
-          productId={id} 
+        <ReviewAccordion
+          productId={id}
           ref={reviewsAccordionRef}
-          selectedReviewId={selectedReviewId} 
+          selectedReviewId={selectedReviewId}
         />
       </Grid>
     </Grid>

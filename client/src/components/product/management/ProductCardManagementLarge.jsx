@@ -1,6 +1,6 @@
-import { Card, CardContent, CardMedia, Typography } from '@mui/material';
+/* import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 
-function ProductCardLarge({ product }) {
+function ProductCardManagementLarge({ product }) {
   return (
     <Card
       sx={{
@@ -24,18 +24,11 @@ function ProductCardLarge({ product }) {
         <Typography variant="h5" component="h1" gutterBottom>
           {product.title}
         </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            maxWidth: "300px", // Change this to your desired width
-            wordWrap: "break-word",
-          }}
-        >
-          {product.description}
-        </Typography>
+        <Typography variant="body1">{product.description}</Typography>
       </CardContent>
     </Card>
   );
 }
 
-export default ProductCardLarge;
+export default ProductCardManagementLarge;
+ */
