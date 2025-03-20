@@ -1,8 +1,8 @@
 // AddToCart.jsx
-import { Box, Typography, Button, TextField } from "@mui/material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { useState } from "react";
-import { useCart } from "../../context/CartContext"; // Hämta kundvagnsdata
+import { Box, Typography, Button, TextField } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useState } from 'react';
+import { useCart } from '../../context/CartContext'; // Hämta kundvagnsdata
 
 function AddToCart({ product }) {
   const [quantity, setQuantity] = useState(1);
