@@ -1,5 +1,6 @@
 import { Container, Typography, Box } from '@mui/material';
 import ProductGrid from '../components/product/ProductGrid';
+import ProductCardSmall from '../components/product/ProductCardSmall';
 
 function HomePage() {
   return (
@@ -57,8 +58,12 @@ function HomePage() {
             }}
           />
         </Box>
-
-        <ProductGrid />
+        <ProductGrid
+            renderContent={(product) => (
+              <ProductCardSmall product={product} />
+            )}
+          />
+        {/* <ProductGrid /> */}
         <Box sx={{ 
           display: 'flex',
           justifyContent: 'space-between',
