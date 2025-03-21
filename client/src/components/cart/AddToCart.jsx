@@ -1,16 +1,21 @@
-// AddToCart.jsx
-import { Box, Typography, Button, TextField } from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { useState } from 'react';
-import { useCart } from '../../context/CartContext'; // Hämta kundvagnsdata
+import { Box, Typography, Button, TextField } from "@mui/material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useState } from "react";
+import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 
 function AddToCart({ product }) {
-  const [quantity, setQuantity] = useState(1);
-  const { addToCart } = useCart(); // Hämta funktionen för att lägga till i kundvagnen
+  const [amount, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  const { user, openAuthModal } = useAuth();
 
   const handleAddToCart = () => {
-    addToCart({ ...product, quantity }); // Lägg till produkten med antal
-    console.log(`Added ${quantity} of product ${product.id} to cart`);
+    if (!user) {
+      openAuthModal(); // Öppna inloggningsmodal om ej inloggad
+      return;
+    }
+
+    addToCart(product, amount);
   };
 
   return (
@@ -39,7 +44,7 @@ function AddToCart({ product }) {
         <TextField
           type="number"
           label="Quantity"
-          value={quantity}
+          value={amount}
           onChange={(e) =>
             setQuantity(Math.max(1, parseInt(e.target.value) || 1))
           }
@@ -52,7 +57,7 @@ function AddToCart({ product }) {
           variant="contained"
           color="primary"
           startIcon={<ShoppingCartIcon />}
-          onClick={handleAddToCart} // Använd `addToCart`
+          onClick={handleAddToCart}
           sx={{ flexGrow: 1 }}
         >
           Add to Cart

@@ -1,5 +1,6 @@
 const db = require("../models");
 const { createOkObjectSuccess, createResponseError, createResponseMessage } = require("../helpers/responseHelper");
+const bcrypt = require("bcrypt");
 
 async function getAll() {
   try {
@@ -22,10 +23,25 @@ async function getById(id) {
 
 async function create(user) {
   try {
+    console.log("Mottagen användardata:", user); // 🔹 Logga inkommande data
+
+    // Kolla om alla nödvändiga fält finns
+    if (!user.first_name || !user.last_name || !user.email || !user.password) {
+      console.error("Saknade fält i användardata");
+      return createResponseError(400, "Alla fält måste vara ifyllda");
+    }
+
+    // Hasha lösenordet
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    user.password = hashedPassword;
+
+    // Skapa användare
     const newUser = await db.User.create(user);
+    console.log("✅ Användare skapad:", newUser); // 🔹 Logga skapad användare
     return createOkObjectSuccess(newUser);
   } catch (error) {
-    return createResponseError(error.status, error.message);
+    console.error("🔴 Fel vid skapande av användare:", error); // 🔹 Logga backend-felet
+    return createResponseError(500, "Ett serverfel uppstod vid skapande av användare.");
   }
 }
 
