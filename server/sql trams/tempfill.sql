@@ -1,6 +1,9 @@
 -- SQLBook: Code
 USE webbshop;
 
+INSERT INTO users (id, first_name, last_name, email, password, created_at, updated_at) VALUES
+(99, 'Admin', 'Admin', 'Admin@admin.com', '$2b$10$kkgocHbiNZq8Fu9jVbPAv.5jSftKksvoSC8DJ/GQNQ2S1nUeMr4lu', NOW(), NOW());
+
 -- Insert sample products
 INSERT INTO products (title, description, price, image_url, created_at, updated_at) VALUES
 ('Gaming Laptop', 'High-performance gaming laptop with latest GPU', 1299.99, 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', NOW(), NOW()),
@@ -15,7 +18,7 @@ INSERT INTO users (first_name, last_name, email, password, created_at, updated_a
 ('Michael', 'Smith', 'mike.smith@example.com', 'password123', NOW(), NOW()),
 ('Emma', 'Davis', 'emma.d@example.com', 'password123', NOW(), NOW()),
 ('David', 'Wilson', 'david.w@example.com', 'password123', NOW(), NOW()),
-('Jennifer', 'Brown', 'jen.brown@example.com', 'password123', NOW(), NOW());
+('Jennifer', 'Brown', 'jen.brown@example.com', 'password123', NOW(), NOW()),
 
 
 -- Insert sample basic ratings

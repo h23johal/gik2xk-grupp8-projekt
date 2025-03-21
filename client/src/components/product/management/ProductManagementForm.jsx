@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 
 function ProductManagementForm() {
+  const { showSnackbar } = useSnackbar();
   const { id } = useParams();
   const navigate = useNavigate();
   const emptyProduct = {
@@ -64,7 +65,7 @@ function ProductManagementForm() {
       });
     } else {
       updateProduct(product).then((response) => {
-        setSnackbarOpen(true); // Show success message
+        showSnackbar("Produkten har uppdaterats!", "success"); // 🔥 Use global snackbar
         navigate(`/admin/${product.id}`, { replace: true, state: response });
       });
     }
