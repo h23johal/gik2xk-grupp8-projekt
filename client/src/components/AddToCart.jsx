@@ -1,2 +1,0 @@
-// pris
-// add to cart..

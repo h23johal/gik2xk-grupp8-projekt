@@ -1,47 +1,74 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import ProductDetail from './views/ProductDetailPage.jsx'
-import HomePage from './views/HomePage.jsx'
-import {createBrowserRouter, RouterProvider} from 'react-router-dom';
-
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.jsx";
+import ProductDetail from "./views/ProductDetailPage.jsx";
+import ProductDetailManagement from "./views/ProductDetailManagementPage.jsx";
+import HomePage from "./views/HomePage.jsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import theme from "./theme";
+import { CartProvider } from "./context/CartContext";
+import { AuthProvider } from "./context/AuthContext"; // 🔹 Importera AuthProvider
+import CartPage from "./views/CartPage";
+import ProductManagement from "./views/ProductManagementPage.jsx";
+import ProtectedRoute from "./components/user/ProtectedRoute.jsx";
+import OrderHistoryPage from "./views/OrderHistoryPage.jsx";
+import { SnackbarProvider } from "./context/SnackbarContext";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
     children: [
       {
-        path: "/",
-        element: <HomePage/>
+        index: true,
+        element: <HomePage />,
       },
-      // {
-      //   path: '/products/',
-      //   element: <ProductList />
-      // },
       {
-        path: '/products/:id/',
-        element: <ProductDetail />
-      }
-      // {
-      //   path: '/products/:id/edit/',
-      //   element: <ProductEdit />
-      // },
-      // {
-      //   path: '/products/new/',
-      //   element: <ProductNew />
-      // },
-      // {
-      //   path: 'cart/',
-      //   element: <Cart />
-      // }
-    ]
-  }]);
+        path: "/products/:id/",
+        element: <ProductDetail />,
+      },
+      {
+        path: "/cart/",
+        element: <CartPage />,
+      },
+      {
+        path: "/order-history",
+        element: <OrderHistoryPage />,
+      },
+      {
+        path: "/admin",
+        element: <ProtectedRoute requiredRole={99} />, // 🔒 Only user.id === 99 can access
+        children: [
+          {
+            index: true,
+            element: <ProductManagement />,
+          },
+          {
+            path: ":id",
+            element: <ProductDetailManagement />,
+          },
+        ],
+      },
+    ],
+  },
+]);
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router}/>
-  </StrictMode>,
+    <SnackbarProvider>
+      <AuthProvider>
+        {" "}
+        {/* 🔹 Wrappa allt med AuthProvider */}
+        <CartProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline /> {/* Normaliserar CSS */}
+            <RouterProvider router={router} />
+          </ThemeProvider>
+        </CartProvider>
+      </AuthProvider>
+    </SnackbarProvider>
+  </StrictMode>
 );
-
