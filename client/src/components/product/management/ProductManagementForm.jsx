@@ -6,6 +6,7 @@ import {
   removeProduct,
   updateProduct,
 } from "../../../services/ProductService";
+import { useSnackbar } from "../../../context/SnackbarContext";
 import {
   Box,
   Button,
