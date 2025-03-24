@@ -9,13 +9,15 @@ import ShippingNotice from "../components/cart/ShippingNotice";
 import CartItemCard from "../components/cart/CartItemCard";
 import CartSummary from "../components/cart/CartSummary";
 
-
 const CartPage = () => {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
 
   // Beräkna priser
-  const subTotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shippingCost = subTotal > 500 ? 0 : 49; // Fri frakt över 500 kr
+  const subTotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.amount,
+    0
+  );
+  const shippingCost = subTotal > 500 ? 0 : 49.99; // Fri frakt över 500 kr
   const taxAmount = subTotal * 0.25; // 25% moms
   const totalPrice = subTotal + taxAmount + shippingCost;
 
@@ -32,13 +34,19 @@ const CartPage = () => {
       {cartItems.length === 0 ? (
         <EmptyCartMessage />
       ) : (
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            gap: 3,
+          }}
+        >
           {/* Produktlista (Vänster sida) */}
-          <Box sx={{ flex: 2, width: '100%' }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ flex: 2, width: "100%" }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {cartItems.map((item) => (
                 <CartItemCard
-                  key={item.id}
+                  key={item.product_id}
                   item={item}
                   onUpdateQuantity={updateQuantity}
                   onRemove={removeFromCart}
@@ -46,10 +54,10 @@ const CartPage = () => {
               ))}
             </Box>
           </Box>
-          
+
           {/* Totalsumma (Höger sida) */}
-          <Box sx={{ flex: 1, width: '100%' }}>
-            <CartSummary 
+          <Box sx={{ flex: 1, width: "100%" }}>
+            <CartSummary
               subtotal={subTotal}
               tax={taxAmount}
               shipping={shippingCost}
@@ -58,15 +66,16 @@ const CartPage = () => {
           </Box>
         </Box>
       )}
-       <Button
-        color="inherit" 
+      <Button
+        color="inherit"
         aria-label="Empty Cart"
-        onClick={() => onRemove(item.id)}
-        >
-          Töm Kundvagn
-        </Button>
+        onClick={() =>
+          cartItems.forEach((item) => removeFromCart(item.product_id))
+        }
+      >
+        Töm Kundvagn
+      </Button>
     </Box>
-    
   );
 };
 

@@ -1,17 +1,7 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  createProduct,
-  getOne,
-  removeProduct,
-  updateProduct,
-} from "../services/ProductService";
+
 import {
   Box,
-  Button,
   Container,
-  Chip,
-  TextField,
   Typography,
 } from "@mui/material";
 
@@ -21,26 +11,6 @@ import ProductManagementCreate from "../components/product/management/ProductMan
 // import CategoryTag from '../components/CategoryTag';
 
 function ProductManagement() {
-  const [isFixed, setIsFixed] = useState(false);
-  const [sidebarTop, setSidebarTop] = useState(0); // Track initial position
-
-  useEffect(() => {
-    const sidebar = document.getElementById("sidebar");
-    if (sidebar) {
-      setSidebarTop(sidebar.offsetTop - 20); // Adjust for spacing
-    }
-
-    const handleScroll = () => {
-      if (window.scrollY > sidebarTop) {
-        setIsFixed(true);
-      } else {
-        setIsFixed(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [sidebarTop]);
 
   /* function onTagAdd(tagString) {
     //splitta arrayen vid kommatecken
@@ -96,7 +66,7 @@ function ProductManagement() {
       <Box
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md: "row" }, // Stacks on small screens
+          flexDirection: { xs: "column", md: "row" },
           gap: 3,
           mt: 3,
         }}
@@ -113,13 +83,13 @@ function ProductManagement() {
         {/* Sidebar - Product Form */}
         <Box
           sx={{
-            width: { xs: "100%", md: "320px" }, // Full width on small screens, fixed width on medium+
+            width: { xs: "100%", md: "320px" },
             backgroundColor: "white",
             p: 2,
             borderRadius: 2,
             minHeight: "100%",
             position: { md: "sticky" },
-            top: "80px", // Keeps it visible when scrolling (adjust based on navbar height)
+            top: "80px",
           }}
         >
           <ProductManagementCreate />

@@ -7,10 +7,11 @@ import {
   Typography,
   IconButton,
   TextField,
-  Button
+  Button,
 } from "@mui/material";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
   return (
@@ -22,35 +23,46 @@ const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
             component="img"
             image={item.imageUrl}
             alt={item.title}
-            sx={{ width: 100, height: 100, objectFit: "cover", borderRadius: 1 }}
+            sx={{
+              width: 100,
+              height: 100,
+              objectFit: "cover",
+              borderRadius: 1,
+            }}
           />
-          ) : (
-            <Box sx={{ 
-              width: 100, 
-              height: 100, 
-              display: "flex", 
-              alignItems: "center", 
-              justifyContent: "center" 
-            }}>
-              <Typography variant="caption" color="text.secondary">
-                Ingen bild
-              </Typography>
-            </Box>
-          )
-        }
+        ) : (
+          <Box
+            sx={{
+              width: 100,
+              height: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="caption" color="text.secondary">
+              Ingen bild
+            </Typography>
+          </Box>
+        )}
 
         {/* Produktinfo */}
         <Box sx={{ flex: 1, ml: 2 }}>
           <CardContent sx={{ p: 0 }}>
-            <Typography variant="h6">{item.title}</Typography>
+            <Typography variant="h6">{item.name}</Typography>
             <Typography variant="body2" color="text.secondary">
               {item.price} kr
             </Typography>
 
             {/* Antal-kontroller */}
             <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-              <IconButton 
-                onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))} 
+              <IconButton
+                onClick={() =>
+                  onUpdateQuantity(
+                    item.product_id,
+                    Math.max(1, item.amount - 1)
+                  )
+                }
                 size="small"
               >
                 <RemoveCircleOutlineIcon />
@@ -58,18 +70,20 @@ const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
 
               <TextField
                 type="number"
-                value={item.quantity}
+                value={item.amount}
                 onChange={(e) => {
                   const newQty = Math.max(1, parseInt(e.target.value) || 1);
-                  onUpdateQuantity(item.id, newQty);
+                  onUpdateQuantity(item.product_idid, newQty);
                 }}
                 inputProps={{ min: 1 }}
                 size="small"
                 sx={{ width: "60px", mx: 1 }}
               />
 
-              <IconButton 
-                onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} 
+              <IconButton
+                onClick={() =>
+                  onUpdateQuantity(item.product_id, item.amount + 1)
+                }
                 size="small"
               >
                 <AddCircleOutlineIcon />
@@ -80,13 +94,13 @@ const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
 
         {/* Ta bort-knapp */}
         <Box sx={{ pl: 2 }}>
-          <Button 
-            variant="outlined" 
-            color="error" 
-            onClick={() => onRemove(item.id)}
+          <IconButton
+            variant="outlined"
+            color="error"
+            onClick={() => onRemove(item.product_id)}
           >
-            Ta bort
-          </Button>
+            <DeleteIcon />
+          </IconButton>
         </Box>
       </Box>
     </Card>
