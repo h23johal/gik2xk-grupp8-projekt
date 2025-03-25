@@ -4,9 +4,9 @@ import {
   Box,
   CardContent,
   Typography,
-  Button,
   Divider
 } from "@mui/material";
+import CheckoutButton from "./CheckoutButton";
 
 const CartSummary = ({ subtotal, tax, shipping, total }) => {
   return (
@@ -48,9 +48,7 @@ const CartSummary = ({ subtotal, tax, shipping, total }) => {
           </Typography>
         </Box>
 
-        <Button variant="contained" color="primary" size="large" fullWidth>
-          Gå till kassan
-        </Button>
+        <CheckoutButton />
       </CardContent>
     </Card>
   );

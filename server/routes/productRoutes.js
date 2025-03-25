@@ -46,4 +46,10 @@ router.post('/:id/addRating', (req, res) => {
     .then(result => res.status(result.status).json(result.data));
 });
 
+router.put('/:id/restore', (req, res) => {
+  productService.restore(req.params.id).then(result => {
+    res.status(result.status).json(result.data);
+  });
+});
+
 module.exports = router;

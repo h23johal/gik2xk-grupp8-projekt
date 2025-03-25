@@ -38,6 +38,19 @@ export async function getProductRatings(productId) {
   } 
 }
 
+export async function canUserRate(productId, userId) {
+  try {
+    const response = await axios.get(`/ratings/products/${productId}/can-rate`, {
+      params: { userId }
+    });
+
+    return response.data.canRate;
+  } catch (e) {
+    console.error("Kunde inte hämta rating-behörighet:", e);
+    return false;
+  }
+}
+
 export async function getProductReviews(productId) {
   try {  
     const response = await axios.get(`/ratings/products/${productId}/reviews`);
@@ -48,3 +61,22 @@ export async function getProductReviews(productId) {
   } 
 }
 
+export async function addRating(productId, userId, score, comment, anonymous = false) {
+  try {
+    const response = await axios.post(`/ratings/products/${productId}/addRating`, {
+      user_id: userId,
+      rating: score,
+      comment: comment || null,
+      anonymous,
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error(response.data?.error || "Kunde inte skicka recension");
+    }
+  } catch (e) {
+    const message = e?.response?.data?.error || "Något gick fel vid betygssättning";
+    throw new Error(message);
+  }
+}
