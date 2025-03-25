@@ -70,7 +70,7 @@ db.sequelize
       }
     }
 
-  app.listen(port, () => {
+  server.listen(port, () => {
     console.log(`Servern kör på port ${port}`);
   });
 }).catch((e) => {
