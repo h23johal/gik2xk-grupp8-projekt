@@ -48,11 +48,16 @@ async function runSqlFile(filePath) {
 
 var server = http.createServer(app);
 const FORCE_SYNC = false;
+// const FORCE_SYNC = true; // OBS! Denna kommer att radera all data i databasen
 const db = require('../models/');
-// Synkronisera databasen (ta bort { force: true } om du inte vill återställa databasen varje gång)
 db.sequelize
-.sync({force: FORCE_SYNC})
+.query('SET FOREIGN_KEY_CHECKS = 0') //disabeling foreign key checks
+.then(() => {
+  return db.sequelize.sync({force: FORCE_SYNC});
+})
 .then(async () => {
+  await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1'); //enabling foreign key checks
+  
   console.log('Databasen är synkad');
 
   if (FORCE_SYNC) {
