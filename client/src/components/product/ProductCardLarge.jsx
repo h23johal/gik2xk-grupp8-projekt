@@ -1,4 +1,5 @@
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
+import ProductRatingDisplay from "../rating/ProductRatingDisplay";
 
 function ProductCardLarge({ product }) {
   return (
@@ -21,13 +22,14 @@ function ProductCardLarge({ product }) {
         alt={product.title}
       />
       <CardContent>
+        <ProductRatingDisplay productId={product.id} size="large" showLabel />
         <Typography variant="h5" component="h1" gutterBottom>
           {product.title}
         </Typography>
         <Typography
           variant="body1"
           sx={{
-            maxWidth: "300px", // Change this to your desired width
+            maxWidth: "300px",
             wordWrap: "break-word",
           }}
         >

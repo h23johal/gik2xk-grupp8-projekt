@@ -223,7 +223,7 @@ function Navbar() {
 
             {/* Desktop navigation */}
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              {user?.id === 99 && (
+              {user?.id === 1 && (
                 <Button
                   color="inherit"
                   component={Link}
@@ -280,7 +280,7 @@ function Navbar() {
               <ListItem button component={Link} to="/news">
                 <ListItemText primary="News" />
               </ListItem>
-              {user?.id === "99" && (
+              {user?.id === "1" && (
                 <ListItem button component={Link} to="/admin">
                   <ListItemText primary="Product Management" />
                 </ListItem>

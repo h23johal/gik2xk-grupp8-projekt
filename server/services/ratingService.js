@@ -1,4 +1,5 @@
 const db = require("../models");
+const { userHasPurchased } = require("./cartService");
 const { createOkObjectSuccess, createResponseError, createResponseMessage } = require("../helpers/responseHelper");
 
 async function getAll() {
@@ -49,12 +50,19 @@ async function destroy(id) {
   }
 }
 
-async function addRating(product_id, user_id, rating) {
+async function addRating(product_id, user_id, rating, comment = null, anonymous = false) {
   try {
-    const ratingScore = await db.Rating.create({ product_id, user_id, rating });
+    const hasPurchased = await userHasPurchased(user_id, product_id);
+
+    if (!hasPurchased) {
+      return createResponseError(403, "Du har inte köpt denna produkt");
+    }
+
+    const ratingScore = await db.Rating.create({ product_id, user_id, rating, comment, anonymous });
     return createOkObjectSuccess(ratingScore);
+
   } catch (error) {
-    return createResponseError(error.status, error.message);
+    return createResponseError(500, error.message || "Något gick fel vid betygssättning");
   }
 }
 
@@ -90,5 +98,7 @@ async function getProductReviews(product_id) {
     return createResponseError(error.status || 500, error.message);
   }
 }
+
+
 
 module.exports = { getAll, getById, create, update, destroy, addRating, getProductRatings, getProductReviews };
