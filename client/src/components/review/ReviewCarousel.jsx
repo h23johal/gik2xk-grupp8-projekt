@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import { getProductReviews } from "../services/RatingService";
+import { getProductReviews } from "../../services/RatingService";
 import ReviewCardSmall from "./ReviewCardSmall";
 
 function ReviewCarousel({ productId, onReviewClick }) {
@@ -9,12 +9,12 @@ function ReviewCarousel({ productId, onReviewClick }) {
 
   useEffect(() => {
     getProductReviews(productId)
-      .then(response => {
+      .then((response) => {
         const reviewList = response.reviews || [];
         setReviews(reviewList);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error fetching reviews:", err);
         setReviews([]);
         setLoading(false);
@@ -27,20 +27,20 @@ function ReviewCarousel({ productId, onReviewClick }) {
   return (
     <Box
       sx={{
-        display: 'flex',
+        display: "flex",
         gap: 1,
         py: 1,
-        overflow: 'auto',
-        width: '100%',
-        scrollSnapType: 'x mandatory',
-        '& > *': {
-          scrollSnapAlign: 'center',
+        overflow: "auto",
+        width: "100%",
+        scrollSnapType: "x mandatory",
+        "& > *": {
+          scrollSnapAlign: "center",
         },
-        '::-webkit-scrollbar': { display: 'scrollbar' },
+        "::-webkit-scrollbar": { display: "scrollbar" },
       }}
     >
       {reviews.map((review) => (
-        <ReviewCardSmall 
+        <ReviewCardSmall
           key={review.id}
           review={review}
           onClick={onReviewClick}
