@@ -23,7 +23,9 @@ function AuthModal({ open, onClose }) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
+
     let response;
     if (isRegister) {
       response = await register(
@@ -47,7 +49,11 @@ function AuthModal({ open, onClose }) {
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{isRegister ? "Registrera dig" : "Logga in"}</DialogTitle>
       <DialogContent>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
           {isRegister && (
             <>
               <TextField
@@ -77,7 +83,7 @@ function AuthModal({ open, onClose }) {
             onChange={handleChange}
             fullWidth
           />
-          <Button variant="contained" onClick={handleSubmit}>
+          <Button variant="contained" type="submit">
             {isRegister ? "Registrera" : "Logga in"}
           </Button>
           <Button sx={{ mt: 2 }} onClick={() => setIsRegister(!isRegister)}>
