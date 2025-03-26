@@ -8,30 +8,8 @@ import {
 import ProductGrid from "../components/product/ProductGrid";
 import ProductCardManagementSmall from "../components/product/management/ProductCardManagementSmall";
 import ProductManagementCreate from "../components/product/management/ProductManagementCreate";
-// import CategoryTag from '../components/CategoryTag';
 
 function ProductManagement() {
-
-  /* function onTagAdd(tagString) {
-    //splitta arrayen vid kommatecken
-    const tagArray = tagString.split(',');
-    //trimma whitespace runt taggar
-    const uniqueAndTrimmedTags = tagArray
-      .map((tag) => tag.trim())
-      .filter((tag) => !product.tags.includes(tag));
-
-    //slå samman befintlig tag-array med de nya, unika taggarna
-    const mergedArray = [...product.tags, ...uniqueAndTrimmedTags];
-
-    //spara befintligt inlägg med nya tags-arrayen till state.
-    setProduct({ ...product, tags: mergedArray });
-  }
-
-  function onTagDelete(tagToDelete) {
-    const newTags = product.tags.filter((tag) => tag !== tagToDelete);
-
-    setProduct({ ...product, tags: newTags });
-  } */
   return (
     <Container maxWidth="lg">
       <Typography
@@ -74,8 +52,9 @@ function ProductManagement() {
         {/* Main Content - Product Grid */}
         <Box sx={{ flex: 1 }}>
           <ProductGrid
-            renderContent={(product) => (
-              <ProductCardManagementSmall product={product} />
+            includeDeleted={true}
+            renderContent={(product, refetch) => (
+              <ProductCardManagementSmall product={product} refetch={refetch} />
             )}
           />
         </Box>

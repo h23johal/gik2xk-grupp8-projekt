@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import { getOne } from "../services/ProductService";
 import ProductCardLarge from "../components/product/ProductCardLarge";
 import ProductManagementForm from "../components/product/management/ProductManagementForm";
-import AddToCart from "../components/cart/AddToCart";
 import Grid from "@mui/material/Grid2";
 
 function ProductDetailPage() {

@@ -7,6 +7,8 @@
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
+const fs = require("fs");
+const path = require("path");
 
 /**
  * Get port from environment and store in Express.
@@ -19,16 +21,56 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+async function runSqlFile(filePath) {
+  try {
+    const rawSql = fs.readFileSync(filePath, 'utf8');
 
+    // Rensa bort kommentarer och dela upp på semikolon följt av radslut
+    const statements = rawSql
+      .split(/;\s*[\r\n]+/) // Dela på semikolon + radslut
+      .map(s => s.trim())
+      .filter(s => s.length && !s.startsWith('--') && !s.startsWith('/*'));
+
+    for (const statement of statements) {
+      try {
+        await db.sequelize.query(statement);
+      } catch (err) {
+        console.error('Fel vid körning av:', statement);
+        console.error(err.message);
+      }
+    }
+
+    console.log('SQL-filen kördes klart!');
+  } catch (err) {
+    console.error('Kunde inte läsa/köra SQL-filen:', err.message);
+  }
+}
+
+var server = http.createServer(app);
+const FORCE_SYNC = false;
+// const FORCE_SYNC = true; // OBS! Denna kommer att radera all data i databasen
 const db = require('../models/');
-// Synkronisera databasen (ta bort { force: true } om du inte vill återställa databasen varje gång)
 db.sequelize
-.sync()
-//.sync({force: true})
+.query('SET FOREIGN_KEY_CHECKS = 0') //disabeling foreign key checks
 .then(() => {
+  return db.sequelize.sync({force: FORCE_SYNC});
+})
+.then(async () => {
+  await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1'); //enabling foreign key checks
+  
   console.log('Databasen är synkad');
-  app.listen(port, () => {
+
+  if (FORCE_SYNC) {
+      const sqlPath = path.join(__dirname, "../sql/initDB.sql");
+
+      if (fs.existsSync(sqlPath)) {
+        await runSqlFile(sqlPath);
+      } else {
+        console.warn('initDB.sql hittades inte:', sqlPath);
+      }
+    }
+
+  server.listen(port, () => {
     console.log(`Servern kör på port ${port}`);
   });
 }).catch((e) => {

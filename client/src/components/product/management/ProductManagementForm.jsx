@@ -6,6 +6,7 @@ import {
   removeProduct,
   updateProduct,
 } from "../../../services/ProductService";
+import { useSnackbar } from "../../../context/SnackbarContext";
 import {
   Box,
   Button,
@@ -58,16 +59,18 @@ function ProductManagementForm() {
     setProduct(newProduct);
   }
 
-  function onSave() {
-    if (product.id === 0) {
-      createProduct(product).then((response) => {
+  async function onSave() {
+    try {
+      if (product.id === 0) {
+        const response = await createProduct(product);
         navigate("/admin", { replace: true, state: response });
-      });
-    } else {
-      updateProduct(product).then((response) => {
-        showSnackbar("Produkten har uppdaterats!", "success"); // 🔥 Use global snackbar
+      } else {
+        const response = await updateProduct(product);
+        showSnackbar("Produkten har uppdaterats!", "success");
         navigate(`/admin/${product.id}`, { replace: true, state: response });
-      });
+      }
+    } catch (error) {
+      showSnackbar(error.message, "error"); // 🔥 Visar backendens valideringsfel
     }
   }
 
