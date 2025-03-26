@@ -1,20 +1,23 @@
 import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Box, Divider } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { getProductRatings } from '../../services/RatingService';
-import ReviewCardLarge from './ReviewCardLarge';
+import { getProductReviews } from '../../services/RatingService';
+import AccordionReviewCard from './AccordionReviewCard';
 
 const ReviewAccordion = forwardRef(({ productId, selectedReviewId }, ref) => {
   const [expanded, setExpanded] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedReview, setExpandedReview] = useState(null);
   const reviewRefs = useRef({});
 
   useEffect(() => {
-    getProductRatings(productId)
+    getProductReviews(productId)
       .then(response => {
+        // Get reviews from the same endpoint the carousel uses
+        const reviewList = response.reviews || [];
         // Only include reviews with actual comment text
-        const reviewsWithComments = (response?.data?.ratings || [])
+        const reviewsWithComments = reviewList
           .filter(review => review.comment && review.comment.trim().length > 0);
         
         setReviews(reviewsWithComments);
@@ -27,10 +30,17 @@ const ReviewAccordion = forwardRef(({ productId, selectedReviewId }, ref) => {
   }, [productId]);
 
   useEffect(() => {
-    if (selectedReviewId && expanded) {
-      scrollToReview(selectedReviewId);
+    if (selectedReviewId) {
+      // Automatically expand accordion when a review is selected from carousel
+      setExpanded(true);
+      // Set the selected review as expanded
+      setExpandedReview(selectedReviewId);
+      // Scroll to it after a short delay to allow the accordion to expand
+      setTimeout(() => {
+        scrollToReview(selectedReviewId);
+      }, 300);
     }
-  }, [selectedReviewId, expanded]);
+  }, [selectedReviewId]);
 
   const scrollToReview = (reviewId) => {
     if (reviewRefs.current[reviewId]) {
@@ -38,6 +48,18 @@ const ReviewAccordion = forwardRef(({ productId, selectedReviewId }, ref) => {
         behavior: 'smooth',
         block: 'center'
       });
+      
+      // Add a visual highlight effect to draw attention
+      const element = reviewRefs.current[reviewId];
+      element.style.transition = 'box-shadow 0.3s ease';
+      element.style.boxShadow = '0 0 0 4px rgba(224, 145, 169, 0.4)';
+      
+      // Remove highlight after a moment
+      setTimeout(() => {
+        if (element) {
+          element.style.boxShadow = 'none';
+        }
+      }, 2000);
     }
   };
 
@@ -45,13 +67,18 @@ const ReviewAccordion = forwardRef(({ productId, selectedReviewId }, ref) => {
     setExpanded(true);
   };
 
+  const handleReviewClick = (reviewId) => {
+    // Toggle expanded state for clicked review
+    setExpandedReview(expandedReview === reviewId ? null : reviewId);
+  };
+
   useImperativeHandle(ref, () => ({
     scrollToReview,
     expandAccordion
   }));
 
-  const handleChange = () => {
-    setExpanded(!expanded);
+  const handleChange = (event, isExpanded) => {
+    setExpanded(isExpanded);
   };
 
   return (
@@ -72,18 +99,17 @@ const ReviewAccordion = forwardRef(({ productId, selectedReviewId }, ref) => {
           <Typography>No reviews yet for this product.</Typography>
         ) : (
           <Box>
-            {reviews.map((review, index) => (
+            {reviews.map((review) => (
               <Box 
                 key={review.id} 
                 ref={el => reviewRefs.current[review.id] = el}
-                sx={{
-                  py: 2,
-                  backgroundColor: selectedReviewId === review.id ? 'rgba(0, 0, 0, 0.04)' : 'transparent',
-                  scrollMarginTop: '100px'
-                }}
+                sx={{ scrollMarginTop: '100px' }}
               >
-                <ReviewCardLarge review={review} />
-                {index < reviews.length - 1 && <Divider />}
+                <AccordionReviewCard 
+                  review={review} 
+                  isSelected={selectedReviewId === review.id}
+                  onClick={handleReviewClick}
+                />
               </Box>
             ))}
           </Box>
