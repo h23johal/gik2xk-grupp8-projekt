@@ -52,6 +52,7 @@ function ProductGrid({ renderContent, includeDeleted = false }) {
     <>
       <SortDropdown value={sortOption} onChange={handleSortChange} />
       <Grid container spacing={2}>
+
         {getSortedProducts().map((product) => (
           <Grid key={product.id}>
             {renderContent ? (

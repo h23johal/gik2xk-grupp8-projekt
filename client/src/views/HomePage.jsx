@@ -1,18 +1,20 @@
-import { Container, Typography, Box } from '@mui/material';
-import ProductGrid from '../components/product/ProductGrid';
-import ProductCardSmall from '../components/product/ProductCardSmall';
+import { Container, Typography, Box } from "@mui/material";
+import ProductGrid from "../components/product/ProductGrid";
+import ProductCardSmall from "../components/product/ProductCardSmall";
+import StoreInfo from "./StoreInfo"; // 👈 Justera om du lagt StoreInfo i en undermapp
 
 function HomePage() {
   return (
     <Box
       sx={{
         pt: 6,
-        pb: 8,
+        pb: 0,
         background: "#F0F0F0",
-        minHeight: "calc(100vh - 70px)",
+        minHeight: "auto",
       }}
     >
       <Container maxWidth="lg">
+        {/* ⭐ Introtext */}
         <Box
           sx={{
             display: "flex",
@@ -58,38 +60,31 @@ function HomePage() {
             }}
           />
         </Box>
+
+        {/* 🛍 Produktgrid */}
         <ProductGrid
-            renderContent={(product) => (
-              <ProductCardSmall product={product} />
-            )}
-          />
-        {/* <ProductGrid /> */}
-        <Box sx={{ 
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 4,
-          mt: 6
-        }}>
-          <Box sx={{ flex: '1 1 300px' }}>
-            <Typography 
-              variant="h5" 
-              gutterBottom 
-              sx={{ 
-                fontWeight: 300,
-                mb: 2,
-              }}
-            >
+          renderContent={(product) => <ProductCardSmall product={product} />}
+        />
+
+        {/* 📝 Info-texten (flyttad upp hit!) */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 4,
+            mt: 6,
+            mb: 4,
+          }}
+        >
+          <Box sx={{ flex: "1 1 300px" }}>
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 300, mb: 2 }}>
               Exceptional Quality
             </Typography>
             <Typography
               variant="body1"
-              sx={{
-                color: "text.secondary",
-                lineHeight: 1.8,
-                mb: 2,
-              }}
+              sx={{ color: "text.secondary", lineHeight: 1.8, mb: 2 }}
             >
               We curate only the finest technological innovations that offer
               both superior performance and exceptional design. Each product
@@ -98,23 +93,12 @@ function HomePage() {
           </Box>
 
           <Box sx={{ flex: "1 1 300px" }}>
-            <Typography
-              variant="h5"
-              gutterBottom
-              sx={{
-                fontWeight: 300,
-                mb: 2,
-              }}
-            >
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 300, mb: 2 }}>
               Lifetime Service
             </Typography>
             <Typography
               variant="body1"
-              sx={{
-                color: "text.secondary",
-                lineHeight: 1.8,
-                mb: 2,
-              }}
+              sx={{ color: "text.secondary", lineHeight: 1.8, mb: 2 }}
             >
               When you invest in our collection, you're not just acquiring a
               device—you're gaining a lifelong relationship. Our dedicated
@@ -124,6 +108,9 @@ function HomePage() {
           </Box>
         </Box>
       </Container>
+
+      {/* 🧊 StoreInfo-sektionen – nu smälter den in i bakgrunden */}
+      <StoreInfo />
     </Box>
   );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 
 const OrderCard = ({ order }) => {
   const hasDeletedProducts = order.rows.some(
@@ -14,13 +14,36 @@ const OrderCard = ({ order }) => {
           Beställd: {new Date(order.updatedAt).toLocaleDateString()}
         </Typography>
 
-        <Typography variant="body2" sx={{ mt: 1 }}>
+        <Typography variant="body2" sx={{ mt: 1, mb: 1 }}>
           Produkter:
         </Typography>
+
         {order.rows.map((row) => (
-          <Typography key={row.product?.id}>
-            {row.product?.name} - {row.amount} st - {row.product?.price} kr
-          </Typography>
+          <Box
+            key={row.product?.id}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              mb: 1,
+            }}
+          >
+            <Box
+              component="img"
+              src={row.product?.imageUrl}
+              alt={row.product?.name}
+              sx={{
+                width: 60,
+                height: 60,
+                objectFit: "cover",
+                borderRadius: 1,
+                border: "1px solid #ccc",
+              }}
+            />
+            <Typography>
+              {row.product?.name} – {row.amount} st – {row.product?.price} kr
+            </Typography>
+          </Box>
         ))}
 
         {hasDeletedProducts && (
