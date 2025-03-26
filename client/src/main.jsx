@@ -61,7 +61,7 @@ createRoot(document.getElementById("root")).render(
     <SnackbarProvider>
       <AuthProvider>
         {" "}
-        {/* 🔹 Wrappa allt med AuthProvider */}
+        {/* Wrappa allt med AuthProvider */}
         <CartProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline /> {/* Normaliserar CSS */}

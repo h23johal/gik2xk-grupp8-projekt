@@ -139,7 +139,7 @@
 // export default Navbar;
 
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   AppBar,
@@ -157,7 +157,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const { cartCount } = useCart();
@@ -177,7 +176,19 @@ function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // Navigera till startsidan
+    navigate("/");
+  };
+
+  const navButtonStyle = {
+    mx: 1,
+    textTransform: "none",
+    transition: "all 0.2s ease",
+    borderRadius: "30px",
+    "&:hover": {
+      transform: "scale(1.08)",
+      backgroundColor: "primary.light",
+      color: "white",
+    },
   };
 
   return (
@@ -185,7 +196,6 @@ function Navbar() {
       <Box sx={{ flexGrow: 1 }} component="header">
         <AppBar position="static">
           <Toolbar>
-            {/* Mobile: Hamburger menu */}
             <IconButton
               size="large"
               edge="start"
@@ -197,18 +207,16 @@ function Navbar() {
               <MenuIcon />
             </IconButton>
 
-            {/* Desktop: Branded logo */}
             <Button
               color="inherit"
               component={Link}
               to="/"
               aria-label="Home"
-              sx={{ mr: 2, display: { xs: "none", sm: "block" } }}
+              sx={{ mr: 2, display: { xs: "none", sm: "block" }, ...navButtonStyle }}
             >
               YourBrand
             </Button>
 
-            {/* Titel */}
             <Typography
               variant="h6"
               component="div"
@@ -221,51 +229,51 @@ function Navbar() {
               News
             </Typography>
 
-            {/* Desktop navigation */}
-            <Box sx={{ display: { xs: "none", sm: "block" } }}>
+            <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center" }}>
               {user?.id === 1 && (
                 <Button
-                  color="inherit"
                   component={Link}
                   to="/admin"
-                  sx={{ mr: 2 }}
+                  sx={navButtonStyle}
                 >
                   Product Management
                 </Button>
               )}
 
-              {/* 🔹 Visa "Logga in" om utloggad, annars "Logga ut" */}
+              {user && (
+                <Button
+                  component={Link}
+                  to="/order-history"
+                  sx={navButtonStyle}
+                >
+                  Mina Beställningar
+                </Button>
+              )}
+
               {user ? (
-                <Button color="inherit" onClick={handleLogout}>
+                <Button onClick={handleLogout} sx={navButtonStyle}>
                   Logga ut
                 </Button>
               ) : (
-                <Button color="inherit" onClick={openAuthModal}>
+                <Button onClick={openAuthModal} sx={navButtonStyle}>
                   Logga in
                 </Button>
               )}
-            </Box>
-            {user && (
-              <Button color="inherit" component={Link} to="/order-history">
-                Mina Beställningar
-              </Button>
-            )}
 
-            {/* Shopping Cart */}
-            <IconButton
-              component={Link}
-              to="/cart"
-              color="inherit"
-              aria-label="Cart"
-            >
-              <Badge badgeContent={cartCount} color="error">
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
+              <IconButton
+                component={Link}
+                to="/cart"
+                color="inherit"
+                aria-label="Cart"
+              >
+                <Badge badgeContent={cartCount} color="error">
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
+            </Box>
           </Toolbar>
         </AppBar>
 
-        {/* Mobile Drawer */}
         <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
           <Box
             sx={{ width: 250 }}
@@ -287,11 +295,9 @@ function Navbar() {
               )}
               {user && (
                 <ListItem button component={Link} to="/order-history">
-                  <ListItemText primary="Product Management" />
+                  <ListItemText primary="Mina Beställningar" />
                 </ListItem>
               )}
-
-              {/* 🔹 Visa "Logga in" eller "Logga ut" beroende på auth-status */}
               <ListItem button onClick={user ? handleLogout : openAuthModal}>
                 <ListItemText primary={user ? "Logga ut" : "Logga in"} />
               </ListItem>
