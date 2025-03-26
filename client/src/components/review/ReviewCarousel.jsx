@@ -1,114 +1,183 @@
 import { useState, useEffect, useRef } from "react";
 import { Box, Typography, IconButton } from "@mui/material";
-import { getProductReviews } from "../../services/RatingService";
 import CarouselReviewCard from "./CarouselReviewCard";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-function ReviewCarousel({ productId, onReviewClick }) {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+class ReviewNode {
+  constructor(review) {
+    this.review = review;
+    this.next = null;
+  }
+}
+
+function createCircularList(reviews) {
+  if (!reviews.length) return null;
+  const sorted = [...reviews].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+  const head = new ReviewNode(sorted[0]);
+  let curr = head;
+  for (let i = 1; i < sorted.length; i++) {
+    curr.next = new ReviewNode(sorted[i]);
+    curr = curr.next;
+  }
+  curr.next = head;
+  return head;
+}
+
+function ReviewCarousel({ reviews, onReviewClick }) {
+  const [circularList, setCircularList] = useState(null);
+  const [currentNode, setCurrentNode] = useState(null);
+  const [offset, setOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [dragDistance, setDragDistance] = useState(0);
+
+  const startXRef = useRef(0);
+  const velocityRef = useRef(0);
+  const lastTimeRef = useRef(0);
+  const animFrameRef = useRef(null);
+
   const carouselRef = useRef(null);
-  const cardWidth = useRef(280); // Default width, will be updated
+  const cardWidth = useRef(280);
+  const visibleCount = 5;
 
   useEffect(() => {
-    getProductReviews(productId)
-      .then((response) => {
-        const reviewList = response.reviews || [];
-        // Sort by newest first (most recent date)
-        reviewList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setReviews(reviewList);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching reviews:", err);
-        setReviews([]);
-        setLoading(false);
-      });
-  }, [productId]);
-
-  // Get actual card width after render
-  useEffect(() => {
-    if (carouselRef.current && reviews.length > 0) {
-      const firstCard = carouselRef.current.querySelector(".review-card");
-      if (firstCard) {
-        cardWidth.current = firstCard.offsetWidth + 16; // card + gap
-      }
+    if (reviews && reviews.length) {
+      const circHead = createCircularList(reviews);
+      setCircularList(circHead);
+      setCurrentNode(circHead);
     }
   }, [reviews]);
 
-  // Scroll to previous card
-  const scrollPrev = () => {
-    if (!carouselRef.current) return;
-    carouselRef.current.scrollBy({
-      left: -cardWidth.current,
-      behavior: "smooth"
-    });
+  useEffect(() => {
+    if (carouselRef.current) {
+      const firstCard = carouselRef.current.querySelector(".review-card");
+      if (firstCard) cardWidth.current = firstCard.offsetWidth + 16;
+    }
+  }, [reviews]);
+
+  const computeVisibleReviews = () => {
+    const visible = [];
+    let node = currentNode;
+    for (let i = 0; i < visibleCount; i++) {
+      visible.push(node.review);
+      node = node.next;
+    }
+    return visible;
   };
 
-  // Scroll to next card
-  const scrollNext = () => {
-    if (!carouselRef.current) return;
-    carouselRef.current.scrollBy({
-      left: cardWidth.current,
-      behavior: "smooth"
-    });
+  const adjustOffset = (newOff) => {
+    let off = newOff;
+    while (off >= cardWidth.current / 2) {
+      off -= cardWidth.current;
+      setCurrentNode(prev => prev.next);
+    }
+    while (off <= -cardWidth.current / 2) {
+      setCurrentNode(prev => {
+        let node = circularList;
+        while (node.next !== prev) node = node.next;
+        return node;
+      });
+      off += cardWidth.current;
+    }
+    return off;
   };
 
-  // Mouse handlers with drag detection
+  const momentum = () => {
+    const now = performance.now();
+    const dt = now - lastTimeRef.current;
+    lastTimeRef.current = now;
+    const deceleration = 0.002;
+    if (velocityRef.current > 0) {
+      velocityRef.current = Math.max(velocityRef.current - deceleration * dt, 0);
+    } else if (velocityRef.current < 0) {
+      velocityRef.current = Math.min(velocityRef.current + deceleration * dt, 0);
+    }
+    const delta = velocityRef.current * dt;
+    if (Math.abs(delta) < 0.5) {
+      velocityRef.current = 0;
+      setOffset(0);
+      return;
+    }
+    setOffset(prev => adjustOffset(prev + delta));
+    animFrameRef.current = requestAnimationFrame(momentum);
+  };
+
   const handleMouseDown = (e) => {
-    if (!carouselRef.current) return;
-    
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     setIsDragging(true);
-    setStartX(e.pageX - carouselRef.current.offsetLeft);
-    setScrollLeft(carouselRef.current.scrollLeft);
-    setDragDistance(0);
-    carouselRef.current.style.cursor = 'grabbing';
+    startXRef.current = e.pageX;
+    lastTimeRef.current = performance.now();
+    velocityRef.current = 0;
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const now = performance.now();
+    const dx = e.pageX - startXRef.current;
+    const dt = now - lastTimeRef.current;
+    velocityRef.current = dx / dt;
+    lastTimeRef.current = now;
+    startXRef.current = e.pageX;
+    setOffset(prev => adjustOffset(prev + dx));
   };
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    if (carouselRef.current) {
-      carouselRef.current.style.cursor = 'grab';
-    }
+    lastTimeRef.current = performance.now();
+    animFrameRef.current = requestAnimationFrame(momentum);
   };
 
-  const handleMouseMove = (e) => {
-    if (!isDragging || !carouselRef.current) return;
-    
-    e.preventDefault();
-    const x = e.pageX - carouselRef.current.offsetLeft;
-    const walk = (x - startX);
-    carouselRef.current.scrollLeft = scrollLeft - walk;
-    setDragDistance(Math.abs(walk));
+  const handleMouseLeave = () => {
+    if (isDragging) handleMouseUp();
   };
 
-  // Touch handlers
   const handleTouchStart = (e) => {
-    if (!carouselRef.current) return;
-    
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
     setIsDragging(true);
-    setStartX(e.touches[0].pageX - carouselRef.current.offsetLeft);
-    setScrollLeft(carouselRef.current.scrollLeft);
-    setDragDistance(0);
+    startXRef.current = e.touches[0].pageX;
+    lastTimeRef.current = performance.now();
+    velocityRef.current = 0;
   };
 
   const handleTouchMove = (e) => {
-    if (!isDragging || !carouselRef.current) return;
-    
-    const x = e.touches[0].pageX - carouselRef.current.offsetLeft;
-    const walk = (x - startX);
-    carouselRef.current.scrollLeft = scrollLeft - walk;
-    setDragDistance(Math.abs(walk));
+    if (!isDragging) return;
+    const now = performance.now();
+    const dx = e.touches[0].pageX - startXRef.current;
+    const dt = now - lastTimeRef.current;
+    velocityRef.current = dx / dt;
+    lastTimeRef.current = now;
+    startXRef.current = e.touches[0].pageX;
+    setOffset(prev => adjustOffset(prev + dx));
     e.preventDefault();
   };
 
-  if (loading) return <Typography>Loading reviews...</Typography>;
-  if (reviews.length === 0) return <Typography>No reviews yet</Typography>;
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    lastTimeRef.current = performance.now();
+    animFrameRef.current = requestAnimationFrame(momentum);
+  };
+
+  const scrollPrev = () => {
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    setCurrentNode(prev => {
+      let node = circularList;
+      while (node.next !== prev) node = node.next;
+      return node;
+    });
+    setOffset(0);
+  };
+
+  const scrollNext = () => {
+    if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+    setCurrentNode(prev => prev.next);
+    setOffset(0);
+  };
+
+  if (!reviews || !reviews.length)
+    return <Typography>No reviews yet</Typography>;
+
+  const visibleReviews = currentNode ? computeVisibleReviews() : [];
 
   return (
     <Box sx={{ position: "relative", width: "100%" }}>
@@ -119,44 +188,34 @@ function ReviewCarousel({ productId, onReviewClick }) {
           gap: 2,
           py: 1,
           px: 0.5,
-          overflow: "auto",
+          overflow: "hidden",
           width: "100%",
-          scrollBehavior: "smooth", 
-          "::-webkit-scrollbar": { display: "none" },
           cursor: "grab",
-          overscrollBehavior: "none",
-          msOverflowStyle: "none",
-          scrollbarWidth: "none"
+          transform: `translateX(${offset}px)`,
+          transition: isDragging ? "none" : "transform 0.05s ease-out"
         }}
         onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
         onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchStart}
-        onTouchEnd={handleMouseUp}
         onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
-        {reviews.map((review) => (
+        {visibleReviews.map((review, idx) => (
           <CarouselReviewCard
-            key={review.id}
+            key={`${review.id}-${idx}`}
             review={review}
-            onClick={(id) => {
-              // Only trigger click if not dragging
-              if (dragDistance < 5) {
-                onReviewClick(id);
-              }
-            }}
+            onClick={() => { if (!isDragging) onReviewClick(review.id); }}
             className="review-card"
           />
         ))}
       </Box>
-      
-      {/* Navigation arrows */}
-      <IconButton 
-        sx={{ 
-          position: "absolute", 
-          left: 4, 
-          top: "50%", 
+      <IconButton
+        sx={{
+          position: "absolute",
+          left: 4,
+          top: "50%",
           transform: "translateY(-50%)",
           backgroundColor: "rgba(255,255,255,0.3)",
           "&:hover": { backgroundColor: "rgba(255,255,255,0.5)" }
@@ -165,12 +224,11 @@ function ReviewCarousel({ productId, onReviewClick }) {
       >
         <ArrowBackIcon />
       </IconButton>
-      
-      <IconButton 
-        sx={{ 
-          position: "absolute", 
-          right: 4, 
-          top: "50%", 
+      <IconButton
+        sx={{
+          position: "absolute",
+          right: 4,
+          top: "50%",
           transform: "translateY(-50%)",
           backgroundColor: "rgba(255,255,255,0.3)",
           "&:hover": { backgroundColor: "rgba(255,255,255,0.5)" }
