@@ -1,15 +1,18 @@
-
 import {
   Box,
   Container,
   Typography,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
-
+import React, { useState } from "react";
 import ProductGrid from "../components/product/ProductGrid";
 import ProductCardManagementSmall from "../components/product/management/ProductCardManagementSmall";
 import ProductManagementCreate from "../components/product/management/ProductManagementCreate";
 
 function ProductManagement() {
+  const [includeDeleted, setIncludeDeleted] = useState(false);
+
   return (
     <Container maxWidth="lg">
       <Typography
@@ -40,6 +43,19 @@ function ProductManagement() {
         Select a product to manage its details.
       </Typography>
 
+      <Box sx={{ display: "flex", mt: 1 }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={includeDeleted}
+              onChange={(e) => setIncludeDeleted(e.target.checked)}
+              color="primary"
+            />
+          }
+          label="Include deleted products"
+        />
+      </Box>
+
       {/* Sidebar Layout */}
       <Box
         sx={{
@@ -52,7 +68,7 @@ function ProductManagement() {
         {/* Main Content - Product Grid */}
         <Box sx={{ flex: 1 }}>
           <ProductGrid
-            includeDeleted={true}
+            includeDeleted={includeDeleted}
             renderContent={(product, refetch) => (
               <ProductCardManagementSmall product={product} refetch={refetch} />
             )}
