@@ -1,43 +1,63 @@
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Box, Divider } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { getProductRatings } from '../../services/RatingService';
-import ReviewCardLarge from './ReviewCardLarge';
+import { useState, useRef, forwardRef, useImperativeHandle, useEffect } from "react";
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Box, CircularProgress } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AccordionReviewCard from "./AccordionReviewCard";
+import { useReviews } from "../../utils/useReviews";
+import { createFlowScroll } from "../../utils/flowScroll";
+import { useSwipeScroll } from "../../utils/UseSwipeScroll";
 
-const ReviewAccordion = forwardRef(({ productId, selectedReviewId }, ref) => {
+const ReviewAccordion = forwardRef(({ selectedReviewId, onReviewNavigated }, ref) => {
+  const { reviews, loading } = useReviews();
   const [expanded, setExpanded] = useState(false);
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
   const reviewRefs = useRef({});
+  const accordionBoxRef = useRef(null);
+  const flowScrollRef = useRef(null);
+
+  const reviewsWithComments = reviews.filter(
+    review => review.comment && review.comment.trim().length > 0
+  );
 
   useEffect(() => {
-    getProductRatings(productId)
-      .then(response => {
-        // Only include reviews with actual comment text
-        const reviewsWithComments = (response?.data?.ratings || [])
-          .filter(review => review.comment && review.comment.trim().length > 0);
-        
-        setReviews(reviewsWithComments);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Error fetching reviews:", err);
-        setLoading(false);
-      });
-  }, [productId]);
+    flowScrollRef.current = createFlowScroll({
+      initialOffset: 0,
+      updateOffset: (newOffset) => {
+        const box = accordionBoxRef.current;
+        if (!box) return;
+        box.scrollTop = box.scrollTop - newOffset; // Drag down scrolls up, drag up scrolls down
+      },
+      deceleration: 0.04,
+      maxVelocity: 0.0001,
+      maxMomentumDuration: 500,
+    });
+    return () => flowScrollRef.current.cancel();
+  }, [reviewsWithComments]);
 
   useEffect(() => {
-    if (selectedReviewId && expanded) {
-      scrollToReview(selectedReviewId);
+    if (selectedReviewId) {
+      setExpanded(true);
+      setTimeout(() => {
+        scrollToReview(selectedReviewId);
+        setTimeout(() => {
+          if (typeof onReviewNavigated === "function") {
+            onReviewNavigated();
+          }
+        }, 500);
+      }, 300);
     }
-  }, [selectedReviewId, expanded]);
+  }, [selectedReviewId, onReviewNavigated]);
 
   const scrollToReview = (reviewId) => {
     if (reviewRefs.current[reviewId]) {
-      reviewRefs.current[reviewId].scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'center'
+      reviewRefs.current[reviewId].scrollIntoView({
+        behavior: "smooth",
+        block: "center",
       });
+      const element = reviewRefs.current[reviewId];
+      element.style.transition = "box-shadow 0.3s ease";
+      element.style.boxShadow = "0 0 0 4px rgba(224, 145, 169, 0.4)";
+      setTimeout(() => {
+        if (element) element.style.boxShadow = "none";
+      }, 2000);
     }
   };
 
@@ -47,43 +67,62 @@ const ReviewAccordion = forwardRef(({ productId, selectedReviewId }, ref) => {
 
   useImperativeHandle(ref, () => ({
     scrollToReview,
-    expandAccordion
+    expandAccordion,
   }));
 
-  const handleChange = () => {
-    setExpanded(!expanded);
+  const handleChange = (event, isExpanded) => {
+    setExpanded(isExpanded);
   };
+
+  const { isDragging, swipeProps } = useSwipeScroll({
+    flowScroll: flowScrollRef.current,
+    direction: "y",
+  });
+
+  if (loading) return (
+    <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
+      <CircularProgress size={30} />
+    </Box>
+  );
 
   return (
     <Accordion expanded={expanded} onChange={handleChange}>
-      <AccordionSummary 
+      <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls="reviews-panel-content"
         id="reviews-panel-header"
       >
         <Typography variant="h6">
-          Customer Reviews ({reviews.length})
+          Customer Reviews ({reviewsWithComments.length})
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
-        {loading ? (
-          <Typography>Loading reviews...</Typography>
-        ) : reviews.length === 0 ? (
+        {reviewsWithComments.length === 0 ? (
           <Typography>No reviews yet for this product.</Typography>
         ) : (
-          <Box>
-            {reviews.map((review, index) => (
-              <Box 
-                key={review.id} 
-                ref={el => reviewRefs.current[review.id] = el}
-                sx={{
-                  py: 2,
-                  backgroundColor: selectedReviewId === review.id ? 'rgba(0, 0, 0, 0.04)' : 'transparent',
-                  scrollMarginTop: '100px'
-                }}
+          <Box
+            ref={accordionBoxRef}
+            sx={{
+              scrollBehavior: "smooth",
+              userSelect: "none",
+              maxHeight: 500,
+              overflowY: "auto",
+              px: 2,
+              py: 1,
+              cursor: isDragging ? "grabbing" : "grab",
+            }}
+            {...swipeProps}
+          >
+            {reviewsWithComments.map((review) => (
+              <Box
+                key={review.id}
+                ref={(el) => (reviewRefs.current[review.id] = el)}
+                sx={{ scrollMarginTop: "100px" }}
               >
-                <ReviewCardLarge review={review} />
-                {index < reviews.length - 1 && <Divider />}
+                <AccordionReviewCard
+                  review={review}
+                  isSelected={selectedReviewId === review.id}
+                />
               </Box>
             ))}
           </Box>
