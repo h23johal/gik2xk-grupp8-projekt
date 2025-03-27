@@ -1,13 +1,22 @@
-import { Card, CardContent, CardMedia, Typography, CardActionArea,} from '@mui/material';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  CardActionArea,
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 import ProductRatingDisplay from "../rating/ProductRatingDisplay";
 
 function ProductCardSmall({ product }) {
-  
-
   return (
     <Card
       sx={{
+        width: 215, // Fast bredd
+        height: 300, // Fast höjd
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
         bgcolor: "rgba(255,255,255,0.05)",
         backdropFilter: "blur(12px)",
         border: "1px solid rgba(255,255,255,0.1)",
@@ -20,7 +29,7 @@ function ProductCardSmall({ product }) {
         },
       }}
     >
-      <CardActionArea component={Link} to={`/products/${product.id}`}>
+      <CardActionArea component={Link} to={`/products/${product.id}`} sx={{ height: "100%" }}>
         {product.imageUrl && (
           <CardMedia
             component="img"
@@ -35,8 +44,13 @@ function ProductCardSmall({ product }) {
             }}
           />
         )}
-        <CardContent>
-          <Typography variant="h6" color="text.primary">
+        <CardContent sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            color="text.primary"
+            noWrap
+            sx={{ textOverflow: 'ellipsis' }}
+          >
             {product.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">

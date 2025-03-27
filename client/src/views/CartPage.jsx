@@ -1,13 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { Box, Typography, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Container,
+} from "@mui/material";
 
 // Imported components
 import EmptyCartMessage from "../components/cart/EmptyCartMessage";
 import ShippingNotice from "../components/cart/ShippingNotice";
 import CartItemCard from "../components/cart/CartItemCard";
 import CartSummary from "../components/cart/CartSummary";
+import PageWrapper from "../components/layout/PageWrapper";
 
 const CartPage = () => {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
@@ -22,60 +27,69 @@ const CartPage = () => {
   const totalPrice = subTotal + taxAmount + shippingCost;
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 } }}>
-      <Typography variant="h4" gutterBottom>
-        Din Kundvagn
-      </Typography>
+    <PageWrapper>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Din Kundvagn
+        </Typography>
 
-      {/* Fraktinfo-ruta */}
-      <ShippingNotice />
+        {/* Fraktinfo-ruta */}
+        <ShippingNotice />
 
-      {/* Om kundvagnen är tom, visa ett Card med en knapp */}
-      {cartItems.length === 0 ? (
-        <EmptyCartMessage />
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            gap: 3,
-          }}
-        >
-          {/* Produktlista (Vänster sida) */}
-          <Box sx={{ flex: 2, width: "100%" }}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {cartItems.map((item) => (
-                <CartItemCard
-                  key={item.product_id}
-                  item={item}
-                  onUpdateQuantity={updateQuantity}
-                  onRemove={removeFromCart}
-                />
-              ))}
+        {/* Om kundvagnen är tom, visa ett Card med en knapp */}
+        {cartItems.length === 0 ? (
+          <EmptyCartMessage />
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", md: "row" },
+              gap: 3,
+              mt: 3,
+            }}
+          >
+            {/* Produktlista (Vänster sida) */}
+            <Box sx={{ flex: 2, width: "100%" }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {cartItems.map((item) => (
+                  <CartItemCard
+                    key={item.product_id}
+                    item={item}
+                    onUpdateQuantity={updateQuantity}
+                    onRemove={removeFromCart}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            {/* Totalsumma (Höger sida) */}
+            <Box sx={{ flex: 1, width: "100%" }}>
+              <CartSummary
+                subtotal={subTotal}
+                tax={taxAmount}
+                shipping={shippingCost}
+                total={totalPrice}
+              />
             </Box>
           </Box>
+        )}
 
-          {/* Totalsumma (Höger sida) */}
-          <Box sx={{ flex: 1, width: "100%" }}>
-            <CartSummary
-              subtotal={subTotal}
-              tax={taxAmount}
-              shipping={shippingCost}
-              total={totalPrice}
-            />
+        {/* Töm knapp */}
+        {cartItems.length > 0 && (
+          <Box sx={{ mt: 3 }}>
+            <Button
+              color="inherit"
+              variant="outlined"
+              onClick={() =>
+                cartItems.forEach((item) => removeFromCart(item.product_id))
+              }
+            >
+              Töm Kundvagn
+            </Button>
           </Box>
-        </Box>
-      )}
-      <Button
-        color="inherit"
-        aria-label="Empty Cart"
-        onClick={() =>
-          cartItems.forEach((item) => removeFromCart(item.product_id))
-        }
-      >
-        Töm Kundvagn
-      </Button>
-    </Box>
+        )}
+      </Container>
+    </PageWrapper>
   );
 };
 

@@ -2,13 +2,13 @@ import { Outlet } from 'react-router-dom';
 
 import Navbar from './components/app/Navbar';
 
-import Footer from './components/app/Footer';
+import Footer from './components/app/footer';
 
 function App() {
   return (
     <>
       <Navbar />
-      <Outlet />
+      <Outlet/>
       <Footer />
     </>
   );

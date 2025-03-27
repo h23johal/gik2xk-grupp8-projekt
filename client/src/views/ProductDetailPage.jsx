@@ -9,6 +9,8 @@ import { canUserRate } from "../services/RatingService";
 import AddToCart from "../components/cart/AddToCart";
 import Grid from "@mui/material/Grid2";
 import { useAuth } from "../context/AuthContext";
+import { Container, Box, Typography } from "@mui/material";
+import PageWrapper from "../components/layout/PageWrapper";
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -50,34 +52,45 @@ function ProductDetailPage() {
   if (!product) return <div>Product not found</div>;
 
   return (
-    <>
-      <Grid container spacing={2} sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
-        <Grid item xs={12}>
-          <ReviewCarousel productId={id} onReviewClick={handleReviewClick} />
-        </Grid>
+    <PageWrapper>
+      {/* 🔥 Fullbredd Carousel utanför Container */}
+      <Box sx={{ width: "100%", px: { xs: 2, md: 6 }, mb: 4 }}>
+        <ReviewCarousel productId={id} onReviewClick={handleReviewClick} />
+      </Box>
 
-        <Grid item xs={12} md={8}>
-          <ProductCardLarge product={product} />
-        </Grid>
-
-        <Grid item xs={12} md={4}>
-          <AddToCart product={product} />
-        </Grid>
-
-        <Grid item xs={12}>
-          <ReviewAccordion
-            productId={id}
-            ref={reviewsAccordionRef}
-            selectedReviewId={selectedReviewId}
-          />
-        </Grid>
-        {canRate && (
-          <Grid item xs={12} md={12} sx={{ flexGrow: 1 }}>
-            <AddReviewForm productId={id} userId={user.id} />
+      {/* Centrerat innehåll */}
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Grid container spacing={3}>
+          {/* Produktinfo och Add to Cart sida vid sida */}
+          <Grid item xs={12} md={12}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={7}>
+                <ProductCardLarge product={product} />
+              </Grid>
+              <Grid item xs={12} md={5}>
+                <AddToCart product={product} />
+              </Grid>
+            </Grid>
           </Grid>
-        )}
-      </Grid>
-    </>
+
+          {/* Recensioner Accordion */}
+          <Grid item xs={12}>
+            <ReviewAccordion
+              productId={id}
+              ref={reviewsAccordionRef}
+              selectedReviewId={selectedReviewId}
+            />
+          </Grid>
+
+          {/* Recensionsformulär om användaren får recensera */}
+          {canRate && (
+            <Grid item xs={12}>
+              <AddReviewForm productId={id} userId={user.id} />
+            </Grid>
+          )}
+        </Grid>
+      </Container>
+    </PageWrapper>
   );
 }
 

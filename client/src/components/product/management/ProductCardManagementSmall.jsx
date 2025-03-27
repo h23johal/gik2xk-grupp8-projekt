@@ -20,7 +20,7 @@ function ProductCardManagementSmall({ product, refetch }) {
     try {
       await restoreProduct(product.id);
       showSnackbar("Produkten återställdes!", "success");
-      refetch(); // 🔁 Refetcha efter återställning
+      refetch();
     } catch (err) {
       console.error("Fel vid återställning:", err);
     }
@@ -30,6 +30,11 @@ function ProductCardManagementSmall({ product, refetch }) {
     <Card
       onClick={(e) => e.stopPropagation()}
       sx={{
+        width: 235,               // 👈 Fast bredd
+        height: 250,              // 👈 Fast höjd
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
         cursor: "default",
         bgcolor: "rgba(255,255,255,0.05)",
         backdropFilter: "blur(12px)",
@@ -40,7 +45,6 @@ function ProductCardManagementSmall({ product, refetch }) {
         overflow: "hidden",
       }}
     >
-      {/* Wrap everything in Overlay */}
       <Overlay
         overlayContent={
           product.deletedAt ? (
@@ -73,7 +77,6 @@ function ProductCardManagementSmall({ product, refetch }) {
           )
         }
       >
-        {/* Product Image */}
         {product.imageUrl && (
           <CardMedia
             component="img"
@@ -84,9 +87,13 @@ function ProductCardManagementSmall({ product, refetch }) {
           />
         )}
 
-        {/* Card Content */}
-        <CardContent>
-          <Typography variant="h6" color="text.primary">
+        <CardContent sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            color="text.primary"
+            noWrap
+            sx={{ textOverflow: "ellipsis" }}
+          >
             {product.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
