@@ -8,7 +8,6 @@ import ReviewAccordion from "../components/review/ReviewAccordion";
 import AddReviewForm from "../components/review/AddReviewForm";
 import AddToCart from "../components/cart/AddToCart";
 import Grid from "@mui/material/Grid2";
-import Container from "@mui/material/Container";
 import { useAuth } from "../context/AuthContext";
 import { Container, Box, Typography } from "@mui/material";
 import PageWrapper from "../components/layout/PageWrapper";
