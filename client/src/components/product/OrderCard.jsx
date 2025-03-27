@@ -1,5 +1,15 @@
 import React from "react";
-import { Card, CardContent, Typography, Box } from "@mui/material";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  Box,
+  CardMedia,
+  Paper,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Link } from "react-router-dom";
 
 const OrderCard = ({ order }) => {
   const hasDeletedProducts = order.rows.some(
@@ -7,31 +17,60 @@ const OrderCard = ({ order }) => {
   );
 
   return (
-    <Card sx={{ mb: 2 }}>
-      <CardContent>
-        <Typography variant="h6">Order #{order.id}</Typography>
-        <Typography variant="body2">
-          Beställd: {new Date(order.updatedAt).toLocaleDateString()}
-        </Typography>
+    <Accordion
+      sx={{
+        mb: 2,
+        borderRadius: 2,
+        boxShadow: 2,
+        backgroundColor: "rgba(255,255,255,0.7)",
+        backdropFilter: "blur(6px)",
+        overflow: "hidden",
+        "&:before": { display: "none" }, // Ta bort linjen ovanför accordion
+        transition: "all 0.2s ease-in-out",
+        "&:hover": {
+          boxShadow: 4,
+        },
+      }}
+    >
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{
+          backgroundColor: "#f5f5f5",
+          px: 3,
+          py: 2,
+        }}
+      >
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Typography variant="h6">Order #{order.id}</Typography>
+          <Typography variant="body2" color="text.secondary">
+            Beställd: {new Date(order.updatedAt).toLocaleDateString()}
+          </Typography>
+        </Box>
+      </AccordionSummary>
 
-        <Typography variant="body2" sx={{ mt: 1, mb: 1 }}>
+      <AccordionDetails sx={{ px: 3, pb: 3 }}>
+        <Typography variant="body2" sx={{ mb: 2 }}>
           Produkter:
         </Typography>
 
         {order.rows.map((row) => (
-          <Box
+          <Paper
             key={row.product?.id}
+            elevation={1}
             sx={{
               display: "flex",
               alignItems: "center",
               gap: 2,
-              mb: 1,
+              p: 2,
+              mb: 2,
+              borderRadius: 2,
+              backgroundColor: "#fff",
             }}
           >
-            <Box
+            <CardMedia
               component="img"
               src={row.product?.imageUrl}
-              alt={row.product?.name}
+              alt={row.product?.title}
               sx={{
                 width: 60,
                 height: 60,
@@ -40,19 +79,34 @@ const OrderCard = ({ order }) => {
                 border: "1px solid #ccc",
               }}
             />
-            <Typography>
-              {row.product?.name} – {row.amount} st – {row.product?.price} kr
-            </Typography>
-          </Box>
+            <Box>
+              <Typography
+                component={Link}
+                to={`/products/${row.product?.id}`}
+                variant="subtitle1"
+                sx={{
+                  fontWeight: "bold",
+                  textDecoration: "none",
+                  color: "primary.main",
+                  "&:hover": { textDecoration: "underline" },
+                }}
+              >
+                {row.product?.title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {row.amount} st – {row.product?.price} kr
+              </Typography>
+            </Box>
+          </Paper>
         ))}
 
         {hasDeletedProducts && (
-          <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+          <Typography variant="body2" color="error">
             Denna order innehåller en eller flera produkter som har utgått.
           </Typography>
         )}
-      </CardContent>
-    </Card>
+      </AccordionDetails>
+    </Accordion>
   );
 };
 

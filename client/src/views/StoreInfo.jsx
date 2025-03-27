@@ -26,11 +26,12 @@ function StoreInfo() {
     <Box
       sx={{
         width: "100%",
-        py: 4,
-        px: 4,
-        backgroundColor: "#F8F8F8",
+        minHeight: "100%", 
         display: "flex",
         justifyContent: "center",
+        alignItems: "center",
+        py: 10,
+        px: 20,
       }}
     >
       <Box

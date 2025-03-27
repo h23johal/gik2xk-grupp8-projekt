@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Button, Link } from "@mui/material";
+import { Box, Typography, TextField, Button } from "@mui/material";
 
 function Footer() {
   return (
@@ -6,8 +6,8 @@ function Footer() {
       component="footer"
       sx={{
         width: "100%",
-        py: 4,
-        px: 0,
+        py: 10, 
+        px: 10,
         background: "linear-gradient(to right, rgba(224, 145, 169, 0.2), rgba(94, 107, 174, 0.2))",
         backdropFilter: "blur(15px)",
         boxShadow: "0 4px 15px rgba(94, 107, 174, 0.1)",
@@ -16,10 +16,9 @@ function Footer() {
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
-        gap: 3,
+        gap: 2, 
       }}
     >
-      {/* Nyhetsbrev högst upp i footern */}
       <Box
         component="form"
         onSubmit={(e) => e.preventDefault()}
@@ -44,7 +43,6 @@ function Footer() {
         </Button>
       </Box>
 
-      {/* Övrig footer-info */}
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
         info@webbshop.se • Blomgatan 42, Stockholm
       </Typography>
