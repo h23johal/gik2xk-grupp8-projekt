@@ -566,17 +566,41 @@ function ReviewCarousel({ onReviewClick }) {
     }
   }, [reviews]);
 
-  useEffect(() => {
-    flowScrollRef.current = createFlowScroll({
-      initialOffset: 0,
-      updateOffset: setOffset,
-      cardWidth: cardWidth.current,
-      deceleration: 0.004,
-      maxVelocity: 2.5,
-      maxMomentumDuration: 800,
-    });
-    return () => flowScrollRef.current.cancel();
-  }, [reviews]);
+useEffect(() => {
+  const calculateAlignment = (currentOffset) => {
+    const cardWidthValue = cardWidth.current;
+    
+    // Calculate nearest aligned position
+    const nearestAligned = Math.round(currentOffset / cardWidthValue) * cardWidthValue;
+    
+    // Calculate distance to nearest aligned position
+    const distance = Math.abs(currentOffset - nearestAligned);
+    
+    // Calculate next and previous aligned positions
+    const nextAligned = nearestAligned + cardWidthValue;
+    const prevAligned = nearestAligned - cardWidthValue;
+    
+    return {
+      alignedOffset: nearestAligned,
+      distanceToAligned: distance,
+      alignmentThreshold: cardWidthValue * 0.05, // 5% of card width
+      nextAlignedOffset: nextAligned,
+      prevAlignedOffset: prevAligned
+    };
+  };
+
+  // Create flowScroll instance with the alignment calculator
+  flowScrollRef.current = createFlowScroll({
+    initialOffset: 0,
+    updateOffset: setOffset,
+    deceleration: 0.002,
+    maxVelocity: 0.008,
+    maxMomentumDuration: 600,
+    alignmentCalculator: calculateAlignment
+  });
+  
+  return () => flowScrollRef.current.cancel();
+}, [reviews]);
 
   useEffect(() => {
     if (!circularList || !currentNode) return;
@@ -646,7 +670,35 @@ function ReviewCarousel({ onReviewClick }) {
   const visibleReviews = computeVisibleReviews();
 
   return (
-    <Box sx={{ position: "relative", width: "100%" }}>
+    <Box sx={{ 
+      position: "relative", 
+      width: "100%",
+      overflow: "hidden" // Add overflow hidden to contain carousel items
+    }}>
+      {/* Fade overlay at left edge (1/4 card width) */}
+      <Box sx={{
+        position: "absolute",
+        left: 0,
+        top: 0,
+        height: "100%",
+        width: Math.floor(cardWidth.current * 0.25) + "px",
+        background: "linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)",
+        zIndex: 2,
+        pointerEvents: "none"
+      }} />
+      
+      {/* Fade overlay at right edge (1/4 card width) */}
+      <Box sx={{
+        position: "absolute",
+        right: 0,
+        top: 0,
+        height: "100%",
+        width: Math.floor(cardWidth.current * 0.25) + "px",
+        background: "linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)",
+        zIndex: 2,
+        pointerEvents: "none"
+      }} />
+      
       <Box
         ref={carouselRef}
         sx={{
@@ -655,11 +707,11 @@ function ReviewCarousel({ onReviewClick }) {
           gap: 2,
           py: 1,
           px: 0.5,
-          overflow: "hidden",
+          overflow: "visible",
           width: "100%",
           cursor: isDragging ? "grabbing" : "grab",
           transform: `translateX(${offset}px)`,
-          transition: isDragging ? "none" : "transform 0.05s ease-out",
+          transition: isDragging ? "none" : "transform 0.15s ease-out",
         }}
         {...swipeProps}
       >
@@ -675,13 +727,13 @@ function ReviewCarousel({ onReviewClick }) {
       {reviews.length > 1 && (
         <>
           <IconButton
-            sx={{ position: "absolute", left: 4, top: "50%", transform: "translateY(-50%)" }}
+            sx={{ position: "absolute", left: 4, top: "50%", transform: "translateY(-50%)", zIndex: 3 }}
             onClick={scrollPrev}
           >
             <ArrowBackIcon />
           </IconButton>
           <IconButton
-            sx={{ position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)" }}
+            sx={{ position: "absolute", right: 4, top: "50%", transform: "translateY(-50%)", zIndex: 3 }}
             onClick={scrollNext}
           >
             <ArrowForwardIcon />

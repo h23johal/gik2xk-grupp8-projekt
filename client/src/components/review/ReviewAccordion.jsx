@@ -533,10 +533,9 @@ const ReviewAccordion = forwardRef(({ selectedReviewId, onReviewNavigated }, ref
         if (!box) return;
         box.scrollTop = box.scrollTop - newOffset; // Drag down scrolls up, drag up scrolls down
       },
-      // cardWidth: 300, // Placeholder
-      deceleration: 0.004,
-      maxVelocity: 2.5,
-      maxMomentumDuration: 800,
+      deceleration: 0.04,
+      maxVelocity: 0.0001,
+      maxMomentumDuration: 500,
     });
     return () => flowScrollRef.current.cancel();
   }, [reviewsWithComments]);
@@ -614,7 +613,7 @@ const ReviewAccordion = forwardRef(({ selectedReviewId, onReviewNavigated }, ref
             sx={{
               scrollBehavior: "smooth",
               userSelect: "none",
-              maxHeight: 300,
+              maxHeight: 500,
               overflowY: "auto",
               px: 2,
               py: 1,
