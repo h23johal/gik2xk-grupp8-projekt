@@ -19,7 +19,7 @@ router.put('/', (req, res) => {
   userService.update(req.body).then(result => res.status(result.status).json(result.data));
 });
 
-router.delete('/', (req, res) => {
+router.delete('/:id', (req, res) => {
   const id = req.body.id;
   userService.destroy(id).then(result => res.status(result.status).json(result.data));
 });

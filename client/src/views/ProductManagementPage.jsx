@@ -11,7 +11,7 @@ import ProductCardManagementSmall from "../components/product/management/Product
 import ProductManagementCreate from "../components/product/management/ProductManagementCreate";
 import PageWrapper from "../components/layout/PageWrapper";
 
-function ProductManagement() {
+function ProductManagementPage() {
   const [includeDeleted, setIncludeDeleted] = useState(false);
 
   return (
@@ -88,7 +88,6 @@ function ProductManagement() {
               minHeight: "100%",
               position: { md: "sticky" },
               top: "80px",
-              boxShadow: 1,
             }}
           >
             <ProductManagementCreate />

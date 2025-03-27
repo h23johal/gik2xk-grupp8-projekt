@@ -83,7 +83,7 @@ function Navbar() {
                   display: { xs: "none", md: "inline-flex" },
                 }}
               >
-                YourBrand
+                Grupp 8
               </Button>
 
               <Button

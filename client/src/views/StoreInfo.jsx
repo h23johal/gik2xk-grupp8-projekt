@@ -31,7 +31,6 @@ function StoreInfo() {
         justifyContent: "center",
         alignItems: "center",
         py: 10,
-        px: 20,
       }}
     >
       <Box
