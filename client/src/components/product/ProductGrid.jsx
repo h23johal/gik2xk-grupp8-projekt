@@ -55,7 +55,7 @@ function ProductGrid({ renderContent, includeDeleted = false }) {
         {getSortedProducts().map((product) => (
           <Grid key={product.id}>
             {renderContent ? (
-              renderContent(product, loadProducts) 
+              renderContent(product, loadProducts)
             ) : (
               <ProductCardSmall product={product} />
             )}
