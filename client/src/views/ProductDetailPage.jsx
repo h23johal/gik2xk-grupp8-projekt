@@ -1,16 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { getOne } from "../services/ProductService";
+import { canUserRate } from "../services/RatingService";
 import ProductCardLarge from "../components/product/ProductCardLarge";
 import ReviewCarousel from "../components/review/ReviewCarousel";
 import ReviewAccordion from "../components/review/ReviewAccordion";
 import AddReviewForm from "../components/review/AddReviewForm";
-import { canUserRate } from "../services/RatingService";
 import AddToCart from "../components/cart/AddToCart";
 import Grid from "@mui/material/Grid2";
 import { useAuth } from "../context/AuthContext";
 import { Container, Box, Typography } from "@mui/material";
 import PageWrapper from "../components/layout/PageWrapper";
+import { ReviewProvider } from "../context/ReviewProvider";
 
 function ProductDetailPage() {
   const { id } = useParams();
@@ -22,67 +23,68 @@ function ProductDetailPage() {
   const reviewsAccordionRef = useRef(null);
 
   useEffect(() => {
-    setLoading(true);
-    getOne(id)
-      .then((data) => {
-        setProduct(data);
-        setLoading(false);
-      })
-      .catch((err) => {
+    const fetchProduct = async () => {
+      setLoading(true);
+      try {
+        const prodData = await getOne(id);
+        setProduct(prodData);
+        if (user) canUserRate(id, user.id).then(setCanRate);
+      } catch (err) {
         console.error("Error fetching product:", err);
-        setLoading(false);
-      });
-
-    if (user) {
-      canUserRate(id, user.id).then(setCanRate);
-    }
+      }
+      setLoading(false);
+    };
+    fetchProduct();
   }, [id, user]);
 
   const handleReviewClick = (reviewId) => {
-    setSelectedReviewId(reviewId);
+    const idStr = String(reviewId);
+    setSelectedReviewId(idStr);
     if (reviewsAccordionRef.current) {
       reviewsAccordionRef.current.expandAccordion();
-      setTimeout(() => {
-        reviewsAccordionRef.current.scrollToReview(reviewId);
-      }, 300);
+      setTimeout(() => reviewsAccordionRef.current.scrollToReview(idStr), 300);
     }
   };
+
+  const clearSelectedReview = () => setSelectedReviewId(null);
 
   if (loading) return <div>Loading...</div>;
   if (!product) return <div>Product not found</div>;
 
   return (
-    <PageWrapper>
-      {/* 🔥 Fullbredd Carousel utanför Container */}
-      <Box sx={{ width: "100%", px: { xs: 2, md: 6 }, mb: 4 }}>
-        <ReviewCarousel productId={id} onReviewClick={handleReviewClick} />
-      </Box>
-
-      {/* Centrerat innehåll */}
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Grid container spacing={3}>
-          {/* Produktinfo och Add to Cart sida vid sida */}
-          <Grid item xs={12} md={12}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={7}>
-                <ProductCardLarge product={product} />
-              </Grid>
-              <Grid item xs={12} md={5}>
-                <AddToCart product={product} />
-              </Grid>
-            </Grid>
+   <PageWrapper>
+    <ReviewProvider productId={id}>
+      <Container maxWidth={false}
+        // Dynamically adjust width with breakpoints.
+        sx={{
+          width: {
+            xs: "100%", // on extra-small screens, full width
+            sm: "90%",
+            md: "80%",
+            lg: "70%",
+            xl: "60%",
+          },
+          mx: "auto", // center horizontally
+          my: 2, // vertical margin
+        }}
+      >
+        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} sx={{ p: { xs: 2, md: 3 } }}>
+          <Grid item xs={12}>
+            <ReviewCarousel onReviewClick={handleReviewClick} />
           </Grid>
-
-          {/* Recensioner Accordion */}
+          <Grid item xs={12}>
+            <ProductCardLarge product={product} />
+          </Grid>
+          <Grid item xs={12}>
+            <AddToCart product={product} />
+          </Grid>
           <Grid item xs={12}>
             <ReviewAccordion
-              productId={id}
               ref={reviewsAccordionRef}
               selectedReviewId={selectedReviewId}
+              onReviewNavigated={clearSelectedReview}
             />
           </Grid>
-
-          {/* Recensionsformulär om användaren får recensera */}
           {canRate && (
             <Grid item xs={12}>
               <AddReviewForm productId={id} userId={user.id} />
@@ -90,6 +92,7 @@ function ProductDetailPage() {
           )}
         </Grid>
       </Container>
+    </ReviewProvider>
     </PageWrapper>
   );
 }
