@@ -6,10 +6,10 @@ class Node {
 }
 
 /**
- * Creates a circular linked list.
- * @param {Array} items - Array of items.
- * @param {Function} [comparator] - Optional comparator for sorting.
- * @returns {Node|null} Head node of the circular list or null if empty.
+ * Skapar en cirkulär länkad lista.
+ * @param {Array} items - Uppsättning av föremål.
+ * @param {Function} [comparator] - Valfri komparator för sortering.
+ * @returns {Node|null} Huvudnod för den cirkulära listan eller null om tom.
  */
 export function createCircularList(items, comparator) {
   if (items.length === 0) return null;

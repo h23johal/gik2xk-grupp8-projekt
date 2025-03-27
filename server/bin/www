@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Module dependencies.
+ * Modulberoenden.
  */
 
 var app = require('../app');
@@ -11,14 +11,14 @@ const fs = require("fs");
 const path = require("path");
 
 /**
- * Get port from environment and store in Express.
+ * Få port från miljön och lagra i Express.
  */
 
 var port = normalizePort(process.env.PORT || '5002');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Skapar HTTP server.
  */
 
 async function runSqlFile(filePath) {
@@ -47,16 +47,16 @@ async function runSqlFile(filePath) {
 }
 
 var server = http.createServer(app);
-const FORCE_SYNC = false;
-// const FORCE_SYNC = true; // OBS! Denna kommer att radera all data i databasen
+/* const FORCE_SYNC = false; */
+const FORCE_SYNC = true; // OBS! Denna kommer att radera all data i databasen
 const db = require('../models/');
 db.sequelize
-.query('SET FOREIGN_KEY_CHECKS = 0') //disabeling foreign key checks
+.query('SET FOREIGN_KEY_CHECKS = 0') //inaktivera foreign key checks
 .then(() => {
   return db.sequelize.sync({force: FORCE_SYNC});
 })
 .then(async () => {
-  await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1'); //enabling foreign key checks
+  await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1'); //möjliggör kontroll av foreign key 
   
   console.log('Databasen är synkad');
 
@@ -82,7 +82,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 /**
- * Normalize a port into a number, string, or false.
+ * Normalisera en port till ett nummer, sträng eller falsk.
  */
 
 function normalizePort(val) {
@@ -94,7 +94,7 @@ function normalizePort(val) {
   }
 
   if (port >= 0) {
-    // port number
+    // port nummer
     return port;
   }
 
@@ -102,7 +102,7 @@ function normalizePort(val) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * Händelseavlyssnare för HTTP-server "fel" event.s
  */
 
 function onError(error) {
@@ -114,7 +114,7 @@ function onError(error) {
     ? 'Pipe ' + port
     : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
+  // hantera specifika lyssningsfel med vänliga meddelanden
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
@@ -130,7 +130,7 @@ function onError(error) {
 }
 
 /**
- * Event listener for HTTP server "listening" event.
+ * Händelseavlyssnare för HTTP-server "lyssnar"-händelser.
  */
 
 function onListening() {

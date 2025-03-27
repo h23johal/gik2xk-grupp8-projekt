@@ -1,10 +1,11 @@
+// Custom hook för att använda ReviewContext med valfri fallback om ingen kontext finns
 import { useContext } from 'react';
 import ReviewContext from '../context/ReviewContext';
 
 export function useReviews(fallbackValue = null) {
   const context = useContext(ReviewContext);
   
-  // If no context is found and a fallback is provided, return the fallback
+  // Om inget sammanhang hittas och en reserv tillhandahålls, returnera reservdelen
   if (context === undefined) {
     if (fallbackValue !== null) {
       return fallbackValue;

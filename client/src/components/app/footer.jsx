@@ -1,5 +1,5 @@
 import { Box, Typography, TextField, Button } from "@mui/material";
-
+// Footer komponent
 function Footer() {
   return (
     <Box

@@ -13,14 +13,14 @@ export const CartProvider = ({ children }) => {
   const { user, openAuthModal } = useAuth();
   const [cartItems, setCartItems] = useState([]);
 
-  // 🔹 Ladda varukorgen från backend när användaren loggar in
+  // Ladda varukorgen från backend när användaren loggar in
   useEffect(() => {
     if (user?.id) {
       loadCart(user.id);
     }
   }, [user]);
 
-  // 🔹 Hämta varukorg från backend
+  // Hämta varukorg från backend
   const loadCart = async (userId) => {
     try {
       const cartData = await getCart(userId);
@@ -32,7 +32,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // 🔹 Lägg till produkt i varukorgen
+  // Lägg till produkt i varukorgen
   const addToCartHandler = async (product, amount) => {
     if (!user) {
       openAuthModal();
@@ -41,13 +41,13 @@ export const CartProvider = ({ children }) => {
 
     try {
       await addToCart(user.id, product.id, amount);
-      await loadCart(user.id); // 🔹 Ladda om varukorgen efter att en produkt lagts till
+      await loadCart(user.id); // Ladda om varukorgen efter att en produkt lagts till
     } catch (error) {
       console.error("Kunde inte lägga till i varukorgen:", error);
     }
   };
 
-  // 🔹 Ta bort produkt från varukorgen
+  // Ta bort produkt från varukorgen
   const removeFromCartHandler = async (productId) => {
     if (!user) {
       openAuthModal();
@@ -69,13 +69,13 @@ export const CartProvider = ({ children }) => {
 
     try {
       await removeFromCart(cartId, productId);
-      await loadCart(user.id); // 🔹 Ladda om varukorgen efter borttagning
+      await loadCart(user.id); // Ladda om varukorgen efter borttagning
     } catch (error) {
       console.error("Kunde inte ta bort produkten från varukorgen:", error);
     }
   };
 
-  // 🔹 Uppdatera kvantitet
+  // Uppdatera kvantitet
   const updateQuantityHandler = async (productId, newQuantity) => {
     if (!user) {
       openAuthModal();
@@ -104,7 +104,7 @@ export const CartProvider = ({ children }) => {
   };
 
 
-  // 🔹 Beräkna total antal produkter
+  // Beräkna total antal produkter
   const cartCount = cartItems.reduce((total, item) => total + item.amount, 0);
 
   return (

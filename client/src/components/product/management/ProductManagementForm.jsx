@@ -23,7 +23,9 @@ import {
   Alert,
 } from "@mui/material";
 
+//CRUD formulär för produkter
 function ProductManagementForm() {
+  //global snackbar används för bekräftelsemeddelanden
   const { showSnackbar } = useSnackbar();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -38,9 +40,9 @@ function ProductManagementForm() {
   const [open, setOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-
+  //dialogruta för att bekräfta eller avbryta borttagning
   function onDelete() {
-    setOpen(true); // Open confirmation dialog
+    setOpen(true);
   }
 
   useEffect(() => {

@@ -7,10 +7,11 @@ import SortDropdown from "./SortDropdown";
 function ProductGrid({ renderContent, includeDeleted = false }) {
   const [products, setProducts] = useState([]);
   const [sortOption, setSortOption] = useState("default");
-
+  //funktion för att ladda in produkter, för fetch och refetch
   const loadProducts = () => {
     getAll()
       .then((data) => {
+        //bool för val att filtrera borttagna produkter genom deletedAt rad i produktmodellen
         const filteredProducts = includeDeleted
           ? data
           : data.filter((p) => !p.deletedAt);
@@ -18,11 +19,11 @@ function ProductGrid({ renderContent, includeDeleted = false }) {
       })
       .catch((err) => console.error("Error fetching products:", err));
   };
-
+  //ladda in produkt baserat på filter
   useEffect(() => {
     loadProducts();
   }, [includeDeleted]);
-
+  //sortering
   const handleSortChange = (event) => {
     setSortOption(event.target.value);
   };
@@ -52,10 +53,10 @@ function ProductGrid({ renderContent, includeDeleted = false }) {
     <>
       <SortDropdown value={sortOption} onChange={handleSortChange} />
       <Grid container spacing={2}>
-        {getSortedProducts().map((product) => (
+        {getSortedProducts().map((product) => ( //rendera baserat på sortering
           <Grid key={product.id}>
             {renderContent ? (
-              renderContent(product, loadProducts)
+              renderContent(product, loadProducts) //Rendera baserat på filtrering
             ) : (
               <ProductCardSmall product={product} />
             )}

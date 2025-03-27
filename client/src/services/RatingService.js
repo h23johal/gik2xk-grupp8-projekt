@@ -1,5 +1,6 @@
 import axios from "./api";
 
+// Hämta alla betyg
 export async function getAll() {
   try {
     const response = await axios.get("/ratings");
@@ -14,6 +15,7 @@ export async function getAll() {
   }
 }
 
+// Hämta ett enskilt betyg med ID
 export async function getOne(id) {
   try {  
     const response = await axios.get(`/ratings/${id}`);
@@ -28,16 +30,18 @@ export async function getOne(id) {
   } 
 }
 
+// Hämta alla betyg för en viss produkt
 export async function getProductRatings(productId) {
   try {  
     const response = await axios.get(`/ratings/products/${productId}/ratings`);
     return response.data;
   } catch (e) {
-    console.error('Error fetching product ratings:', e);
+    console.error("Kunde inte hämta produktbetyg:", e);
     return { ratings: [], avgScore: 0 };
   } 
 }
 
+// Kontrollera om en användare får betygsätta en produkt
 export async function canUserRate(productId, userId) {
   try {
     const response = await axios.get(`/ratings/products/${productId}/can-rate`, {
@@ -51,16 +55,18 @@ export async function canUserRate(productId, userId) {
   }
 }
 
+// Hämta recensioner för en viss produkt
 export async function getProductReviews(productId) {
   try {  
     const response = await axios.get(`/ratings/products/${productId}/reviews`);
     return response.data;
   } catch (e) {
-    console.error('Error fetching product reviews:', e);
+    console.error("Kunde inte hämta recensioner:", e);
     return { reviews: [] };
   } 
 }
 
+// Skicka nytt betyg/recension
 export async function addRating(productId, userId, score, comment, anonymous = false) {
   try {
     const response = await axios.post(`/ratings/products/${productId}/addRating`, {

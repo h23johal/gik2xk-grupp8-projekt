@@ -12,11 +12,13 @@ import ProductManagementCreate from "../components/product/management/ProductMan
 import PageWrapper from "../components/layout/PageWrapper";
 
 function ProductManagementPage() {
+  // State: visa/dölj raderade produkter
   const [includeDeleted, setIncludeDeleted] = useState(false);
 
   return (
     <PageWrapper>
       <Container maxWidth="lg" sx={{ py: 4 }}>
+        {/* Sidrubrik */}
         <Typography
           variant="h4"
           component="h1"
@@ -31,6 +33,7 @@ function ProductManagementPage() {
           Product Management
         </Typography>
 
+        {/* Underrubrik */}
         <Typography
           variant="body1"
           sx={{
@@ -44,20 +47,21 @@ function ProductManagementPage() {
           Select a product to manage its details.
         </Typography>
 
-      <Box sx={{ display: "flex", mt: 1 }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={includeDeleted}
-              onChange={(e) => setIncludeDeleted(e.target.checked)}
-              color="primary"
-            />
-          }
-          label="Include deleted products"
-        />
-      </Box>
+        {/* Checkbox: inkludera raderade produkter */}
+        <Box sx={{ display: "flex", mt: 1 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={includeDeleted}
+                onChange={(e) => setIncludeDeleted(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="Include deleted products"
+          />
+        </Box>
 
-        {/* Layout: Grid + Sidebar */}
+        {/* Layout: produktlista + sidopanel */}
         <Box
           sx={{
             display: "flex",
@@ -65,7 +69,7 @@ function ProductManagementPage() {
             gap: 3,
           }}
         >
-          {/* Product Grid */}
+          {/* Produktgrid */}
           <Box sx={{ flex: 1 }}>
             <ProductGrid
               includeDeleted={includeDeleted}
@@ -78,7 +82,7 @@ function ProductManagementPage() {
             />
           </Box>
 
-          {/* Sidebar - Product Form */}
+          {/* Sidopanel för att skapa/redigera produkt */}
           <Box
             sx={{
               width: { xs: "100%", md: "320px" },

@@ -1,6 +1,7 @@
 const db = require("../models");
 const { createOkObjectSuccess, createResponseError, createResponseMessage } = require("../helpers/responseHelper");
 
+//hämtar alla produkteer
 async function getAll() {
   try {
     const products = await db.Product.findAll({ paranoid: false });
@@ -10,6 +11,7 @@ async function getAll() {
   }
 }
 
+//hämtar en produkt baserat på id
 async function getById(id) {
   try {
     const product = await db.Product.findByPk(id);
@@ -20,6 +22,7 @@ async function getById(id) {
   }
 }
 
+// återställer en tidigare raderad produkt
 async function restore(id) {
   try {
     const product = await db.Product.findByPk(id, { paranoid: false });
@@ -31,6 +34,7 @@ async function restore(id) {
   }
 }
 
+//skapar en ny produkt
 async function create(productData) {
   try {
     const product = await db.Product.create(productData);
@@ -44,14 +48,15 @@ async function create(productData) {
   }
 }
 
+//uppdaterar produkt
 async function update(productData) {
   try {
     const product = await db.Product.findByPk(productData.id);
     if (!product) return createResponseError(404, "Produkt ej hittad");
 
-    await product.update(productData); // Triggar validering automatiskt
+    await product.update(productData);
 
-    return createOkObjectSuccess(product); // eller createResponseMessage om du hellre vill
+    return createOkObjectSuccess(product);
   } catch (error) {
     if (error.name === "SequelizeValidationError") {
       const message = error.errors.map(e => e.message).join(", ");
@@ -61,6 +66,7 @@ async function update(productData) {
   }
 }
 
+// Ta bort een produkt baserat på id
 async function destroy(id) {
   try {
     const deleted = await db.Product.destroy({ where: { id } });

@@ -7,7 +7,8 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "react-router-dom";
-import Overlay from "../../Overlay"; // Import reusable Overlay
+//hemmagjord overlay komponent
+import Overlay from "../../Overlay";
 import RestoreIcon from "@mui/icons-material/Restore";
 import { restoreProduct } from "../../../services/ProductService";
 import { useSnackbar } from "../../../context/SnackbarContext";
@@ -30,8 +31,9 @@ function ProductCardManagementSmall({ product, refetch }) {
     <Card
       onClick={(e) => e.stopPropagation()}
       sx={{
-        width: 235,               // 👈 Fast bredd
-        height: 250,              // 👈 Fast höjd
+        //fast höjd och bredd för rutorna
+        width: 235,
+        height: 250,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -48,6 +50,7 @@ function ProductCardManagementSmall({ product, refetch }) {
       <Overlay
         overlayContent={
           product.deletedAt ? (
+            //Återställningsknapp om produkten är "borttagen"
             <IconButton
               onClick={handleRestore}
               sx={{
@@ -61,6 +64,7 @@ function ProductCardManagementSmall({ product, refetch }) {
               <RestoreIcon sx={{ fontSize: 50 }} />
             </IconButton>
           ) : (
+            // annars, redigera-knapp
             <IconButton
               component={Link}
               to={`/admin/${product.id}`}

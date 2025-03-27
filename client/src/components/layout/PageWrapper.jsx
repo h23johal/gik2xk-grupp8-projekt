@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-
+//wrapper för konsekvent höjd, centrering etc
 const PageWrapper = ({ children }) => {
   return (
     <Box

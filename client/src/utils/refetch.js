@@ -1,3 +1,4 @@
+// Hook som ger ett refresh-key och en trigger för att refetcha data
 import { useState, useCallback } from 'react';
 
 export function useRefetchTrigger() {

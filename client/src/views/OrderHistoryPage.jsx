@@ -5,11 +5,14 @@ import { Container, Typography } from "@mui/material";
 import OrderCard from "../components/product/OrderCard";
 import PageWrapper from "../components/layout/PageWrapper";
 
-
 const OrderHistoryPage = () => {
+  // Hämta inloggad användare
   const { user } = useAuth();
+  
+  // State: användarens orderhistorik
   const [orders, setOrders] = useState([]);
 
+  // Hämta orderhistorik när användaren ändras
   useEffect(() => {
     if (user?.id) {
       getOrderHistory(user.id).then(setOrders);
@@ -19,13 +22,16 @@ const OrderHistoryPage = () => {
   return (
     <PageWrapper>
       <Container maxWidth="lg" sx={{ py: 4 }}>
+        {/* Sidrubrik */}
         <Typography variant="h4" gutterBottom>
           Orderhistorik
         </Typography>
 
+        {/* Visa meddelande om inga beställningar finns */}
         {orders.length === 0 ? (
           <Typography>Du har inga tidigare beställningar.</Typography>
         ) : (
+          // Visa orderkort om det finns beställningar
           orders.map((order) => <OrderCard key={order.id} order={order} />)
         )}
       </Container>

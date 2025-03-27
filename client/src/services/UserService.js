@@ -1,5 +1,6 @@
 import axios from "./api";
 
+// Hämta alla användare
 export async function getAll() {
   try {
     const response = await axios.get("/users");
@@ -10,6 +11,7 @@ export async function getAll() {
   }
 }
 
+// Hämta enskild användare via ID
 export async function getOne(id) {
   try {
     const response = await axios.get(`/users/${id}`);
@@ -20,6 +22,7 @@ export async function getOne(id) {
   }
 }
 
+// Skapa ny användare
 export async function createUser(first_name, last_name, email, password) {
   try {
     const response = await axios.post("/users", { first_name, last_name, email, password });
@@ -30,6 +33,7 @@ export async function createUser(first_name, last_name, email, password) {
   }
 }
 
+// Logga in användare
 export async function loginUser(email, password) {
   try {
     const response = await axios.post("/auth/login", { email, password });
@@ -40,6 +44,7 @@ export async function loginUser(email, password) {
   }
 }
 
+// Logga ut användare
 export async function logoutUser() {
   try {
     await axios.post("/auth/logout");
@@ -49,6 +54,7 @@ export async function logoutUser() {
   }
 }
 
+// Uppdatera användarinformation
 export async function updateUser(userId, userData) {
   try {
     const response = await axios.put(`/users/${userId}`, userData);
@@ -59,6 +65,7 @@ export async function updateUser(userId, userData) {
   }
 }
 
+// Radera användare
 export async function destroy(userId) {
   try {
     const response = await axios.delete(`/users/${userId}`);

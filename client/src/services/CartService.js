@@ -1,5 +1,6 @@
 import axios from "./api";
 
+// Hämta användarens varukorg
 export async function getCart(user_id) {
   try {
     const response = await axios.get(`/cart/${user_id}`);
@@ -10,6 +11,7 @@ export async function getCart(user_id) {
   }
 }
 
+// Lägg till produkt i varukorgen
 export async function addToCart(user_id, product_id, amount) {
   try {
     const response = await axios.post(`/cart/addProduct`, { user_id, product_id, amount });
@@ -20,17 +22,18 @@ export async function addToCart(user_id, product_id, amount) {
   }
 }
 
+// Ta bort produkt från varukorgen
 export async function removeFromCart(cart_id, product_id) {
-    try {
-        const response = await axios.delete(`/cart/removeProduct`, { data: { cart_id, product_id } });
-        return response.data;
-    } catch (e) {
-        console.error("Kunde inte ta bort produkt från varukorgen:", e);
-        return null;
-    }
+  try {
+    const response = await axios.delete(`/cart/removeProduct`, { data: { cart_id, product_id } });
+    return response.data;
+  } catch (e) {
+    console.error("Kunde inte ta bort produkt från varukorgen:", e);
+    return null;
+  }
 }
 
-
+// Uppdatera antal av produkt i varukorgen
 export async function updateCart(cartId, productId, amount) {
   try {
     const response = await axios.put("/cart/updateProduct", { cart_id: cartId, product_id: productId, amount });
@@ -41,6 +44,7 @@ export async function updateCart(cartId, productId, amount) {
   }
 }
 
+// Slutför köp
 export async function checkoutCart(user_id) {
   try {
     const response = await axios.post("/cart/checkout", { user_id });
@@ -51,6 +55,7 @@ export async function checkoutCart(user_id) {
   }
 }
 
+// Hämta användarens orderhistorik
 export async function getOrderHistory(user_id) {
   try {
     const response = await axios.get(`/cart/history/${user_id}`);

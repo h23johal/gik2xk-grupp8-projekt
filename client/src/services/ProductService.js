@@ -1,32 +1,38 @@
 import axios from "./api";
 
-export async function getAll( endpoint = "/products") {
+// Hämta alla produkter (standard-endpoint)
+export async function getAll(endpoint = "/products") {
   const response = await axios.get(endpoint);
 
   if (response.status === 200) { return response.data; }
   else {
     console.log(response);
-    return [];;
+    return [];
   }
 }
+
+// Hämta enskild produkt med ID
 export async function getOne(id) {
   const response = await axios.get(`/products/${id}`);
   if (response.status === 200) { return response.data; }
   else {
     console.log(response);
-    return [];;
+    return [];
   }
 }
+
+// Skapa ny produkt
 export async function createProduct(product) {
   try {
     const response = await axios.post("/products", product);
     if (response.status === 200) return response.data;
   } catch (e) {
     const message = e?.response?.data?.error || "Ett fel uppstod vid skapande.";
-    throw new Error(message); // skickas till komponenten
+    throw new Error(message); // skickas till komponent
   }
 }
 
+// Uppdatera befintlig produkt
 export async function updateProduct(product) {
   try {
     const response = await axios.put("/products", product);
@@ -37,6 +43,7 @@ export async function updateProduct(product) {
   }
 }
 
+// Ta bort produkt
 export async function removeProduct(id) {
   try {
     const response = await axios.delete('/products', { data: { id } });
@@ -50,6 +57,7 @@ export async function removeProduct(id) {
   }
 }
 
+// Återställ tidigare borttagen produkt
 export async function restoreProduct(id) {
   try {
     const response = await axios.put(`/products/${id}/restore`, { id, deletedAt: null });

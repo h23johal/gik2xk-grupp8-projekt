@@ -8,7 +8,7 @@ function HomePage() {
   return (
     <PageWrapper>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        {/* Intro */}
+        {/* Sidhuvud med tagline */}
         <Box sx={{ textAlign: "center", mb: 4 }}>
           <Typography variant="h4" gutterBottom>
             Engineered Beyond Limits
@@ -18,12 +18,12 @@ function HomePage() {
           </Typography>
         </Box>
 
-        {/* Produktkort */}
+        {/* Produktgrid */}
         <ProductGrid
           renderContent={(product) => <ProductCardSmall product={product} />}
         />
 
-        {/* Info-sektion */}
+        {/* Sektion: värdeerbjudande */}
         <Box
           sx={{
             display: "flex",
@@ -34,6 +34,7 @@ function HomePage() {
             mt: 5,
           }}
         >
+          {/* Kvalitetsbeskrivning */}
           <Box sx={{ flex: "1 1 300px" }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 300, mb: 2 }}>
               Exceptional Quality
@@ -47,6 +48,7 @@ function HomePage() {
             </Typography>
           </Box>
 
+          {/* Servicebeskrivning */}
           <Box sx={{ flex: "1 1 300px" }}>
             <Typography variant="h5" gutterBottom sx={{ fontWeight: 300, mb: 2 }}>
               Lifetime Service
@@ -55,12 +57,12 @@ function HomePage() {
               variant="body1"
               sx={{ color: "text.secondary", lineHeight: 1.8, mb: 2 }}
             >
-              You're not just acquiring a device—you’re gaining a lifelong relationship.
+              You're not just acquiring a device—you're gaining a lifelong relationship.
             </Typography>
           </Box>
         </Box>
 
-        {/* Store info längst ner i sidan */}
+        {/* Sektion: butikens egenskaper */}
         <Box sx={{ mt: 6 }}>
           <StoreInfo />
         </Box>

@@ -1,3 +1,4 @@
+// En hook för att hantera svep-scroll med mus- och touch-händelser
 import { useState, useRef } from "react";
 
 export function useSwipeScroll({ flowScroll, onMove, direction = "x" } = {}) {

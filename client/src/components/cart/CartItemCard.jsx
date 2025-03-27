@@ -67,7 +67,7 @@ const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
               >
                 <RemoveCircleOutlineIcon />
               </IconButton>
-
+              {/* Kvantitet */}
               <TextField
                 type="number"
                 value={item.amount}

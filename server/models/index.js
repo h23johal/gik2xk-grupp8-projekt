@@ -1,4 +1,5 @@
 'use strict';
+// Importera Sequelize och datatyper
 const { Sequelize, DataTypes } = require('sequelize');
 
 const fs = require('fs');
@@ -6,38 +7,35 @@ const path = require('path');
 // const Sequelize = require('sequelize');
 const process = require('process');
 const { on } = require( 'events' );
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
-const db = {};
+const basename = path.basename(__filename); // Filnamnet för den aktuella filen
+const env = process.env.NODE_ENV || 'development'; // Använd miljövariabel eller default till 'development'
+const config = require(__dirname + '/../config/config.json')[env]; // Hämta databasinställningar från konfigurationsfilen
+const db = {}; // Objekt för att lagra databasmodeller
 
 let sequelize;
+// Skapa en ny Sequelize-instans beroende på om en miljövariabel används
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
+// Läser in alla modellfiler i denna katalog och laddar dem i db-objektet
 fs
   .readdirSync(__dirname)
   .filter(file => {
     return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
+      file.indexOf('.') !== 0 && // Ignorera dolda filer
+      file !== basename && // Ignorera denna fil (index.js)
+      file.slice(-3) === '.js' && // Endast .js-filer
+      file.indexOf('.test.js') === -1 // Ignorera testfiler
     );
   })
   .forEach(file => {
+    // Importera varje modell och koppla den till Sequelize-instansen
     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
     db[model.name] = model;
   });
-
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
 
 // Koppla samman modeller om associationer definieras
 Object.keys(db).forEach(modelName => {
@@ -72,8 +70,9 @@ db.CartRow.belongsTo(db.Product, { foreignKey: 'product_id', as: 'product' });
 db.Product.hasMany(db.Rating, { foreignKey: 'product_id', as: 'ratings', onDelete: 'CASCADE' });
 db.Rating.belongsTo(db.Product, { foreignKey: 'product_id', as: 'product' });
 
-
+// Lagra Sequelize-instansen och klassen i db-objektet
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+// Exportera db-objektet för att kunna användas i resten av applikationen
 module.exports = db;

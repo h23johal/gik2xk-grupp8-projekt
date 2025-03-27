@@ -22,7 +22,9 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 
+//navbar component
 function Navbar() {
+
   const { cartCount } = useCart();
   const { user, logout, openAuthModal } = useAuth();
   const navigate = useNavigate();
@@ -105,7 +107,7 @@ function Navbar() {
               </Button>
             </Box>
 
-            {/* Högersida: Nav-knappar (visa endast på md och uppåt) */}
+            {/* Högersida: Nav-knappar */}
             <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 1 }}>
               {user?.id === 1 && (
                 <Button component={Link} to="/admin" sx={navButtonStyle}>

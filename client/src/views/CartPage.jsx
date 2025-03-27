@@ -7,7 +7,7 @@ import {
   Container,
 } from "@mui/material";
 
-// Imported components
+// Importerade komponenter
 import EmptyCartMessage from "../components/cart/EmptyCartMessage";
 import ShippingNotice from "../components/cart/ShippingNotice";
 import CartItemCard from "../components/cart/CartItemCard";

@@ -8,7 +8,7 @@ export function ReviewProvider({ children, productId }) {
   const [loading, setLoading] = useState(true);
   const [refreshKey, triggerRefetch] = useRefetchTrigger();
 
-  // Fetch reviews when component mounts or dependencies change
+  // Hämta recensioner när komponentmontering eller beroenden ändras
   useEffect(() => {
     const fetchReviews = async () => {
       setLoading(true);

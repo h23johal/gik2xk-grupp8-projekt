@@ -14,15 +14,15 @@ export function createFlowScroll({
   let momentumStartTime = null;
   let refreshRate = 60;
   
-  // Tuned thresholds for a smooth experience
+  // Justerade trösklar för en smidig upplevelse
   const velocityStopThreshold = maxVelocity * 0.08;
   const velocitySnapThreshold = maxVelocity * 0.15;
   const velocityCap = maxVelocity * 1.5;
   
-  // Acceleration factor for smoother starts
+  // Accelerationsfaktor för mjukare starter
   const accelerationFactor = 0.15;
 
-  // Detect refresh rate for consistent experience across devices
+  // Upptäck uppdateringsfrekvens för konsekvent upplevelse på alla enheter
   const detectRefreshRate = () => {
     if (window.requestAnimationFrame) {
       let rafId;
@@ -63,31 +63,31 @@ export function createFlowScroll({
     const dt = (now - lastTime) / 1000;
     lastTime = now;
     
-    // Gradually approach the target velocity
+    // Närma dig gradvis målhastigheten
     if (Math.abs(velocity - targetVelocity) > 0.0001) {
       velocity += (targetVelocity - velocity) * accelerationFactor;
     }
     
-    // Scale movement based on refresh rate
+    // Skalrörelse baserat på uppdateringsfrekvens
     offset += velocity * dt * refreshRate;
     
-    // Get alignment information from the consumer
+    // Få information om anpassning från konsumenten
     const alignmentInfo = alignmentCalculator ? alignmentCalculator(offset) : {
       alignedOffset: offset,
       distanceToAligned: 0,
       alignmentThreshold: 10
     };
     
-    // Progressive deceleration based on proximity to alignment point
+    // Progressiv retardation baserad på närhet till inriktningspunkten
     const proximityFactor = Math.min(1, alignmentInfo.distanceToAligned / 
                                       (alignmentInfo.alignmentThreshold * 5));
     
-    // Apply deceleration with proximity awareness
+    // Tillämpa retardation med närhetsmedvetenhet
     const effectiveDeceleration = deceleration * (0.8 + 0.4 * (1 - proximityFactor));
     velocity *= Math.exp(-effectiveDeceleration * dt * 1000);
     targetVelocity *= Math.exp(-effectiveDeceleration * dt * 1000);
     
-    // Prevent tiny movements
+    // Förhindra små rörelser
     if (Math.abs(velocity) < velocityStopThreshold) {
       velocity = 0;
       targetVelocity = 0;
@@ -95,13 +95,13 @@ export function createFlowScroll({
   
     updateOffset(offset);
     
-    // Enhanced snapping logic
+    // Förbättrad snapplogik
     if (
       (Math.abs(velocity) < velocitySnapThreshold && 
        alignmentInfo.distanceToAligned < alignmentInfo.alignmentThreshold) || 
       now - momentumStartTime >= maxMomentumDuration
     ) {
-      // Smooth snap animation
+      // Smidig snapanimering
       const snapStartTime = now;
       const snapStartOffset = offset;
       const snapDuration = 150; // ms
@@ -147,14 +147,14 @@ export function createFlowScroll({
   function move(delta) {
     offset += delta;
     
-    // Set target velocity based on movement, but with a gentler approach
+    // Ställ in målhastighet baserat på rörelse, men med ett mjukare tillvägagångssätt
     targetVelocity = delta * 0.05;
     
     updateOffset(offset);
   }
 
   function end() {
-    // Get alignment information from the consumer
+    // Få information om anpassning från konsumenten
     const alignmentInfo = alignmentCalculator ? alignmentCalculator(offset) : {
       alignedOffset: offset,
       distanceToAligned: 0,
@@ -163,7 +163,7 @@ export function createFlowScroll({
       prevAlignedOffset: offset
     };
     
-    // If barely moved, just snap to position
+    // Om den knappt rör sig, snäpp bara till position
     if (Math.abs(targetVelocity) < velocitySnapThreshold * 0.5 && 
         alignmentInfo.distanceToAligned < alignmentInfo.alignmentThreshold * 0.8) {
       offset = alignmentInfo.alignedOffset;
@@ -173,22 +173,22 @@ export function createFlowScroll({
       return;
     }
     
-    // Determine directional intent for meaningful movements
+    // Bestäm riktad avsikt för meningsfulla rörelser
     const directionalIntent = Math.sign(targetVelocity);
     
-    // Select target based on intent and velocity
+    // Välj mål baserat på avsikt och hastighet
     let targetOffset;
     if (Math.abs(targetVelocity) > velocitySnapThreshold && 
         alignmentInfo.distanceToAligned > alignmentInfo.alignmentThreshold * 1.5) {
-      // Clear directional intent detected
+      // Tydlig riktningsavsikt upptäckt
       targetOffset = directionalIntent > 0 ? 
                      alignmentInfo.nextAlignedOffset : 
                      alignmentInfo.prevAlignedOffset;
     } else {
-      // For small movements, use predicted position
+      // För små rörelser, använd förutspådd position
       const predictedStopOffset = offset + targetVelocity / deceleration;
       
-      // Find closest alignment point to predicted position
+      // Hitta närmaste inriktningspunkt till förutsagd position
       const distToNext = Math.abs(predictedStopOffset - alignmentInfo.nextAlignedOffset);
       const distToCurrent = Math.abs(predictedStopOffset - alignmentInfo.alignedOffset);
       const distToPrev = Math.abs(predictedStopOffset - alignmentInfo.prevAlignedOffset);
@@ -202,12 +202,12 @@ export function createFlowScroll({
       }
     }
     
-    // Set a reduced velocity to smoothly move to target
+    // Ställ in en reducerad hastighet för att smidigt flytta till målet
     const distance = targetOffset - offset;
     velocity = distance * deceleration * 0.3;
     targetVelocity = velocity;
     
-    // Cap velocity for consistency
+    // Cap-hastighet för konsistens
     velocity = Math.sign(velocity) * Math.min(Math.abs(velocity), velocityCap);
     targetVelocity = velocity;
   

@@ -1,6 +1,7 @@
 const db = require("../models");
 const { createOkObjectSuccess, createResponseError, createResponseMessage } = require("../helpers/responseHelper");
 
+// Hämtar alla varukorgar
 async function getAll() {
   try {
     const carts = await db.Cart.findAll();
@@ -10,6 +11,7 @@ async function getAll() {
   }
 }
 
+// Hämtar een varukorg på id
 async function getById(id) {
   try {
     const cart = await db.Cart.findByPk(id);
@@ -20,6 +22,7 @@ async function getById(id) {
   }
 }
 
+//Hämtar aktuell varukorg för en användare (skapar en ny om ingen obetald finns)
 async function getCart(user_id) {
     try {
         console.log(`Fetching cart with user_id: ${user_id}`);
@@ -32,7 +35,7 @@ async function getCart(user_id) {
                 as: 'rows', 
                 include: [{ model: db.Product, as: 'product' }] 
             }],
-            order: [['createdAt', 'DESC']], // Ifall det finns flera, hämta den senaste
+            order: [['createdAt', 'DESC']], 
         });
 
         // Om ingen obetald varukorg finns, skapa en ny
@@ -58,7 +61,7 @@ async function getCart(user_id) {
     }
 }
 
-
+// Lägger till en produkt i varukorgen
 async function addToCart(user_id, product_id, amount) {
   try {
     const [cart] = await db.Cart.findOrCreate({
@@ -82,6 +85,7 @@ async function addToCart(user_id, product_id, amount) {
   }
 }
 
+//Skapar en ny varukorg
 async function create(cart) {
   try {
     const newCart = await db.Cart.create(cart);
@@ -91,6 +95,7 @@ async function create(cart) {
   }
 }
 
+//Uppdaterar en varukorgsrad
 async function update(cartData) {
   try {
     const { cart_id, product_id, amount } = cartData;
@@ -108,6 +113,7 @@ async function update(cartData) {
   }
 }
 
+// Raderar en varukorg
 async function destroy(id) {
   try {
     const deleted = await db.Cart.destroy({ where: { id } });
@@ -118,6 +124,7 @@ async function destroy(id) {
   }
 }
 
+// Tar bort en produkt från varukorgen
 async function removeFromCart(cart_id, product_id) {
   try {
     const deleted = await db.CartRow.destroy({
@@ -132,6 +139,7 @@ async function removeFromCart(cart_id, product_id) {
   }
 }
 
+// Checkar ut varukorgen genom att markera den som betald
 async function checkoutCart(user_id) {
     try {
         // Hämta den senaste obetalda varukorgen
@@ -154,7 +162,7 @@ async function checkoutCart(user_id) {
 
         // Markera varukorgen som betald
         await db.Cart.update(
-            { paid: 1, updated_at: new Date() }, // Sätt `paid` till `1` (true)
+            { paid: 1, updated_at: new Date() },
             { where: { id: cart.id } }
         );
 
@@ -166,7 +174,7 @@ async function checkoutCart(user_id) {
 }
 
 
-
+// Hämtar orderhistorik för en användare
 async function getOrderHistory(user_id) {
   try {
     const orders = await db.Cart.findAll({
@@ -181,6 +189,7 @@ async function getOrderHistory(user_id) {
   }
 }
 
+// Kontrollerar om en användare har köpt en specifik produkt
 async function userHasPurchased(user_id, product_id) {
   try {
     const result = await db.Cart.findOne({

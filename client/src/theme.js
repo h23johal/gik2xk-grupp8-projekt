@@ -1,13 +1,15 @@
 import { createTheme } from '@mui/material/styles';
 
+// Anpassat MUI-tema med pastellfärgpalett, responsiva brytpunkter 
+// och stilade komponenter för ett enhetligt designsystem
 const theme = createTheme({
   breakpoints: {
     values: {
-      xs: 0,      // mobile devices
-      sm: 640,    // tablets (40rem if your base font-size is 16px)
-      md: 768,    // small laptops (48rem)
-      lg: 992,    // desktops (62rem)
-      xl: 1200,   // large screens (75rem)
+      xs: 0,      // mobil
+      sm: 640,    // surfplattor (40rem vid 16px basstorlek)
+      md: 768,    // små laptops (48rem)
+      lg: 992,    // stationära (62rem)
+      xl: 1200,   // stora skärmar (75rem)
     },
   },
   palette: {

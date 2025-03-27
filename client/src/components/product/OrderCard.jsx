@@ -12,6 +12,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Link } from "react-router-dom";
 
 const OrderCard = ({ order }) => {
+  //kontrollera om ordern har borttagna produkter, dvs om deletedAt i produkten fältet ej är tomt
   const hasDeletedProducts = order.rows.some(
     (row) => row.product?.deletedAt !== null
   );
@@ -25,7 +26,7 @@ const OrderCard = ({ order }) => {
         backgroundColor: "rgba(255,255,255,0.7)",
         backdropFilter: "blur(6px)",
         overflow: "hidden",
-        "&:before": { display: "none" }, // Ta bort linjen ovanför accordion
+        "&:before": { display: "none" },
         transition: "all 0.2s ease-in-out",
         "&:hover": {
           boxShadow: 4,
@@ -33,6 +34,7 @@ const OrderCard = ({ order }) => {
       }}
     >
       <AccordionSummary
+      //expandera för att visa produkter i ordern
         expandIcon={<ExpandMoreIcon />}
         sx={{
           backgroundColor: "#f5f5f5",
@@ -81,6 +83,7 @@ const OrderCard = ({ order }) => {
             />
             <Box>
               <Typography
+                //länka till  produkten
                 component={Link}
                 to={`/products/${row.product?.id}`}
                 variant="subtitle1"
@@ -99,8 +102,9 @@ const OrderCard = ({ order }) => {
             </Box>
           </Paper>
         ))}
-
+        
         {hasDeletedProducts && (
+          //om någon av produkterna är borttagna, visa text
           <Typography variant="body2" color="error">
             Denna order innehåller en eller flera produkter som har utgått.
           </Typography>
