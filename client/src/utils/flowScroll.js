@@ -1,7 +1,7 @@
 export function createFlowScroll({
   initialOffset = 0,
   updateOffset,
-  deceleration = 0.0004,
+  deceleration = 0.04,
   maxMomentumDuration = 800,
   maxVelocity = 0.01,
   alignmentCalculator = null
