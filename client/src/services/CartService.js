@@ -6,7 +6,7 @@ export async function getCart(user_id) {
     const response = await axios.get(`/cart/${user_id}`);
     return response.data;
   } catch (e) {
-    console.error("Kunde inte hämta varukorg:", e);
+    console.error("Could not fetch cart:", e);
     return null;
   }
 }
@@ -17,7 +17,7 @@ export async function addToCart(user_id, product_id, amount) {
     const response = await axios.post(`/cart/addProduct`, { user_id, product_id, amount });
     return response.data;
   } catch (e) {
-    console.error("Kunde inte lägga till produkt i varukorgen:", e);
+    console.error("Could not add product to cart:", e);
     return null;
   }
 }
@@ -28,7 +28,7 @@ export async function removeFromCart(cart_id, product_id) {
     const response = await axios.delete(`/cart/removeProduct`, { data: { cart_id, product_id } });
     return response.data;
   } catch (e) {
-    console.error("Kunde inte ta bort produkt från varukorgen:", e);
+    console.error("Could not remove product from cart:", e);
     return null;
   }
 }
@@ -39,7 +39,7 @@ export async function updateCart(cartId, productId, amount) {
     const response = await axios.put("/cart/updateProduct", { cart_id: cartId, product_id: productId, amount });
     return response.data;
   } catch (error) {
-    console.error("Kunde inte uppdatera varukorgen:", error);
+    console.error("Could not update cart:", error);
     return null;
   }
 }
@@ -50,7 +50,7 @@ export async function checkoutCart(user_id) {
     const response = await axios.post("/cart/checkout", { user_id });
     return response.data;
   } catch (e) {
-    console.error("Checkout misslyckades:", e);
+    console.error("Checkout failed:", e);
     return null;
   }
 }
@@ -61,7 +61,7 @@ export async function getOrderHistory(user_id) {
     const response = await axios.get(`/cart/history/${user_id}`);
     return response.data;
   } catch (e) {
-    console.error("Kunde inte hämta orderhistorik:", e);
+    console.error("Could not fetch order history:", e);
     return null;
   }
 }

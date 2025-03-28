@@ -45,14 +45,14 @@ const OrderCard = ({ order }) => {
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <Typography variant="h6">Order #{order.id}</Typography>
           <Typography variant="body2" color="text.secondary">
-            Beställd: {new Date(order.updatedAt).toLocaleDateString()}
+            Order: {new Date(order.updatedAt).toLocaleDateString()}
           </Typography>
         </Box>
       </AccordionSummary>
 
       <AccordionDetails sx={{ px: 3, pb: 3 }}>
         <Typography variant="body2" sx={{ mb: 2 }}>
-          Produkter:
+          Products:
         </Typography>
 
         {order.rows.map((row) => (
@@ -97,7 +97,7 @@ const OrderCard = ({ order }) => {
                 {row.product?.title}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {row.amount} st – {row.product?.price} kr
+                {row.amount} pcs – {"$" +row.product?.price}
               </Typography>
             </Box>
           </Paper>
@@ -106,7 +106,7 @@ const OrderCard = ({ order }) => {
         {hasDeletedProducts && (
           //om någon av produkterna är borttagna, visa text
           <Typography variant="body2" color="error">
-            Denna order innehåller en eller flera produkter som har utgått.
+            This order contains one or more products that are no longer available.
           </Typography>
         )}
       </AccordionDetails>

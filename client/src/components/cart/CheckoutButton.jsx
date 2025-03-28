@@ -54,21 +54,21 @@ const CheckoutButton = () => {
         onClick={() => setOpen(true)}
         disabled={cartItems.length === 0}
       >
-        Genomför köp
+        Complete Purchase
       </Button>
 
       {/* Checkout bekräftelse */}
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Bekräfta köp</DialogTitle>
+        <DialogTitle>Confirm Purchase</DialogTitle>
         <DialogContent>
           <Typography>
-            Är du säker på att du vill genomföra ditt köp?
+          Are you sure you want to complete your purchase?
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Avbryt</Button>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
           <Button onClick={handleCheckout} color="primary" disabled={loading}>
-            {loading ? "Behandlar..." : "Bekräfta köp"}
+            {loading ? "Processing..." : "Confirm Purchase"}
           </Button>
         </DialogActions>
       </Dialog>

@@ -28,7 +28,7 @@ export const CartProvider = ({ children }) => {
         setCartItems(cartData);
       }
     } catch (error) {
-      console.error("Kunde inte hämta varukorg:", error);
+      console.error("Could not fetch cart:", error);
     }
   };
 
@@ -43,7 +43,7 @@ export const CartProvider = ({ children }) => {
       await addToCart(user.id, product.id, amount);
       await loadCart(user.id); // Ladda om varukorgen efter att en produkt lagts till
     } catch (error) {
-      console.error("Kunde inte lägga till i varukorgen:", error);
+      console.error("Could not add to cart:", error);
     }
   };
 
@@ -57,13 +57,13 @@ export const CartProvider = ({ children }) => {
     // Hitta cart_id från cartItems
     const cartItem = cartItems.find((item) => item.product_id === productId);
     if (!cartItem) {
-      console.error("Ingen varukorg hittades för produkt:", productId);
+      console.error("No cart found for product:", productId);
       return;
     }
 
     const cartId = cartItem.cart_id;
     if (!cartId) {
-      console.error("Cart ID saknas vid borttagning");
+      console.error("Cart ID is missing during removal");
       return;
     }
 
@@ -71,7 +71,7 @@ export const CartProvider = ({ children }) => {
       await removeFromCart(cartId, productId);
       await loadCart(user.id); // Ladda om varukorgen efter borttagning
     } catch (error) {
-      console.error("Kunde inte ta bort produkten från varukorgen:", error);
+      console.error("Could not remove product from cart:", error);
     }
   };
 
@@ -83,7 +83,7 @@ export const CartProvider = ({ children }) => {
     }
 
     const cartId = cartItems.length > 0 ? cartItems[0].cart_id : null;
-    if (!cartId) return console.error("Cart ID saknas vid uppdatering");
+    if (!cartId) return console.error("Cart ID is missing during update");
 
     if (newQuantity <= 0) {
       return await removeFromCartHandler(productId);
@@ -99,7 +99,7 @@ export const CartProvider = ({ children }) => {
         )
       );
     } catch (error) {
-      console.error("Kunde inte uppdatera produktens kvantitet:", error);
+      console.error("Could not update product quantity:", error);
     }
   };
 

@@ -33,18 +33,18 @@ function Footer() {
       >
         <TextField
           type="email"
-          placeholder="Prenumerera på vårt nyhetsbrev"
+          placeholder="Subscribe to our newsletter"
           fullWidth
           required
           variant="outlined"
         />
         <Button type="submit" variant="contained" sx={{ px: 4 }}>
-          Skicka
+          Send
         </Button>
       </Box>
 
       <Typography variant="body2" sx={{ color: "text.secondary" }}>
-        info@webbshop.se • Blomgatan 42, Stockholm
+        info@webbshop.se • 42 Blom Street, Stockholm
       </Typography>
       <Typography variant="caption" sx={{ color: "text.disabled" }}>
         © 2025 Webbshop AB. All rights reserved.

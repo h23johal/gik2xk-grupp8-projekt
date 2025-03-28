@@ -51,7 +51,7 @@ const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
           <CardContent sx={{ p: 0 }}>
             <Typography variant="h6">{item.name}</Typography>
             <Typography variant="body2" color="text.secondary">
-              {item.price} kr
+              {"$" + item.price}
             </Typography>
 
             {/* Antal-kontroller */}

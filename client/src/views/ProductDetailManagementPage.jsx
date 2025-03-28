@@ -23,7 +23,7 @@ function ProductDetailManagementPage() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Fel vid hämtning av produkt:", err);
+        console.error("Error fetching product:", err);
         setLoading(false);
       });
   }, [id]);
@@ -37,7 +37,7 @@ function ProductDetailManagementPage() {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         {/* Sidrubrik */}
         <Typography variant="h4" gutterBottom>
-          Produktinformation
+        Product Information
         </Typography>
 
         {/* Layout med produktvisning och redigeringsformulär */}

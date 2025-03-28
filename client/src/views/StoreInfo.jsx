@@ -7,18 +7,18 @@ import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 const features = [
   {
     icon: <SecurityIcon fontSize="large" color="primary" />,
-    title: "Trygg E-handel",
-    description: "Säkra betalningar och krypterad hantering av dina uppgifter.",
+    title: "Secure E-commerce",
+    description: "Secure payments and encrypted handling of your information.",
   },
   {
     icon: <LocalShippingIcon fontSize="large" color="primary" />,
-    title: "Fri Frakt",
-    description: "Vi bjuder på frakten vid alla beställningar över 500 kr.",
+    title: "Free Shipping",
+    description: "We offer free shipping on all orders over $500.",
   },
   {
     icon: <SupportAgentIcon fontSize="large" color="primary" />,
-    title: "Kundservice 24/7",
-    description: "Chatta med oss när som helst – vi är alltid här för dig.",
+    title: "Customer Service 24/7",
+    description: "Chat with us anytime – we're always here for you.",
   },
 ];
 

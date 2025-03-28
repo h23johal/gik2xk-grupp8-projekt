@@ -27,7 +27,7 @@ export async function createProduct(product) {
     const response = await axios.post("/products", product);
     if (response.status === 200) return response.data;
   } catch (e) {
-    const message = e?.response?.data?.error || "Ett fel uppstod vid skapande.";
+    const message = e?.response?.data?.error || "An error occurred during creation.";
     throw new Error(message); // skickas till komponent
   }
 }
@@ -38,7 +38,7 @@ export async function updateProduct(product) {
     const response = await axios.put("/products", product);
     if (response.status === 200) return response.data;
   } catch (e) {
-    const message = e?.response?.data?.error || "Ett fel uppstod vid uppdatering.";
+    const message = e?.response?.data?.error || "An error occurred during update.";
     throw new Error(message);
   }
 }
@@ -63,7 +63,7 @@ export async function restoreProduct(id) {
     const response = await axios.put(`/products/${id}/restore`, { id, deletedAt: null });
     if (response.status === 200) return response.data;
   } catch (e) {
-    const message = e?.response?.data?.error || "Kunde inte återställa produkten.";
+    const message = e?.response?.data?.error || "Could not restore the product.";
     throw new Error(message);
   }
 }

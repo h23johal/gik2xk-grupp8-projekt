@@ -24,12 +24,12 @@ const OrderHistoryPage = () => {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         {/* Sidrubrik */}
         <Typography variant="h4" gutterBottom>
-          Orderhistorik
+        Order History
         </Typography>
 
         {/* Visa meddelande om inga beställningar finns */}
         {orders.length === 0 ? (
-          <Typography>Du har inga tidigare beställningar.</Typography>
+          <Typography>You have no previous orders.</Typography>
         ) : (
           // Visa orderkort om det finns beställningar
           orders.map((order) => <OrderCard key={order.id} order={order} />)

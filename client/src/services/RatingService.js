@@ -36,7 +36,7 @@ export async function getProductRatings(productId) {
     const response = await axios.get(`/ratings/products/${productId}/ratings`);
     return response.data;
   } catch (e) {
-    console.error("Kunde inte hämta produktbetyg:", e);
+    console.error("Could not fetch product rating:", e);
     return { ratings: [], avgScore: 0 };
   } 
 }
@@ -50,7 +50,7 @@ export async function canUserRate(productId, userId) {
 
     return response.data.canRate;
   } catch (e) {
-    console.error("Kunde inte hämta rating-behörighet:", e);
+    console.error("Could not fetch rating permission:", e);
     return false;
   }
 }
@@ -61,7 +61,7 @@ export async function getProductReviews(productId) {
     const response = await axios.get(`/ratings/products/${productId}/reviews`);
     return response.data;
   } catch (e) {
-    console.error("Kunde inte hämta recensioner:", e);
+    console.error("Could not fetch reviews:", e);
     return { reviews: [] };
   } 
 }
@@ -79,10 +79,10 @@ export async function addRating(productId, userId, score, comment, anonymous = f
     if (response.status === 200) {
       return response.data;
     } else {
-      throw new Error(response.data?.error || "Kunde inte skicka recension");
+      throw new Error(response.data?.error || "Could not submit review.");
     }
   } catch (e) {
-    const message = e?.response?.data?.error || "Något gick fel vid betygssättning";
+    const message = e?.response?.data?.error || "Something went wrong during rating.";
     throw new Error(message);
   }
 }

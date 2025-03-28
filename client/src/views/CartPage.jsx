@@ -22,15 +22,15 @@ const CartPage = () => {
     (sum, item) => sum + item.price * item.amount,
     0
   );
-  const shippingCost = subTotal > 500 ? 0 : 49.99; // Fri frakt över 500 kr
-  const taxAmount = subTotal * 0.25; // 25% moms
+  const shippingCost = subTotal > 500 ? 0 : 49.99; 
+  const taxAmount = subTotal * 0.25; 
   const totalPrice = subTotal + taxAmount + shippingCost;
 
   return (
     <PageWrapper>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Typography variant="h4" gutterBottom>
-          Din Kundvagn
+          Your Cart
         </Typography>
 
         {/* Fraktinfo-ruta */}
@@ -84,7 +84,7 @@ const CartPage = () => {
                 cartItems.forEach((item) => removeFromCart(item.product_id))
               }
             >
-              Töm Kundvagn
+              Empty Cart
             </Button>
           </Box>
         )}

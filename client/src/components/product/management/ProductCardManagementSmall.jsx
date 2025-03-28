@@ -20,10 +20,10 @@ function ProductCardManagementSmall({ product, refetch }) {
     e.stopPropagation();
     try {
       await restoreProduct(product.id);
-      showSnackbar("Produkten återställdes!", "success");
+      showSnackbar("The product has been restored!", "success");
       refetch();
     } catch (err) {
-      console.error("Fel vid återställning:", err);
+      console.error("Error during restoration:", err);
     }
   };
 
@@ -33,7 +33,7 @@ function ProductCardManagementSmall({ product, refetch }) {
       sx={{
         //fast höjd och bredd för rutorna
         width: 235,
-        height: 250,
+        height: 265,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -109,7 +109,7 @@ function ProductCardManagementSmall({ product, refetch }) {
               color="error"
               sx={{ mt: 1, display: "block", fontWeight: "bold" }}
             >
-              Borttagen
+              Deleted
             </Typography>
           )}
         </CardContent>
