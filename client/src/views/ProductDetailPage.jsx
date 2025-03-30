@@ -39,7 +39,7 @@ function ProductDetailPage() {
         // Kontrollera om användaren får recensera
         if (user) canUserRate(id, user.id).then(setCanRate);
       } catch (err) {
-        console.error("Fel vid hämtning av produkt:", err);
+        console.error("Error retrieving product:", err);
       }
       setLoading(false);
     };
@@ -64,58 +64,56 @@ function ProductDetailPage() {
   if (!product) return <div>Product not found</div>;
 
   return (
-   <PageWrapper>
-    {/* Tillhandahåll kontext för recensioner */}
-    <ReviewProvider productId={id}>
-      <Container maxWidth={false}
-        // Responsiv bredd för innehåll
-        sx={{
-          width: {
-            xs: "100%", // Full bredd på små skärmar
-            sm: "90%",
-            md: "80%",
-            lg: "70%",
-            xl: "60%",
-          },
-          mx: "auto", // Centrera horisontellt
-          my: 2,       // Vertikal marginal
-        }}
-      >
-        {/* Gridlayout för sidans sektioner */}
-        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} sx={{ p: { xs: 2, md: 3 } }}>
-          {/* Karusell för recensioner */}
-          <Grid item xs={12}>
-            <ReviewCarousel onReviewClick={handleReviewClick} />
-          </Grid>
-          
-          {/* Produktinformation */}
-          <Grid item xs={12}>
-            <ProductCardLarge product={product} />
-          </Grid>
-          
-          {/* Lägg till i varukorg */}
-          <Grid item xs={12}>
-            <AddToCart product={product} />
-          </Grid>
-          
-          {/* Accordion med recensioner */}
-          <Grid item xs={12}>
-            <ReviewAccordion
-              ref={reviewsAccordionRef}
-              selectedReviewId={selectedReviewId}
-              onReviewNavigated={clearSelectedReview}
-            />
-          </Grid>
-          
-          {/* Visa formulär om användaren får skriva recension */}
-          {canRate && (
+    <PageWrapper>
+      {/* Tillhandahåll kontext för recensioner */}
+      <ReviewProvider productId={id}>
+        {/* Karusell för recensioner - utanför Container för full bredd */}
+        <ReviewCarousel onReviewClick={handleReviewClick} />
+        
+        <Container maxWidth={false}
+          // Responsiv bredd för innehåll
+          sx={{
+            width: {
+              xs: "100%", // Full bredd på små skärmar
+              sm: "90%",
+              md: "80%",
+              lg: "70%",
+              xl: "60%",
+            },
+            mx: "auto", // Centrera horisontellt
+            my: 2,       // Vertikal marginal
+          }}
+        >
+          {/* Gridlayout för sidans sektioner */}
+          <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} sx={{ p: { xs: 2, md: 3 } }}>
+            {/* Produktinformation */}
             <Grid item xs={12}>
-              <AddReviewForm productId={id} userId={user.id} />
+              <ProductCardLarge product={product} />
             </Grid>
-          )}
-        </Grid>
-      </Container>
-    </ReviewProvider>
+            
+            {/* Lägg till i varukorg */}
+            <Grid item xs={12}>
+              <AddToCart product={product} />
+            </Grid>
+            
+            {/* Accordion med recensioner */}
+            <Grid item xs={12}>
+              <ReviewAccordion
+                ref={reviewsAccordionRef}
+                selectedReviewId={selectedReviewId}
+                onReviewNavigated={clearSelectedReview}
+              />
+            </Grid>
+            
+            {/* Visa formulär om användaren får skriva recension */}
+            {canRate && (
+              <Grid item xs={12}>
+                <AddReviewForm productId={id} userId={user.id} />
+              </Grid>
+            )}
+          </Grid>
+        </Container>
+      </ReviewProvider>
     </PageWrapper>
   );
 }

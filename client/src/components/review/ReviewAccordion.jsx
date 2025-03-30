@@ -25,9 +25,9 @@ const ReviewAccordion = forwardRef(({ selectedReviewId, onReviewNavigated }, ref
         if (!box) return;
         box.scrollTop = box.scrollTop - newOffset; // Drag down scrolls up, drag up scrolls down
       },
-      deceleration: 0.04,
-      maxVelocity: 0.0001,
-      maxMomentumDuration: 500,
+      deceleration: 0.0004,
+      maxVelocity: 0.01,
+      maxMomentumDuration: 800,
     });
     return () => flowScrollRef.current.cancel();
   }, [reviewsWithComments]);
@@ -79,56 +79,69 @@ const ReviewAccordion = forwardRef(({ selectedReviewId, onReviewNavigated }, ref
     direction: "y",
   });
 
-  if (loading) return (
-    <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-      <CircularProgress size={30} />
-    </Box>
-  );
-
   return (
-    <Accordion expanded={expanded} onChange={handleChange}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="reviews-panel-content"
-        id="reviews-panel-header"
-      >
-        <Typography variant="h6">
-          Customer Reviews ({reviewsWithComments.length})
-        </Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        {reviewsWithComments.length === 0 ? (
-          <Typography>No reviews yet for this product.</Typography>
-        ) : (
-          <Box
-            ref={accordionBoxRef}
-            sx={{
-              scrollBehavior: "smooth",
-              userSelect: "none",
-              maxHeight: 500,
-              overflowY: "auto",
-              px: 2,
-              py: 1,
-              cursor: isDragging ? "grabbing" : "grab",
-            }}
-            {...swipeProps}
-          >
-            {reviewsWithComments.map((review) => (
-              <Box
-                key={review.id}
-                ref={(el) => (reviewRefs.current[review.id] = el)}
-                sx={{ scrollMarginTop: "100px" }}
-              >
-                <AccordionReviewCard
-                  review={review}
-                  isSelected={selectedReviewId === review.id}
-                />
-              </Box>
-            ))}
-          </Box>
-        )}
-      </AccordionDetails>
-    </Accordion>
+    <Box position="relative">
+      <Accordion expanded={expanded} onChange={handleChange}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="reviews-panel-content"
+          id="reviews-panel-header"
+        >
+          <Typography variant="h6">
+            Customer Reviews ({reviewsWithComments.length})
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {reviewsWithComments.length === 0 ? (
+            <Typography>No reviews yet for this product.</Typography>
+          ) : (
+            <Box
+              ref={accordionBoxRef}
+              sx={{
+                scrollBehavior: "smooth",
+                userSelect: "none",
+                maxHeight: 500,
+                overflowY: "auto",
+                px: 2,
+                py: 1,
+                cursor: isDragging ? "grabbing" : "grab",
+              }}
+              {...swipeProps}
+            >
+              {reviewsWithComments.map((review) => (
+                <Box
+                  key={review.id}
+                  ref={(el) => (reviewRefs.current[review.id] = el)}
+                  sx={{ scrollMarginTop: "100px" }}
+                >
+                  <AccordionReviewCard
+                    review={review}
+                    isSelected={selectedReviewId === review.id}
+                  />
+                </Box>
+              ))}
+            </Box>
+          )}
+        </AccordionDetails>
+      </Accordion>
+      
+      {loading && (
+        <Box 
+          position="absolute" 
+          top={0} 
+          left={0} 
+          right={0} 
+          bottom={0}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          bgcolor="rgba(255, 255, 255, 0.7)"
+          zIndex={1}
+        >
+          <CircularProgress size={30} />
+        </Box>
+      )}
+    </Box>
   );
 });
 

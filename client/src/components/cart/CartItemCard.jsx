@@ -41,7 +41,7 @@ const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
             }}
           >
             <Typography variant="caption" color="text.secondary">
-              Ingen bild
+              No image available
             </Typography>
           </Box>
         )}

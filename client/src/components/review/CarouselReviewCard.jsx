@@ -3,6 +3,12 @@ import Rating from '@mui/material/Rating';
 import { useState, useRef } from 'react';
 
 function CarouselReviewCard({ review, onClick, className }) {
+  const CARD_SIZES = {
+    xs: 240,
+    sm: 260,
+    md: 280
+  };
+
   const [isDragging, setIsDragging] = useState(false);
   const startPosRef = useRef({ x: 0, y: 0 });
   
@@ -12,7 +18,6 @@ function CarouselReviewCard({ review, onClick, className }) {
     return isNaN(date.getTime()) ? "Unknown date" : date.toLocaleDateString();
   };
 
-  // Handle different review data structures
   const username = review.username || (review.user ? review.user.first_name : "Anonymous");
   const rating = review.rating || review.score || 0;
   
@@ -22,7 +27,6 @@ function CarouselReviewCard({ review, onClick, className }) {
   };
   
   const handleMouseUp = (e) => {
-    // Only trigger click if mouse hasn't moved much (not dragging)
     const deltaX = Math.abs(e.clientX - startPosRef.current.x);
     const deltaY = Math.abs(e.clientY - startPosRef.current.y);
     
@@ -32,7 +36,6 @@ function CarouselReviewCard({ review, onClick, className }) {
   };
   
   const handleMouseMove = (e) => {
-    // If mouse has moved more than a small threshold, consider it dragging
     const deltaX = Math.abs(e.clientX - startPosRef.current.x);
     const deltaY = Math.abs(e.clientY - startPosRef.current.y);
     
@@ -49,9 +52,11 @@ function CarouselReviewCard({ review, onClick, className }) {
       className={`${className}`}
       sx={{ 
         cursor: 'pointer', 
-        width: { xs: '85%', sm: '300px', md: '280px' },
-        minWidth: '240px',
-        maxWidth: '320px',
+        width: { 
+          xs: `${CARD_SIZES.xs}px`, 
+          sm: `${CARD_SIZES.sm}px`, 
+          md: `${CARD_SIZES.md}px` 
+        },
         flexShrink: 0,
         transition: 'transform 0.2s, box-shadow 0.2s',
         backgroundColor: 'rgba(255,255,255,0.05)',
