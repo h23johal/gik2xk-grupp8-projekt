@@ -1,36 +1,47 @@
 import { createTheme } from '@mui/material/styles';
 
+// Anpassat MUI-tema med pastellfärgpalett, responsiva brytpunkter 
+// och stilade komponenter för ett enhetligt designsystem
 const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,      // mobil
+      sm: 640,    // surfplattor (40rem vid 16px basstorlek)
+      md: 768,    // små laptops (48rem)
+      lg: 992,    // stationära (62rem)
+      xl: 1200,   // stora skärmar (75rem)
+    },
+  },
   palette: {
     primary: {
-      main: '#E091A9', // Soft rose pink
+      main: '#E091A9',
       light: '#F5C0D0',
       dark: '#C0697F',
     },
     secondary: {
-      main: '#5E6BAE', // Muted mid-century blue
+      main: '#5E6BAE',
       light: '#8F9AD1',
       dark: '#3C4485',
     },
     background: {
-      default: 'linear-gradient(135deg, #FFF0F5 0%, #E6E6FA 100%)', // Soft lavender to blush gradient
-      paper: 'rgba(255, 255, 255, 0.85)', // Slightly translucent white
+      default: 'linear-gradient(135deg, #FFF0F5 0%, #E6E6FA 100%)',
+      paper: 'rgba(255, 255, 255, 0.85)',
     },
     text: {
-      primary: '#2F4F4F', // Deep slate gray
-      secondary: '#6E7B8B', // Muted bluish-gray
+      primary: '#2F4F4F',
+      secondary: '#6E7B8B',
     },
     error: {
-      main: '#D8315B', // Soft rose red
+      main: '#D8315B',
     },
     warning: {
-      main: '#FFD700', // Golden yellow
+      main: '#FFD700',
     },
     info: {
-      main: '#5D8AA8', // Soft blue-gray
+      main: '#5D8AA8',
     },
     success: {
-      main: '#8FBC8F', // Soft sage green
+      main: '#8FBC8F',
     },
   },
   typography: {
@@ -54,7 +65,7 @@ const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 20, // Soft, rounded corners
+    borderRadius: 20,
   },
   components: {
     MuiPaper: {
@@ -75,7 +86,7 @@ const theme = createTheme({
           backdropFilter: 'blur(20px)',
           borderRadius: 20,
           boxShadow: '0 15px 35px rgba(94, 107, 174, 0.08)',
-          transition: 'none', // Remove any transition
+          transition: 'none',
         },
       },
     },
@@ -89,11 +100,11 @@ const theme = createTheme({
           background: 'linear-gradient(135deg, #F5C0D0, #5E6BAE)',
           color: 'white',
           boxShadow: '0 6px 20px rgba(94, 107, 174, 0.2)',
-          transition: 'none', // Remove any transition
+          transition: 'none',
           '&:hover': {
-            background: 'linear-gradient(135deg, #F5C0D0, #5E6BAE)', // Maintain original background
-            boxShadow: '0 6px 20px rgba(94, 107, 174, 0.2)', // Maintain original shadow
-            transform: 'none', // Remove any movement
+            background: 'linear-gradient(135deg, #F5C0D0, #5E6BAE)',
+            boxShadow: '0 6px 20px rgba(94, 107, 174, 0.2)',
+            transform: 'none',
           },
         },
       },

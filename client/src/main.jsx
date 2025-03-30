@@ -1,3 +1,4 @@
+// Sätter upp React-applikationen med routing, tema och kontextproviders
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
@@ -10,7 +11,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "./theme";
 import { CartProvider } from "./context/CartContext";
-import { AuthProvider } from "./context/AuthContext"; // 🔹 Importera AuthProvider
+import { AuthProvider } from "./context/AuthContext";
 import CartPage from "./views/CartPage";
 import ProductManagement from "./views/ProductManagementPage.jsx";
 import ProtectedRoute from "./components/user/ProtectedRoute.jsx";
@@ -40,7 +41,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <ProtectedRoute requiredRole={99} />, // 🔒 Only user.id === 99 can access
+        element: <ProtectedRoute requiredRole={1} />, 
         children: [
           {
             index: true,
@@ -61,7 +62,7 @@ createRoot(document.getElementById("root")).render(
     <SnackbarProvider>
       <AuthProvider>
         {" "}
-        {/* 🔹 Wrappa allt med AuthProvider */}
+        {/* Wrappa allt med AuthProvider */}
         <CartProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline /> {/* Normaliserar CSS */}

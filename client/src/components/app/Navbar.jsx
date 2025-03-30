@@ -1,147 +1,6 @@
-// import React, { useState } from "react";
-// import { Link, useLocation } from "react-router-dom";
-// import {
-//   Box,
-//   AppBar,
-//   Toolbar,
-//   Typography,
-//   Button,
-//   IconButton,
-//   Badge,
-//   Drawer,
-//   List,
-//   ListItem,
-//   ListItemText
-// } from "@mui/material";
-// import MenuIcon from "@mui/icons-material/Menu";
-// import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-// import { useCart } from "../../context/CartContext";
-
-// function Navbar() {
-//   const { cartCount } = useCart();
-//   const location = useLocation();
-//   const [drawerOpen, setDrawerOpen] = useState(false);
-
-//   const toggleDrawer = (open) => (event) => {
-//     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift"))
-//       return;
-//     setDrawerOpen(open);
-//   };
-
-//   const navItems = [
-//     { text: "Home", path: "/" },
-//     { text: "News", path: "/news" },
-//     { text: "Login", path: "/login" }
-//   ];
-
-//   const drawerContent = (
-//     <Box
-//       sx={{ width: 250 }}
-//       role="presentation"
-//       onClick={toggleDrawer(false)}
-//       onKeyDown={toggleDrawer(false)}
-//     >
-//       <List>
-//         {navItems.map((item) => (
-//           <ListItem button key={item.text} component={Link} to={item.path}>
-//             <ListItemText primary={item.text} />
-//           </ListItem>
-//         ))}
-//       </List>
-//     </Box>
-//   );
-
-//   return (
-//     <Box sx={{ flexGrow: 1 }} component="header">
-//       <AppBar position="static">
-//         <Toolbar>
-//           {/* Mobile: Hamburger menu */}
-//           <IconButton
-//             size="large"
-//             edge="start"
-//             color="inherit"
-//             aria-label="menu"
-//             onClick={toggleDrawer(true)}
-//             sx={{ mr: 2, display: { sm: "none" } }}
-//           >
-//             <MenuIcon />
-//           </IconButton>
-
-//           {/* Desktop: Branded logo */}
-//           <Button
-//             color="inherit"
-//             component={Link}
-//             to="/"
-//             aria-label="Home"
-//             sx={{ mr: 2, display: { xs: "none", sm: "block" } }}
-//           >
-//             YourBrand
-//           </Button>
-
-//           {/* Title */}
-//           <Typography
-//             variant="h6"
-//             component="div"
-//             sx={{
-//               mr: 2,
-//               flexGrow: 1,
-//               textAlign: { xs: "center", sm: "left" }
-//             }}
-//           >
-//             News
-//           </Typography>
-
-//           {/* Desktop navigation */}
-//           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-//             {location.pathname !== "/" && (
-//               <Button
-//                 color="inherit"
-//                 component={Link}
-//                 to="/"
-//                 aria-label="Back to Home"
-//                 sx={{ mr: 2 }}
-//               >
-//                 Home
-//               </Button>
-//             )}
-//             <Button
-//               color="inherit"
-//               component={Link}
-//               to="/login"
-//               aria-label="Login"
-//             >
-//               Login
-//             </Button>
-//           </Box>
-
-//           {/* Shopping Cart */}
-//           <IconButton
-//             component={Link}
-//             to="/cart"
-//             color="inherit"
-//             aria-label="Cart"
-//           >
-//             <Badge badgeContent={cartCount} color="error">
-//               <ShoppingCartIcon />
-//             </Badge>
-//           </IconButton>
-//         </Toolbar>
-//       </AppBar>
-
-//       {/* Mobile Drawer */}
-//       <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-//         {drawerContent}
-//       </Drawer>
-//     </Box>
-//   );
-// }
-
-// export default Navbar;
-
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  Box,
   AppBar,
   Toolbar,
   Typography,
@@ -152,19 +11,25 @@ import {
   List,
   ListItem,
   ListItemText,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import FoundationIcon from "@mui/icons-material/Foundation";
 
+//navbar component
 function Navbar() {
   const { cartCount } = useCart();
   const { user, logout, openAuthModal } = useAuth();
-  const location = useLocation();
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [newsOpen, setNewsOpen] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -177,95 +42,121 @@ function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate("/"); // Navigera till startsidan
+    navigate("/");
+  };
+
+  const navButtonStyle = {
+    mx: 0.5,
+    textTransform: "none",
+    fontSize: { xs: "0.7rem", md: "0.85rem" },
+    px: { xs: 1, md: 2 },
+    borderRadius: "20px",
+    transition: "all 0.2s ease",
+    whiteSpace: "nowrap",
+    "&:hover": {
+      transform: "scale(1.05)",
+      backgroundColor: "primary.light",
+      color: "white",
+    },
   };
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }} component="header">
-        <AppBar position="static">
-          <Toolbar>
-            {/* Mobile: Hamburger menu */}
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              onClick={toggleDrawer(true)}
-              sx={{ mr: 2, display: { sm: "none" } }}
-            >
-              <MenuIcon />
-            </IconButton>
+      <Box sx={{ flexGrow: 1, mb: 6 }} component="header">
+        <AppBar position="static" elevation={1}>
+          <Toolbar sx={{ justifyContent: "space-between", flexWrap: "wrap" }}>
+            {/* Vänstersida: Logo + News */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <IconButton
+                size="large"
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={toggleDrawer(true)}
+                sx={{ display: { md: "none" } }}
+              >
+                <MenuIcon />
+              </IconButton>
 
-            {/* Desktop: Branded logo */}
-            <Button
-              color="inherit"
-              component={Link}
-              to="/"
-              aria-label="Home"
-              sx={{ mr: 2, display: { xs: "none", sm: "block" } }}
-            >
-              YourBrand
-            </Button>
+              <Button
+                color="inherit"
+                component={Link}
+                to="/"
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "1rem",
+                  textTransform: "none",
+                  display: { xs: "none", md: "inline-flex" },
+                }}
+              >
+                <FoundationIcon />
+              </Button>
 
-            {/* Titel */}
-            <Typography
-              variant="h6"
-              component="div"
+              <Button
+                variant="contained"
+                onClick={() => setNewsOpen(true)}
+                sx={{
+                  backgroundColor: "primary.main",
+                  color: "#fff",
+                  textTransform: "none",
+                  fontWeight: "bold",
+                  display: { xs: "none", md: "inline-flex" },
+                  "&:hover": {
+                    backgroundColor: "primary.dark",
+                    color: "#fff",
+                  },
+                }}
+              >
+                News
+              </Button>
+            </Box>
+
+            {/* Högersida: Nav-knappar */}
+            <Box
               sx={{
-                mr: 2,
-                flexGrow: 1,
-                textAlign: { xs: "center", sm: "left" },
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+                gap: 1,
               }}
             >
-              News
-            </Typography>
-
-            {/* Desktop navigation */}
-            <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              {user?.id === 99 && (
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/admin"
-                  sx={{ mr: 2 }}
-                >
+              {user?.id === 1 && (
+                <Button component={Link} to="/admin" sx={navButtonStyle}>
                   Product Management
                 </Button>
               )}
-
-              {/* 🔹 Visa "Logga in" om utloggad, annars "Logga ut" */}
-              {user ? (
-                <Button color="inherit" onClick={handleLogout}>
-                  Logga ut
-                </Button>
-              ) : (
-                <Button color="inherit" onClick={openAuthModal}>
-                  Logga in
+              {user && (
+                <Button
+                  component={Link}
+                  to="/order-history"
+                  sx={navButtonStyle}
+                >
+                  My Orders
                 </Button>
               )}
+              {user ? (
+                <Button onClick={handleLogout} sx={navButtonStyle}>
+                  Log out
+                </Button>
+              ) : (
+                <Button onClick={openAuthModal} sx={navButtonStyle}>
+                  Log in
+                </Button>
+              )}
+              <IconButton
+                component={Link}
+                to="/cart"
+                color="inherit"
+                aria-label="Cart"
+              >
+                <Badge badgeContent={cartCount} color="error">
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
             </Box>
-            {user && (
-              <Button color="inherit" component={Link} to="/order-history">
-                Mina Beställningar
-              </Button>
-            )}
-
-            {/* Shopping Cart */}
-            <IconButton
-              component={Link}
-              to="/cart"
-              color="inherit"
-              aria-label="Cart"
-            >
-              <Badge badgeContent={cartCount} color="error">
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
           </Toolbar>
         </AppBar>
 
-        {/* Mobile Drawer */}
+        {/* Drawer-meny för små skärmar */}
         <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
           <Box
             sx={{ width: 250 }}
@@ -275,30 +166,72 @@ function Navbar() {
           >
             <List>
               <ListItem button component={Link} to="/">
-                <ListItemText primary="Home" />
+                <ListItemText primary="Hem" />
               </ListItem>
-              <ListItem button component={Link} to="/news">
+
+              <ListItem
+                button
+                onClick={() => {
+                  setDrawerOpen(false);
+                  setNewsOpen(true);
+                }}
+              >
                 <ListItemText primary="News" />
               </ListItem>
-              {user?.id === "99" && (
+
+              {user?.id === 1 && (
                 <ListItem button component={Link} to="/admin">
                   <ListItemText primary="Product Management" />
                 </ListItem>
               )}
               {user && (
                 <ListItem button component={Link} to="/order-history">
-                  <ListItemText primary="Product Management" />
+                  <ListItemText primary="Mina Beställningar" />
                 </ListItem>
               )}
-
-              {/* 🔹 Visa "Logga in" eller "Logga ut" beroende på auth-status */}
               <ListItem button onClick={user ? handleLogout : openAuthModal}>
                 <ListItemText primary={user ? "Logga ut" : "Logga in"} />
+              </ListItem>
+              <ListItem button component={Link} to="/cart">
+                <ListItemText primary="Varukorg" />
               </ListItem>
             </List>
           </Box>
         </Drawer>
       </Box>
+
+      {/* News popup dialog */}
+      <Dialog
+        open={newsOpen}
+        onClose={() => setNewsOpen(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#fff",
+            color: "#000",
+            borderRadius: 3,
+            px: 3,
+            py: 2,
+          },
+        }}
+        BackdropProps={{
+          sx: {
+            backgroundColor: "rgba(0, 0, 0, 0.3)",
+          },
+        }}
+      >
+        <DialogTitle>Latest News 📰</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ color: "text.primary" }}>
+            ✅ We’ve just received new products!
+            <br />
+            <br />
+            🎮 Huge sale on gaming accessories this week!
+            <br />
+            <br />
+            🚚 Deliveries are now even faster thanks to our new warehouse!
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

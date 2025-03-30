@@ -1,6 +1,8 @@
 const db = require("../models");
+const { userHasPurchased } = require("./cartService");
 const { createOkObjectSuccess, createResponseError, createResponseMessage } = require("../helpers/responseHelper");
 
+// Hämtar alla ratings från databasen
 async function getAll() {
   try {
     const ratings = await db.Rating.findAll();
@@ -10,6 +12,7 @@ async function getAll() {
   }
 }
 
+//Hämtar ett rating-objekt baserat på dess ID
 async function getById(id) {
   try {
     const rating = await db.Rating.findByPk(id);
@@ -20,6 +23,7 @@ async function getById(id) {
   }
 }
 
+// Skapar ett nytt rating-objekt i databasen
 async function create(rating) {
   try {
     const newRating = await db.Rating.create(rating);
@@ -29,6 +33,7 @@ async function create(rating) {
   }
 }
 
+// Uppdaterar ett rating-objekt baserat på dess id
 async function update(rating) {
   try {
     const updated = await db.Rating.update(rating, { where: { id: rating.id } });
@@ -39,6 +44,7 @@ async function update(rating) {
   }
 }
 
+// Raderar ett rating-objekt med angivet id
 async function destroy(id) {
   try {
     const deleted = await db.Rating.destroy({ where: { id } });
@@ -49,15 +55,24 @@ async function destroy(id) {
   }
 }
 
-async function addRating(product_id, user_id, rating) {
+// Lägger till en rating för en produkt efter att verifierat att användaren har köpt produkten
+async function addRating(product_id, user_id, rating, comment = null, anonymous = false) {
   try {
-    const ratingScore = await db.Rating.create({ product_id, user_id, rating });
+    const hasPurchased = await userHasPurchased(user_id, product_id);
+
+    if (!hasPurchased) {
+      return createResponseError(403, "Du har inte köpt denna produkt");
+    }
+
+    const ratingScore = await db.Rating.create({ product_id, user_id, rating, comment, anonymous });
     return createOkObjectSuccess(ratingScore);
+
   } catch (error) {
-    return createResponseError(error.status, error.message);
+    return createResponseError(500, error.message || "Något gick fel vid betygssättning");
   }
 }
 
+// Hämtar ratings för en produkt och beräknar medelbetyget
 async function getProductRatings(product_id) {
   try {
     const ratings = await db.Rating.findAll({ where: { product_id } });
@@ -70,12 +85,13 @@ async function getProductRatings(product_id) {
   }
 }
 
+// Hämtar recensioner (ratings med kommentarer) för en produkt och exporterar rating-funktioner
 async function getProductReviews(product_id) {
   try {
     const reviews = await db.Rating.findAll({
       where: {
          product_id,
-         comment: { [db.Sequelize.Op.ne]: null }, //check for comments
+         comment: { [db.Sequelize.Op.ne]: null },
       },
       include: [{ 
         model: db.User, 

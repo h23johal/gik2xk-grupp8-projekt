@@ -7,13 +7,37 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "react-router-dom";
-import Overlay from "../../Overlay"; // Import reusable Overlay
+//hemmagjord overlay komponent
+import Overlay from "../../Overlay";
+import RestoreIcon from "@mui/icons-material/Restore";
+import { restoreProduct } from "../../../services/ProductService";
+import { useSnackbar } from "../../../context/SnackbarContext";
 
-function ProductCardManagementSmall({ product }) {
+function ProductCardManagementSmall({ product, refetch }) {
+  const { showSnackbar } = useSnackbar();
+
+  const handleRestore = async (e) => {
+    e.stopPropagation();
+    try {
+      await restoreProduct(product.id);
+      showSnackbar("The product has been restored!", "success");
+      refetch();
+    } catch (err) {
+      console.error("Error during restoration:", err);
+    }
+  };
+
   return (
     <Card
       onClick={(e) => e.stopPropagation()}
       sx={{
+        //fast höjd och bredd för rutorna
+        width: 235,
+        height: 265,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        cursor: "default",
         bgcolor: "rgba(255,255,255,0.05)",
         backdropFilter: "blur(12px)",
         border: "1px solid rgba(255,255,255,0.1)",
@@ -23,25 +47,40 @@ function ProductCardManagementSmall({ product }) {
         overflow: "hidden",
       }}
     >
-      {/* Wrap everything in Overlay */}
       <Overlay
         overlayContent={
-          <IconButton
-            component={Link} // Uses Link for navigation
-            to={`/admin/${product.id}`}
-            sx={{
-              color: "white",
-              fontSize: 40,
-              transform: "translateY(5px)", // Default position
-              transition: "transform 0.2s ease-in-out",
-              "&:hover": { transform: "translateY(0px)" }, // Moves up on hover
-            }}
-          >
-            <EditIcon sx={{ fontSize: 50 }} />
-          </IconButton>
+          product.deletedAt ? (
+            //Återställningsknapp om produkten är "borttagen"
+            <IconButton
+              onClick={handleRestore}
+              sx={{
+                color: "lightgreen",
+                fontSize: 40,
+                transform: "translateY(5px)",
+                transition: "transform 0.2s ease-in-out",
+                "&:hover": { transform: "translateY(0px)" },
+              }}
+            >
+              <RestoreIcon sx={{ fontSize: 50 }} />
+            </IconButton>
+          ) : (
+            // annars, redigera-knapp
+            <IconButton
+              component={Link}
+              to={`/admin/${product.id}`}
+              sx={{
+                color: "white",
+                fontSize: 40,
+                transform: "translateY(5px)",
+                transition: "transform 0.2s ease-in-out",
+                "&:hover": { transform: "translateY(0px)" },
+              }}
+            >
+              <EditIcon sx={{ fontSize: 50 }} />
+            </IconButton>
+          )
         }
       >
-        {/* Product Image */}
         {product.imageUrl && (
           <CardMedia
             component="img"
@@ -52,14 +91,27 @@ function ProductCardManagementSmall({ product }) {
           />
         )}
 
-        {/* Card Content */}
-        <CardContent>
-          <Typography variant="h6" color="text.primary">
+        <CardContent sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            color="text.primary"
+            noWrap
+            sx={{ textOverflow: "ellipsis" }}
+          >
             {product.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             ${product.price}
           </Typography>
+          {product.deletedAt && (
+            <Typography
+              variant="caption"
+              color="error"
+              sx={{ mt: 1, display: "block", fontWeight: "bold" }}
+            >
+              Deleted
+            </Typography>
+          )}
         </CardContent>
       </Overlay>
     </Card>

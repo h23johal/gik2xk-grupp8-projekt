@@ -8,10 +8,10 @@ const EmptyCartMessage = () => {
       <Card sx={{ maxWidth: 400, textAlign: "center", p: 3 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Din kundvagn är tom
+          Your cart is empty
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Upptäck våra produkter och fyll din kundvagn!
+          Discover our products and fill your cart!
           </Typography>
           <Button
             variant="contained"
@@ -20,7 +20,8 @@ const EmptyCartMessage = () => {
             to="/"
             sx={{ mt: 2 }}
           >
-            Fortsätt handla
+            Continue shopping
+
           </Button>
         </CardContent>
       </Card>

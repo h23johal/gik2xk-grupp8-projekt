@@ -1,102 +1,105 @@
-
 import {
   Box,
   Container,
   Typography,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
-
+import React, { useState } from "react";
 import ProductGrid from "../components/product/ProductGrid";
 import ProductCardManagementSmall from "../components/product/management/ProductCardManagementSmall";
 import ProductManagementCreate from "../components/product/management/ProductManagementCreate";
-// import CategoryTag from '../components/CategoryTag';
+import PageWrapper from "../components/layout/PageWrapper";
 
-function ProductManagement() {
+function ProductManagementPage() {
+  // State: visa/dölj raderade produkter
+  const [includeDeleted, setIncludeDeleted] = useState(false);
 
-  /* function onTagAdd(tagString) {
-    //splitta arrayen vid kommatecken
-    const tagArray = tagString.split(',');
-    //trimma whitespace runt taggar
-    const uniqueAndTrimmedTags = tagArray
-      .map((tag) => tag.trim())
-      .filter((tag) => !product.tags.includes(tag));
-
-    //slå samman befintlig tag-array med de nya, unika taggarna
-    const mergedArray = [...product.tags, ...uniqueAndTrimmedTags];
-
-    //spara befintligt inlägg med nya tags-arrayen till state.
-    setProduct({ ...product, tags: mergedArray });
-  }
-
-  function onTagDelete(tagToDelete) {
-    const newTags = product.tags.filter((tag) => tag !== tagToDelete);
-
-    setProduct({ ...product, tags: newTags });
-  } */
   return (
-    <Container maxWidth="lg">
-      <Typography
-        variant="h4"
-        component="h1"
-        sx={{
-          color: "text.primary",
-          fontWeight: 300,
-          textAlign: "center",
-          mb: 2,
-          letterSpacing: "0.1em",
-        }}
-      >
-        Product Management
-      </Typography>
-      <Typography
-        variant="p"
-        component="h1"
-        sx={{
-          color: "text.primary",
-          fontWeight: 300,
-          textAlign: "center",
-          mb: 2,
-          letterSpacing: "0.1em",
-          fontSize: "1em",
-        }}
-      >
-        Select a product to manage its details.
-      </Typography>
+    <PageWrapper>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        {/* Sidrubrik */}
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            color: "text.primary",
+            fontWeight: 300,
+            textAlign: "center",
+            mb: 2,
+            letterSpacing: "0.1em",
+          }}
+        >
+          Product Management
+        </Typography>
 
-      {/* Sidebar Layout */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          gap: 3,
-          mt: 3,
-        }}
-      >
-        {/* Main Content - Product Grid */}
-        <Box sx={{ flex: 1 }}>
-          <ProductGrid
-            renderContent={(product) => (
-              <ProductCardManagementSmall product={product} />
-            )}
+        {/* Underrubrik */}
+        <Typography
+          variant="body1"
+          sx={{
+            color: "text.primary",
+            fontWeight: 300,
+            textAlign: "center",
+            mb: 4,
+            letterSpacing: "0.1em",
+          }}
+        >
+          Select a product to manage its details.
+        </Typography>
+
+        {/* Checkbox: inkludera raderade produkter */}
+        <Box sx={{ display: "flex", mt: 1 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={includeDeleted}
+                onChange={(e) => setIncludeDeleted(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="Include deleted products"
           />
         </Box>
 
-        {/* Sidebar - Product Form */}
+        {/* Layout: produktlista + sidopanel */}
         <Box
           sx={{
-            width: { xs: "100%", md: "320px" },
-            backgroundColor: "white",
-            p: 2,
-            borderRadius: 2,
-            minHeight: "100%",
-            position: { md: "sticky" },
-            top: "80px",
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            gap: 3,
           }}
         >
-          <ProductManagementCreate />
+          {/* Produktgrid */}
+          <Box sx={{ flex: 1 }}>
+            <ProductGrid
+              includeDeleted={includeDeleted}
+              renderContent={(product, refetch) => (
+                <ProductCardManagementSmall
+                  product={product}
+                  refetch={refetch}
+                />
+              )}
+            />
+          </Box>
+
+          {/* Sidopanel för att skapa/redigera produkt */}
+          <Box
+            sx={{
+              width: { xs: "100%", md: "320px" },
+              backgroundColor: "white",
+              p: 2,
+              borderRadius: 2,
+              minHeight: "100%",
+              position: { md: "sticky" },
+              top: "80px",
+            }}
+          >
+            <ProductManagementCreate />
+          </Box>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </PageWrapper>
   );
 }
 
-export default ProductManagement;
+export default ProductManagementPage;

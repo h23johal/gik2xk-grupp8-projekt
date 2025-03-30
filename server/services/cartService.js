@@ -1,6 +1,7 @@
 const db = require("../models");
 const { createOkObjectSuccess, createResponseError, createResponseMessage } = require("../helpers/responseHelper");
 
+// Hämtar alla varukorgar
 async function getAll() {
   try {
     const carts = await db.Cart.findAll();
@@ -10,6 +11,7 @@ async function getAll() {
   }
 }
 
+// Hämtar een varukorg på id
 async function getById(id) {
   try {
     const cart = await db.Cart.findByPk(id);
@@ -20,22 +22,23 @@ async function getById(id) {
   }
 }
 
+//Hämtar aktuell varukorg för en användare (skapar en ny om ingen obetald finns)
 async function getCart(user_id) {
     try {
         console.log(`Fetching cart with user_id: ${user_id}`);
 
-        // 🔥 Hämta den senaste obetalda varukorgen
+        // Hämta den senaste obetalda varukorgen
         let cart = await db.Cart.findOne({ 
-            where: { user_id, paid: false }, // 🔹 Endast obetalda varukorgar
+            where: { user_id, paid: false }, // Endast obetalda varukorgar
             include: [{ 
                 model: db.CartRow, 
                 as: 'rows', 
                 include: [{ model: db.Product, as: 'product' }] 
             }],
-            order: [['createdAt', 'DESC']], // 🔹 Ifall det finns flera, hämta den senaste
+            order: [['createdAt', 'DESC']], 
         });
 
-        // 🔹 Om ingen obetald varukorg finns, skapa en ny
+        // Om ingen obetald varukorg finns, skapa en ny
         if (!cart) {
             cart = await db.Cart.create({ user_id, paid: false });
         }
@@ -58,7 +61,7 @@ async function getCart(user_id) {
     }
 }
 
-
+// Lägger till en produkt i varukorgen
 async function addToCart(user_id, product_id, amount) {
   try {
     const [cart] = await db.Cart.findOrCreate({
@@ -82,6 +85,7 @@ async function addToCart(user_id, product_id, amount) {
   }
 }
 
+//Skapar en ny varukorg
 async function create(cart) {
   try {
     const newCart = await db.Cart.create(cart);
@@ -91,6 +95,7 @@ async function create(cart) {
   }
 }
 
+//Uppdaterar en varukorgsrad
 async function update(cartData) {
   try {
     const { cart_id, product_id, amount } = cartData;
@@ -108,6 +113,7 @@ async function update(cartData) {
   }
 }
 
+// Raderar en varukorg
 async function destroy(id) {
   try {
     const deleted = await db.Cart.destroy({ where: { id } });
@@ -118,6 +124,7 @@ async function destroy(id) {
   }
 }
 
+// Tar bort en produkt från varukorgen
 async function removeFromCart(cart_id, product_id) {
   try {
     const deleted = await db.CartRow.destroy({
@@ -132,29 +139,30 @@ async function removeFromCart(cart_id, product_id) {
   }
 }
 
+// Checkar ut varukorgen genom att markera den som betald
 async function checkoutCart(user_id) {
     try {
-        // 🔥 Hämta den senaste obetalda varukorgen
+        // Hämta den senaste obetalda varukorgen
         const cart = await db.Cart.findOne({ 
-            where: { user_id, paid: 0 }, // ✅ Endast obetalda ordrar
+            where: { user_id, paid: 0 }, // Endast obetalda ordrar
             include: [{ 
                 model: db.CartRow, 
-                as: 'rows' // ✅ Inkludera cart_rows
+                as: 'rows' // Inkludera cart_rows
             }],
-            order: [['createdAt', 'DESC']], // ✅ Senaste cart först
+            order: [['createdAt', 'DESC']], // Senaste cart först
         });
 
-        // ✅ Om ingen obetald varukorg finns, returnera fel
+        // Om ingen obetald varukorg finns, returnera fel
         if (!cart) return createResponseError(404, "Ingen obetald varukorg hittades");
 
-        // ✅ Kontrollera att varukorgen faktiskt har produkter
+        // Kontrollera att varukorgen faktiskt har produkter
         if (!cart.rows || cart.rows.length === 0) {
             return createResponseError(400, "Kan inte checka ut en tom varukorg");
         }
 
-        // ✅ Markera varukorgen som betald
+        // Markera varukorgen som betald
         await db.Cart.update(
-            { paid: 1, updated_at: new Date() }, // 🔥 Sätt `paid` till `1` (true)
+            { paid: 1, updated_at: new Date() },
             { where: { id: cart.id } }
         );
 
@@ -166,12 +174,12 @@ async function checkoutCart(user_id) {
 }
 
 
-
+// Hämtar orderhistorik för en användare
 async function getOrderHistory(user_id) {
   try {
     const orders = await db.Cart.findAll({
       where: { user_id, paid: true },
-      include: [{ model: db.CartRow, as: "rows", include: [{ model: db.Product, as: "product" }] }],
+      include: [{ model: db.CartRow, as: "rows", include: [{ model: db.Product, as: "product", paranoid: false, }] }],
       order: [["updatedAt", "DESC"]],
     });
 
@@ -181,4 +189,26 @@ async function getOrderHistory(user_id) {
   }
 }
 
-module.exports = { getAll, getById, create, update, destroy, getCart, addToCart, removeFromCart, checkoutCart, getOrderHistory };
+// Kontrollerar om en användare har köpt en specifik produkt
+async function userHasPurchased(user_id, product_id) {
+  try {
+    const result = await db.Cart.findOne({
+      where: { user_id, paid: true },
+      include: [
+        {
+          model: db.CartRow,
+          as: "rows",
+          where: { product_id },
+        },
+      ],
+    });
+
+    return !!result; // true = produkt hittad i köpt cart
+  } catch (error) {
+    console.error("Fel i userHasPurchased:", error);
+    return false;
+  }
+}
+
+
+module.exports = { getAll, getById, create, update, destroy, getCart, addToCart, removeFromCart, checkoutCart, getOrderHistory, userHasPurchased };

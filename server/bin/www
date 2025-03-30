@@ -1,34 +1,68 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
+// Modulberoenden.
 var app = require('../app');
 var debug = require('debug')('server:server');
 var http = require('http');
+const fs = require("fs");
+const path = require("path");
 
-/**
- * Get port from environment and store in Express.
- */
+// Få port från miljön och lagra i Express.
 
-var port = normalizePort(process.env.PORT || '5002');
+var port = normalizePort(process.env.PORT || '5002'); // 5002 är fallback port
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
+// Skapar HTTP server.
+async function runSqlFile(filePath) {
+  try {
+    const rawSql = fs.readFileSync(filePath, 'utf8');
+
+    // Rensa bort kommentarer och dela upp på semikolon följt av radslut
+    const statements = rawSql
+      .split(/;\s*[\r\n]+/) // Dela på semikolon + radslut
+      .map(s => s.trim())
+      .filter(s => s.length && !s.startsWith('--') && !s.startsWith('/*'));
+
+    for (const statement of statements) {
+      try {
+        await db.sequelize.query(statement);
+      } catch (err) {
+        console.error('Fel vid körning av:', statement);
+        console.error(err.message);
+      }
+    }
+
+    console.log('SQL-filen kördes klart!');
+  } catch (err) {
+    console.error('Kunde inte läsa/köra SQL-filen:', err.message);
+  }
+}
 
 var server = http.createServer(app);
-
+const FORCE_SYNC = false; 
+// const FORCE_SYNC = true; // OBS! Denna kommer att radera all data i databasen
 const db = require('../models/');
-// Synkronisera databasen (ta bort { force: true } om du inte vill återställa databasen varje gång)
 db.sequelize
-.sync()
-//.sync({force: true})
+.query('SET FOREIGN_KEY_CHECKS = 0') //inaktivera foreign key checks
 .then(() => {
+  return db.sequelize.sync({force: FORCE_SYNC});
+})
+.then(async () => {
+  await db.sequelize.query('SET FOREIGN_KEY_CHECKS = 1'); //möjliggör kontroll av foreign key 
+  
   console.log('Databasen är synkad');
-  app.listen(port, () => {
+
+  if (FORCE_SYNC) {
+      const sqlPath = path.join(__dirname, "../sql/initDB.sql");
+
+      if (fs.existsSync(sqlPath)) {
+        await runSqlFile(sqlPath);
+      } else {
+        console.warn('initDB.sql hittades inte:', sqlPath);
+      }
+    }
+
+  server.listen(port, () => {
     console.log(`Servern kör på port ${port}`);
   });
 }).catch((e) => {
@@ -39,10 +73,7 @@ db.sequelize
 server.on('error', onError);
 server.on('listening', onListening);
 
-/**
- * Normalize a port into a number, string, or false.
- */
-
+// Normalisera en port till ett nummer, sträng eller falsk.
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
@@ -52,17 +83,15 @@ function normalizePort(val) {
   }
 
   if (port >= 0) {
-    // port number
+    // port nummer
     return port;
   }
 
   return false;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
 
+// Händelseavlyssnare för HTTP-server "fel" event.s
 function onError(error) {
   if (error.syscall !== 'listen') {
     throw error;
@@ -72,7 +101,7 @@ function onError(error) {
     ? 'Pipe ' + port
     : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
+  // hantera specifika lyssningsfel med vänliga meddelanden
   switch (error.code) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges');
@@ -87,10 +116,8 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
 
+// Händelseavlyssnare för HTTP-server "lyssnar"-händelser.
 function onListening() {
   var addr = server.address();
   var bind = typeof addr === 'string'

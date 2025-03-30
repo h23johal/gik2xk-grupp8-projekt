@@ -41,7 +41,7 @@ const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
             }}
           >
             <Typography variant="caption" color="text.secondary">
-              Ingen bild
+              No image available
             </Typography>
           </Box>
         )}
@@ -51,7 +51,7 @@ const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
           <CardContent sx={{ p: 0 }}>
             <Typography variant="h6">{item.name}</Typography>
             <Typography variant="body2" color="text.secondary">
-              {item.price} kr
+              {"$" + item.price}
             </Typography>
 
             {/* Antal-kontroller */}
@@ -67,7 +67,7 @@ const CartItemCard = ({ item, onUpdateQuantity, onRemove }) => {
               >
                 <RemoveCircleOutlineIcon />
               </IconButton>
-
+              {/* Kvantitet */}
               <TextField
                 type="number"
                 value={item.amount}

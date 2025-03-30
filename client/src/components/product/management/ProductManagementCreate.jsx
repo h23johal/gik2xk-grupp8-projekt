@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import ProductManagementForm from "./ProductManagementForm";
-
+//simpel komponent för att hålla formuläret för att skapa produkter
 function ProductManagementCreate() {
   return (
     <Card

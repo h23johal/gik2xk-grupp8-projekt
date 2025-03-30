@@ -9,19 +9,19 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
-  // 🔹 Load user from localStorage on page refresh
+  // Ladda användare från localStorage på siduppdatering
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
-      setUser(JSON.parse(storedUser)); // Convert back to object
+      setUser(JSON.parse(storedUser)); // Konvertera tillbaka till objekt
     }
   }, []);
 
   const login = async (email, password) => {
     const response = await loginUser(email, password);
     if (response?.user_id) {
-      const loggedInUser = { id: response.user_id, email }; // Store relevant info
-      localStorage.setItem("user", JSON.stringify(loggedInUser)); // Store full user object
+      const loggedInUser = { id: response.user_id, email }; // Lagra relevant information
+      localStorage.setItem("user", JSON.stringify(loggedInUser)); // Lagra hela användarobjektet
       setUser(loggedInUser);
       setAuthModalOpen(false);
     }
@@ -41,11 +41,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     logoutUser();
-    localStorage.removeItem("user"); // Remove full user object
+    localStorage.removeItem("user"); // Ta bort hela användarobjektet
     setUser(null);
 
     setTimeout(() => {
-      window.location.reload(); // 🔥 Force full reload for clean state
+      window.location.reload(); // Tvinga full omladdning för rent tillstånd
     }, 100);
   };
 
