@@ -7,6 +7,8 @@ import { useReviews } from "../../utils/useReviews";
 import { createCircularList } from "../../utils/circularList";
 import { createFlowScroll } from "../../utils/flowScroll";
 import { useSwipeScroll } from "../../utils/UseSwipeScroll";
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 function ReviewCarousel({ onReviewClick }) {
   const { reviews, loading } = useReviews();
@@ -15,8 +17,41 @@ function ReviewCarousel({ onReviewClick }) {
   const [offset, setOffset] = useState(0);
   const flowScrollRef = useRef(null);
   const carouselRef = useRef(null);
-  const cardWidth = useRef(280);
-  const visibleCount = 5;
+  const [visibleCount, setVisibleCount] = useState(5);
+  const [showFade, setShowFade] = useState(true);
+  
+
+  const GAP_SIZE = 16; 
+  
+
+  const cardWidth = useRef(280 + GAP_SIZE); 
+  
+  const theme = useTheme();
+  const isXs = useMediaQuery(theme.breakpoints.down('sm'));
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (carouselRef.current) {
+        recalculateVisibleCount();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (carouselRef.current && reviews.length > 0) {
+      const firstCard = carouselRef.current.querySelector(".review-card");
+      if (firstCard) {
+        const measuredWidth = firstCard.offsetWidth;
+        cardWidth.current = measuredWidth + GAP_SIZE;
+        
+        recalculateVisibleCount();
+      }
+    }
+  }, [reviews]);
 
   useEffect(() => {
     if (!reviews.length) {
@@ -29,48 +64,85 @@ function ReviewCarousel({ onReviewClick }) {
     setCurrentNode(newCircularList);
   }, [reviews]);
 
-  useEffect(() => {
-    if (carouselRef.current && reviews.length > 0) {
-      const firstCard = carouselRef.current.querySelector(".review-card");
-      if (firstCard) cardWidth.current = firstCard.offsetWidth + 16;
+  const recalculateVisibleCount = () => {
+    if (!carouselRef.current) return;
+    
+    const containerWidth = carouselRef.current.offsetWidth;
+    const effectiveCardWidth = cardWidth.current;
+    
+    if (isXs) {
+      const maxItems = Math.max(1, Math.floor(containerWidth / effectiveCardWidth));
+      setVisibleCount(maxItems);
+      setShowFade(false);
+    } 
+    else {
+      const maxFullItems = Math.floor(containerWidth / effectiveCardWidth);
+      
+      if (maxFullItems === 1) {
+        setVisibleCount(3); 
+      } else {
+        setVisibleCount(Math.max(3, maxFullItems + 1));
+      }
+      setShowFade(true);
     }
-  }, [reviews]);
-
-useEffect(() => {
-  const calculateAlignment = (currentOffset) => {
-    const cardWidthValue = cardWidth.current;
-    
-    // Calculate nearest aligned position
-    const nearestAligned = Math.round(currentOffset / cardWidthValue) * cardWidthValue;
-    
-    // Calculate distance to nearest aligned position
-    const distance = Math.abs(currentOffset - nearestAligned);
-    
-    // Calculate next and previous aligned positions
-    const nextAligned = nearestAligned + cardWidthValue;
-    const prevAligned = nearestAligned - cardWidthValue;
-    
-    return {
-      alignedOffset: nearestAligned,
-      distanceToAligned: distance,
-      alignmentThreshold: cardWidthValue * 0.05, // 5% of card width
-      nextAlignedOffset: nextAligned,
-      prevAlignedOffset: prevAligned
-    };
   };
 
-  // Create flowScroll instance with the alignment calculator
-  flowScrollRef.current = createFlowScroll({
-    initialOffset: 0,
-    updateOffset: setOffset,
-    deceleration: 0.002,
-    maxVelocity: 0.008,
-    maxMomentumDuration: 600,
-    alignmentCalculator: calculateAlignment
-  });
-  
-  return () => flowScrollRef.current.cancel();
-}, [reviews]);
+  useEffect(() => {
+    recalculateVisibleCount();
+  }, [carouselRef.current, isXs, reviews, cardWidth.current]);
+
+  useEffect(() => {
+    const calculateAlignment = (currentOffset) => {
+      const cardWidthValue = cardWidth.current;
+      
+      const nearestAligned = Math.round(currentOffset / cardWidthValue) * cardWidthValue;
+      
+      const distance = Math.abs(currentOffset - nearestAligned);
+      
+      const nextAligned = nearestAligned + cardWidthValue;
+      const prevAligned = nearestAligned - cardWidthValue;
+      
+      if (isXs && visibleCount <= 1) {
+        if (currentOffset < -20) {
+          return {
+            alignedOffset: nextAligned,
+            distanceToAligned: 0,
+            alignmentThreshold: 0, 
+            nextAlignedOffset: nextAligned,
+            prevAlignedOffset: prevAligned
+          };
+        }
+        else if (currentOffset > 20) {
+          return {
+            alignedOffset: prevAligned,
+            distanceToAligned: 0,
+            alignmentThreshold: 0, 
+            nextAlignedOffset: nextAligned,
+            prevAlignedOffset: prevAligned
+          };
+        }
+      }
+      
+      return {
+        alignedOffset: nearestAligned,
+        distanceToAligned: distance,
+        alignmentThreshold: cardWidthValue * 0.3, 
+        nextAlignedOffset: nextAligned,
+        prevAlignedOffset: prevAligned
+      };
+    };
+
+    flowScrollRef.current = createFlowScroll({
+      initialOffset: 0,
+      updateOffset: setOffset,
+      deceleration: 0.0035,
+      maxVelocity: 0.005,
+      maxMomentumDuration: 600,
+      alignmentCalculator: calculateAlignment
+    });
+    
+    return () => flowScrollRef.current?.cancel();
+  }, [reviews, isXs, visibleCount]);
 
   useEffect(() => {
     if (!circularList || !currentNode) return;
@@ -110,17 +182,65 @@ useEffect(() => {
   };
 
   const scrollPrev = () => {
-    setCurrentNode((prev) => {
-      if (!prev || !circularList) return prev;
-      let node = circularList;
-      while (node.next !== prev) node = node.next;
-      return node;
-    });
+
+    if (isXs || visibleCount <= 3) {
+      setCurrentNode((prev) => {
+        if (!prev || !circularList) return prev;
+        let node = circularList;
+        while (node.next !== prev) node = node.next;
+        return node;
+      });
+    } 
+
+    else {
+
+      if (carouselRef.current) {
+        const containerWidth = carouselRef.current.offsetWidth;
+        const fullVisibleCards = Math.floor(containerWidth / cardWidth.current);
+        
+
+        let node = currentNode;
+        for (let i = 0; i < Math.max(1, fullVisibleCards - 2); i++) {
+          let prev = circularList;
+          while (prev.next !== node) prev = prev.next;
+          node = prev;
+        }
+        setCurrentNode(node);
+      } else {
+
+        setCurrentNode((prev) => {
+          if (!prev || !circularList) return prev;
+          let node = circularList;
+          while (node.next !== prev) node = prev.next;
+          return node;
+        });
+      }
+    }
     setOffset(0);
   };
 
   const scrollNext = () => {
-    setCurrentNode((prev) => (prev ? prev.next : prev));
+
+    if (isXs || visibleCount <= 3) {
+      setCurrentNode((prev) => (prev ? prev.next : prev));
+    } 
+
+    else {
+
+      if (carouselRef.current) {
+        const containerWidth = carouselRef.current.offsetWidth;
+        const fullVisibleCards = Math.floor(containerWidth / cardWidth.current);
+        
+
+        let node = currentNode;
+        for (let i = 0; i < Math.max(1, fullVisibleCards - 2); i++) {
+          node = node.next;
+        }
+        setCurrentNode(node);
+      } else {
+        setCurrentNode((prev) => (prev ? prev.next : prev));
+      }
+    }
     setOffset(0);
   };
 
@@ -141,33 +261,36 @@ useEffect(() => {
 
   return (
     <Box sx={{ 
-      position: "relative", 
+      position: "relative",
       width: "100%",
-      overflow: "hidden" // Add overflow hidden to contain carousel items
+      marginTop: "-24px",
+      overflow: "hidden"
     }}>
-      {/* Fade overlay at left edge (1/4 card width) */}
-      <Box sx={{
-        position: "absolute",
-        left: 0,
-        top: 0,
-        height: "100%",
-        width: Math.floor(cardWidth.current * 0.25) + "px",
-        background: "linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)",
-        zIndex: 2,
-        pointerEvents: "none"
-      }} />
-      
-      {/* Fade overlay at right edge (1/4 card width) */}
-      <Box sx={{
-        position: "absolute",
-        right: 0,
-        top: 0,
-        height: "100%",
-        width: Math.floor(cardWidth.current * 0.25) + "px",
-        background: "linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)",
-        zIndex: 2,
-        pointerEvents: "none"
-      }} />
+      {showFade && (
+        <>
+          <Box sx={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            height: "100%",
+            width: Math.floor(cardWidth.current * 0.25) + "px",
+            background: "linear-gradient(to right, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)",
+            zIndex: 2,
+            pointerEvents: "none"
+          }} />
+          
+          <Box sx={{
+            position: "absolute",
+            right: 0,
+            top: 0,
+            height: "100%",
+            width: Math.floor(cardWidth.current * 0.25) + "px",
+            background: "linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)",
+            zIndex: 2,
+            pointerEvents: "none"
+          }} />
+        </>
+      )}
       
       <Box
         ref={carouselRef}
@@ -175,13 +298,13 @@ useEffect(() => {
           userSelect: "none",
           display: "flex",
           gap: 2,
-          py: 1,
-          px: 0.5,
+          py: 2,
+          px: 2,
           overflow: "visible",
           width: "100%",
           cursor: isDragging ? "grabbing" : "grab",
           transform: `translateX(${offset}px)`,
-          transition: isDragging ? "none" : "transform 0.15s ease-out",
+          transition: isDragging ? "none" : "transform 0.7s cubic-bezier(0.22, 0.0, 0.11, 1.0)",
         }}
         {...swipeProps}
       >

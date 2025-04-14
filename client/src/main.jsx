@@ -1,3 +1,4 @@
+// Sätter upp React-applikationen med routing, tema och kontextproviders
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";

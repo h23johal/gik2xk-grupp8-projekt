@@ -21,7 +21,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
+import FoundationIcon from "@mui/icons-material/Foundation";
 
+//navbar component
 function Navbar() {
   const { cartCount } = useCart();
   const { user, logout, openAuthModal } = useAuth();
@@ -30,7 +32,11 @@ function Navbar() {
   const [newsOpen, setNewsOpen] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
-    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) return;
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    )
+      return;
     setDrawerOpen(open);
   };
 
@@ -83,7 +89,7 @@ function Navbar() {
                   display: { xs: "none", md: "inline-flex" },
                 }}
               >
-                YourBrand
+                <FoundationIcon />
               </Button>
 
               <Button
@@ -105,25 +111,35 @@ function Navbar() {
               </Button>
             </Box>
 
-            {/* Högersida: Nav-knappar (visa endast på md och uppåt) */}
-            <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 1 }}>
+            {/* Högersida: Nav-knappar */}
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
               {user?.id === 1 && (
                 <Button component={Link} to="/admin" sx={navButtonStyle}>
                   Product Management
                 </Button>
               )}
               {user && (
-                <Button component={Link} to="/order-history" sx={navButtonStyle}>
-                  Mina Beställningar
+                <Button
+                  component={Link}
+                  to="/order-history"
+                  sx={navButtonStyle}
+                >
+                  My Orders
                 </Button>
               )}
               {user ? (
                 <Button onClick={handleLogout} sx={navButtonStyle}>
-                  Logga ut
+                  Log out
                 </Button>
               ) : (
                 <Button onClick={openAuthModal} sx={navButtonStyle}>
-                  Logga in
+                  Log in
                 </Button>
               )}
               <IconButton
@@ -153,10 +169,13 @@ function Navbar() {
                 <ListItemText primary="Hem" />
               </ListItem>
 
-              <ListItem button onClick={() => {
-                setDrawerOpen(false);
-                setNewsOpen(true);
-              }}>
+              <ListItem
+                button
+                onClick={() => {
+                  setDrawerOpen(false);
+                  setNewsOpen(true);
+                }}
+              >
                 <ListItemText primary="News" />
               </ListItem>
 
@@ -200,14 +219,16 @@ function Navbar() {
           },
         }}
       >
-        <DialogTitle>Senaste Nytt 📰</DialogTitle>
+        <DialogTitle>Latest News 📰</DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ color: "text.primary" }}>
-            ✅ Vi har precis fått in nya produkter!  
-            <br /><br />
-            🎮 Superrea på Gaming-tillbehör denna vecka!  
-            <br /><br />
-            🚚 Leveranser går nu ännu snabbare tack vare vårt nya lager!
+            ✅ We’ve just received new products!
+            <br />
+            <br />
+            🎮 Huge sale on gaming accessories this week!
+            <br />
+            <br />
+            🚚 Deliveries are now even faster thanks to our new warehouse!
           </DialogContentText>
         </DialogContent>
       </Dialog>

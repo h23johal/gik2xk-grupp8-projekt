@@ -39,13 +39,15 @@ router.delete('/', (req, res) => {
     res.status(result.status).json(result.data);
   });
 });
-
+// Lägg till ett betyg (rating) på en produkt med angivet produkt-id (från URL:en)
+// user_id och betygspoäng (score) hämtas från requestens body
 router.post('/:id/addRating', (req, res) => {
   const { user_id, score } = req.body;
   ratingService.addRating(req.params.id, user_id, score)
     .then(result => res.status(result.status).json(result.data));
 });
 
+// Återställ (restore) en produkt med angivet produkt-id (från URL:en)
 router.put('/:id/restore', (req, res) => {
   productService.restore(req.params.id).then(result => {
     res.status(result.status).json(result.data);

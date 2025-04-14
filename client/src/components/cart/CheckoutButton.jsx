@@ -10,31 +10,37 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { checkoutCart } from "../../services/CartService";
-import { useSnackbar } from "../../context/SnackbarContext"; // 🔹 Import global snackbar
+import { useSnackbar } from "../../context/SnackbarContext";
+
 
 const CheckoutButton = () => {
+  //AuthContext för att kontrollera vilken användare som datan ska sparas till
   const { user } = useAuth();
+  //CartContext för att kontrollera vilken kundvagn datan ska sparas till
   const { cartItems, setCartItems } = useCart();
-  const { showSnackbar } = useSnackbar(); // 🔹 Use global snackbar
+  //global snackbar
+  const { showSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
+  //hantera checkout
   const handleCheckout = async () => {
+    //extra redundans, ska kontrollera att användare är inloggad innan köp genomförs
     if (!user) {
-      showSnackbar("Du måste vara inloggad för att slutföra köpet.", "error");
+      showSnackbar("You must be logged in to complete the purchase.", "error");
       return;
     }
-
+    //laddfunktion, redundans för att säkerställa att allt laddas in korrekt vid nyinladdning av cart
     setLoading(true);
+    //kalla på checkout funktion från CartService
     const response = await checkoutCart(user.id);
-
+    //snackbar responsmeddelande
     if (response && !response.error) {
-      showSnackbar("Köp genomfört! Din order har sparats.", "success");
-      setCartItems([]); // Clear frontend cart
-      setOpen(false); // Close modal
+      showSnackbar("Purchase completed! Your order has been saved.", "success");
+      setCartItems([]); // töm cart i frontend
+      setOpen(false); // stäng modal
     } else {
-      showSnackbar("Något gick fel vid checkout. Försök igen.", "error");
+      showSnackbar("Something went wrong during checkout. Please try again.", "error");
     }
     setLoading(false);
   };
@@ -48,21 +54,21 @@ const CheckoutButton = () => {
         onClick={() => setOpen(true)}
         disabled={cartItems.length === 0}
       >
-        Genomför köp
+        Complete Purchase
       </Button>
 
-      {/* 🔹 Checkout Confirmation Dialog */}
+      {/* Checkout bekräftelse */}
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Bekräfta köp</DialogTitle>
+        <DialogTitle>Confirm Purchase</DialogTitle>
         <DialogContent>
           <Typography>
-            Är du säker på att du vill genomföra ditt köp?
+          Are you sure you want to complete your purchase?
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Avbryt</Button>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
           <Button onClick={handleCheckout} color="primary" disabled={loading}>
-            {loading ? "Behandlar..." : "Bekräfta köp"}
+            {loading ? "Processing..." : "Confirm Purchase"}
           </Button>
         </DialogActions>
       </Dialog>

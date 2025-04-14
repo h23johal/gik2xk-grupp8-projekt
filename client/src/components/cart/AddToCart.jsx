@@ -6,7 +6,9 @@ import { useAuth } from "../../context/AuthContext";
 
 function AddToCart({ product }) {
   const [amount, setQuantity] = useState(1);
+  //useCart från CartContext för att veta vilken cart som ska användas
   const { addToCart } = useCart();
+  //useAuth från AuthContext för att veta vilken användare som är inloggad
   const { user, openAuthModal } = useAuth();
 
   const handleAddToCart = () => {
@@ -39,7 +41,7 @@ function AddToCart({ product }) {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         In stock - Ships within 24 hours
       </Typography>
-
+      {/* Kvantitetsruta */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
         <TextField
           type="number"
@@ -52,11 +54,12 @@ function AddToCart({ product }) {
           size="small"
           sx={{ width: "80px", mr: 2 }}
         />
-
+        {/* Lägg till i kundvagn-knappen */}
         <Button
           variant="contained"
           color="primary"
           startIcon={<ShoppingCartIcon />}
+          //kalla på funktion för att lägga till i kundvagn
           onClick={handleAddToCart}
           sx={{ flexGrow: 1 }}
         >

@@ -3,26 +3,28 @@ import SecurityIcon from "@mui/icons-material/Security";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 
+// Lista med butikens egenskaper: ikon, titel och beskrivning
 const features = [
   {
     icon: <SecurityIcon fontSize="large" color="primary" />,
-    title: "Trygg E-handel",
-    description: "Säkra betalningar och krypterad hantering av dina uppgifter.",
+    title: "Secure E-commerce",
+    description: "Secure payments and encrypted handling of your information.",
   },
   {
     icon: <LocalShippingIcon fontSize="large" color="primary" />,
-    title: "Fri Frakt",
-    description: "Vi bjuder på frakten vid alla beställningar över 500 kr.",
+    title: "Free Shipping",
+    description: "We offer free shipping on all orders over $500.",
   },
   {
     icon: <SupportAgentIcon fontSize="large" color="primary" />,
-    title: "Kundservice 24/7",
-    description: "Chatta med oss när som helst – vi är alltid här för dig.",
+    title: "Customer Service 24/7",
+    description: "Chat with us anytime – we're always here for you.",
   },
 ];
 
 function StoreInfo() {
   return (
+    // Yttre container, centrerad och responsiv layout
     <Box
       sx={{
         width: "100%",
@@ -31,9 +33,9 @@ function StoreInfo() {
         justifyContent: "center",
         alignItems: "center",
         py: 10,
-        px: 20,
       }}
     >
+      {/* Inre container med flexlayout för korten */}
       <Box
         sx={{
           display: "flex",
@@ -43,6 +45,7 @@ function StoreInfo() {
           maxWidth: 1200,
         }}
       >
+        {/* Gå igenom varje objekt och rendera som kort */}
         {features.map((item, i) => (
           <Paper
             key={i}
@@ -56,10 +59,15 @@ function StoreInfo() {
               background: "white",
             }}
           >
+            {/* Ikon */}
             <Box sx={{ mb: 2 }}>{item.icon}</Box>
+            
+            {/* Titel */}
             <Typography variant="h6" sx={{ fontWeight: 500, mb: 1 }}>
               {item.title}
             </Typography>
+            
+            {/* Beskrivning */}
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               {item.description}
             </Typography>

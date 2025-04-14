@@ -23,7 +23,9 @@ import {
   Alert,
 } from "@mui/material";
 
+//CRUD formulär för produkter
 function ProductManagementForm() {
+  //global snackbar används för bekräftelsemeddelanden
   const { showSnackbar } = useSnackbar();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -38,9 +40,9 @@ function ProductManagementForm() {
   const [open, setOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-
+  //dialogruta för att bekräfta eller avbryta borttagning
   function onDelete() {
-    setOpen(true); // Open confirmation dialog
+    setOpen(true);
   }
 
   useEffect(() => {
@@ -66,11 +68,11 @@ function ProductManagementForm() {
         navigate("/admin", { replace: true, state: response });
       } else {
         const response = await updateProduct(product);
-        showSnackbar("Produkten har uppdaterats!", "success");
+        showSnackbar("The product has been updated!", "success");
         navigate(`/admin/${product.id}`, { replace: true, state: response });
       }
     } catch (error) {
-      showSnackbar(error.message, "error"); // 🔥 Visar backendens valideringsfel
+      showSnackbar(error.message, "error"); // Visar backendens valideringsfel
     }
   }
 
@@ -95,7 +97,7 @@ function ProductManagementForm() {
         value={product.title}
         name="title"
         id="title"
-        label="Titel"
+        label="Title"
         fullWidth
       />
       <TextField
@@ -113,7 +115,7 @@ function ProductManagementForm() {
         value={product.price}
         name="price"
         id="price"
-        label="Pris"
+        label="Price"
         fullWidth
       />
       <TextField
@@ -121,34 +123,33 @@ function ProductManagementForm() {
         value={product.imageUrl}
         name="imageUrl"
         id="imageUrl"
-        label="Sökväg till bild"
+        label="Path to image"
         fullWidth
       />
 
       <Box display="flex" gap={1} justifyContent="flex-start">
         {id && (
           <Button onClick={onDelete} variant="contained" color="error">
-            Ta bort
+            Delete
           </Button>
         )}
         <Button onClick={onSave} variant="contained" color="success">
-          Spara
+          Save
         </Button>
       </Box>
       <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Bekräfta borttagning</DialogTitle>
+        <DialogTitle>Confirm removal</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Är du säker på att du vill ta bort denna produkt? Denna åtgärd kan
-            inte ångras.
+          Are you sure you want to remove this product? This action cannot be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)} color="primary">
-            Avbryt
+            Cancel
           </Button>
           <Button onClick={confirmDelete} color="error" variant="contained">
-            Ta bort
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
@@ -160,7 +161,7 @@ function ProductManagementForm() {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
-          Produkten har uppdaterats!
+        The product has been updated!
         </Alert>
       </Snackbar>
     </Box>

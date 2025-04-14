@@ -1,6 +1,6 @@
 import { Card, CardContent, CardMedia, Typography } from '@mui/material';
 import ProductRatingDisplay from "../rating/ProductRatingDisplay";
-
+//product-card för detaljvy
 function ProductCardLarge({ product }) {
   return (
     <Card

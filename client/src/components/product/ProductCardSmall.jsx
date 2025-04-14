@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ProductRatingDisplay from "../rating/ProductRatingDisplay";
-
+//product card för gridvy
 function ProductCardSmall({ product }) {
   return (
     <Card
@@ -29,6 +29,7 @@ function ProductCardSmall({ product }) {
         },
       }}
     >
+      {/* länka till detaljvy */}
       <CardActionArea component={Link} to={`/products/${product.id}`} sx={{ height: "100%" }}>
         {product.imageUrl && (
           <CardMedia

@@ -8,7 +8,7 @@ function HomePage() {
   return (
     <PageWrapper>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        {/* Intro */}
+        {/* Sidhuvud med tagline */}
         <Box sx={{ textAlign: "center", mb: 4 }}>
           <Typography variant="h4" gutterBottom>
             Engineered Beyond Limits
@@ -18,12 +18,12 @@ function HomePage() {
           </Typography>
         </Box>
 
-        {/* Produktkort */}
+        {/* Produktgrid */}
         <ProductGrid
           renderContent={(product) => <ProductCardSmall product={product} />}
         />
 
-        {/* Info-sektion */}
+        {/* Sektion: värdeerbjudande */}
         <Box
           sx={{
             display: "flex",
@@ -34,33 +34,47 @@ function HomePage() {
             mt: 5,
           }}
         >
+          {/* Kvalitetsbeskrivning */}
           <Box sx={{ flex: "1 1 300px" }}>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 300, mb: 2 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontWeight: 300, mb: 2 }}
+            >
               Exceptional Quality
             </Typography>
             <Typography
               variant="body1"
               sx={{ color: "text.secondary", lineHeight: 1.8, mb: 2 }}
             >
-              We curate only the finest technological innovations that offer both
-              superior performance and exceptional design.
+              We curate only the finest technological innovations that offer
+              both superior performance and exceptional design. Each product
+              represents our unwavering commitment to excellence.
             </Typography>
           </Box>
 
+          {/* Servicebeskrivning */}
           <Box sx={{ flex: "1 1 300px" }}>
-            <Typography variant="h5" gutterBottom sx={{ fontWeight: 300, mb: 2 }}>
+            <Typography
+              variant="h5"
+              gutterBottom
+              sx={{ fontWeight: 300, mb: 2 }}
+            >
               Lifetime Service
             </Typography>
             <Typography
               variant="body1"
               sx={{ color: "text.secondary", lineHeight: 1.8, mb: 2 }}
             >
-              You're not just acquiring a device—you’re gaining a lifelong relationship.
+              When you invest in our collection, you're not just acquiring a
+              device—you’re gaining a lifelong relationship. Our dedicated
+              support ensures your technology remains as exceptional as the day
+              you first experienced it.
             </Typography>
           </Box>
         </Box>
 
-        {/* Store info längst ner i sidan */}
+        {/* Sektion: butikens egenskaper */}
         <Box sx={{ mt: 6 }}>
           <StoreInfo />
         </Box>

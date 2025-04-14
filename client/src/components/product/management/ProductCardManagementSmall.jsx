@@ -7,7 +7,8 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "react-router-dom";
-import Overlay from "../../Overlay"; // Import reusable Overlay
+//hemmagjord overlay komponent
+import Overlay from "../../Overlay";
 import RestoreIcon from "@mui/icons-material/Restore";
 import { restoreProduct } from "../../../services/ProductService";
 import { useSnackbar } from "../../../context/SnackbarContext";
@@ -19,10 +20,10 @@ function ProductCardManagementSmall({ product, refetch }) {
     e.stopPropagation();
     try {
       await restoreProduct(product.id);
-      showSnackbar("Produkten återställdes!", "success");
+      showSnackbar("The product has been restored!", "success");
       refetch();
     } catch (err) {
-      console.error("Fel vid återställning:", err);
+      console.error("Error during restoration:", err);
     }
   };
 
@@ -30,8 +31,9 @@ function ProductCardManagementSmall({ product, refetch }) {
     <Card
       onClick={(e) => e.stopPropagation()}
       sx={{
-        width: 235,               // 👈 Fast bredd
-        height: 250,              // 👈 Fast höjd
+        //fast höjd och bredd för rutorna
+        width: 235,
+        height: 265,
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -48,6 +50,7 @@ function ProductCardManagementSmall({ product, refetch }) {
       <Overlay
         overlayContent={
           product.deletedAt ? (
+            //Återställningsknapp om produkten är "borttagen"
             <IconButton
               onClick={handleRestore}
               sx={{
@@ -61,6 +64,7 @@ function ProductCardManagementSmall({ product, refetch }) {
               <RestoreIcon sx={{ fontSize: 50 }} />
             </IconButton>
           ) : (
+            // annars, redigera-knapp
             <IconButton
               component={Link}
               to={`/admin/${product.id}`}
@@ -105,7 +109,7 @@ function ProductCardManagementSmall({ product, refetch }) {
               color="error"
               sx={{ mt: 1, display: "block", fontWeight: "bold" }}
             >
-              Borttagen
+              Deleted
             </Typography>
           )}
         </CardContent>

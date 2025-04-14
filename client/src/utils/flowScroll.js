@@ -1,9 +1,9 @@
 export function createFlowScroll({
   initialOffset = 0,
   updateOffset,
-  deceleration = 0.04,
-  maxMomentumDuration = 800,
-  maxVelocity = 0.01,
+  deceleration = 0.012, // Extra slow deceleration
+  maxMomentumDuration = 1800, // Much longer momentum
+  maxVelocity = 0.0035, // Very gentle max velocity
   alignmentCalculator = null
 }) {
   let offset = initialOffset;
@@ -14,13 +14,13 @@ export function createFlowScroll({
   let momentumStartTime = null;
   let refreshRate = 60;
   
-  // Tuned thresholds for a smooth experience
-  const velocityStopThreshold = maxVelocity * 0.08;
-  const velocitySnapThreshold = maxVelocity * 0.15;
-  const velocityCap = maxVelocity * 1.5;
+  // Ultra-smooth thresholds for buttery experience
+  const velocityStopThreshold = maxVelocity * 0.03;
+  const velocitySnapThreshold = maxVelocity * 0.06;
+  const velocityCap = maxVelocity * 1.1;
   
-  // Acceleration factor for smoother starts
-  const accelerationFactor = 0.15;
+  // Very gentle acceleration for silky smooth starts
+  const accelerationFactor = 0.045;
 
   // Detect refresh rate for consistent experience across devices
   const detectRefreshRate = () => {
@@ -63,7 +63,7 @@ export function createFlowScroll({
     const dt = (now - lastTime) / 1000;
     lastTime = now;
     
-    // Gradually approach the target velocity
+    // Gradually approach target velocity with smoother curve
     if (Math.abs(velocity - targetVelocity) > 0.0001) {
       velocity += (targetVelocity - velocity) * accelerationFactor;
     }
@@ -71,7 +71,7 @@ export function createFlowScroll({
     // Scale movement based on refresh rate
     offset += velocity * dt * refreshRate;
     
-    // Get alignment information from the consumer
+    // Get alignment information from consumer
     const alignmentInfo = alignmentCalculator ? alignmentCalculator(offset) : {
       alignedOffset: offset,
       distanceToAligned: 0,
@@ -80,10 +80,10 @@ export function createFlowScroll({
     
     // Progressive deceleration based on proximity to alignment point
     const proximityFactor = Math.min(1, alignmentInfo.distanceToAligned / 
-                                      (alignmentInfo.alignmentThreshold * 5));
+                                    (alignmentInfo.alignmentThreshold * 8)); // Increased from 5
     
     // Apply deceleration with proximity awareness
-    const effectiveDeceleration = deceleration * (0.8 + 0.4 * (1 - proximityFactor));
+    const effectiveDeceleration = deceleration * (0.7 + 0.3 * (1 - proximityFactor));
     velocity *= Math.exp(-effectiveDeceleration * dt * 1000);
     targetVelocity *= Math.exp(-effectiveDeceleration * dt * 1000);
     
@@ -95,20 +95,23 @@ export function createFlowScroll({
   
     updateOffset(offset);
     
-    // Enhanced snapping logic
+    // Improved snap logic
     if (
       (Math.abs(velocity) < velocitySnapThreshold && 
        alignmentInfo.distanceToAligned < alignmentInfo.alignmentThreshold) || 
       now - momentumStartTime >= maxMomentumDuration
     ) {
-      // Smooth snap animation
+      // Extra slow, buttery snap animation
       const snapStartTime = now;
       const snapStartOffset = offset;
-      const snapDuration = 150; // ms
+      const snapDuration = 650; // Super slow, buttery smooth
       
       const snapAnimation = (snapNow) => {
         const progress = Math.min(1, (snapNow - snapStartTime) / snapDuration);
-        const easedProgress = 1 - Math.pow(1 - progress, 3); // Cubic ease-out
+        // Smoother easing function
+        const easedProgress = progress < 0.5 
+          ? 2 * progress * progress 
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
         
         offset = snapStartOffset + 
                 (alignmentInfo.alignedOffset - snapStartOffset) * easedProgress;
@@ -147,14 +150,14 @@ export function createFlowScroll({
   function move(delta) {
     offset += delta;
     
-    // Set target velocity based on movement, but with a gentler approach
-    targetVelocity = delta * 0.05;
+    // Set target velocity based on movement, with a gentler approach
+    targetVelocity = delta * 0.025; // Reduced from 0.05
     
     updateOffset(offset);
   }
 
   function end() {
-    // Get alignment information from the consumer
+    // Get alignment information from consumer
     const alignmentInfo = alignmentCalculator ? alignmentCalculator(offset) : {
       alignedOffset: offset,
       distanceToAligned: 0,
@@ -163,29 +166,51 @@ export function createFlowScroll({
       prevAlignedOffset: offset
     };
     
-    // If barely moved, just snap to position
+    // If barely moving, just snap to position
     if (Math.abs(targetVelocity) < velocitySnapThreshold * 0.5 && 
         alignmentInfo.distanceToAligned < alignmentInfo.alignmentThreshold * 0.8) {
-      offset = alignmentInfo.alignedOffset;
-      updateOffset(offset);
-      velocity = 0;
-      targetVelocity = 0;
+      // Use smooth transition instead of immediate snap
+      const snapStartTime = performance.now();
+      const snapStartOffset = offset;
+      const snapDuration = 300;
+      
+      const smoothSnap = (snapNow) => {
+        const progress = Math.min(1, (snapNow - snapStartTime) / snapDuration);
+        const easedProgress = 1 - Math.pow(1 - progress, 3);
+        
+        offset = snapStartOffset + 
+                (alignmentInfo.alignedOffset - snapStartOffset) * easedProgress;
+        updateOffset(offset);
+        
+        if (progress < 1) {
+          animFrame = requestAnimationFrame(smoothSnap);
+        } else {
+          offset = alignmentInfo.alignedOffset;
+          updateOffset(offset);
+          velocity = 0;
+          targetVelocity = 0;
+          animFrame = null;
+        }
+      };
+      
+      lastTime = performance.now();
+      animFrame = requestAnimationFrame(smoothSnap);
       return;
     }
     
     // Determine directional intent for meaningful movements
     const directionalIntent = Math.sign(targetVelocity);
     
-    // Select target based on intent and velocity
+    // Choose target based on intent and velocity
     let targetOffset;
     if (Math.abs(targetVelocity) > velocitySnapThreshold && 
-        alignmentInfo.distanceToAligned > alignmentInfo.alignmentThreshold * 1.5) {
+        alignmentInfo.distanceToAligned > alignmentInfo.alignmentThreshold * 1.2) { // Reduced from 1.5
       // Clear directional intent detected
       targetOffset = directionalIntent > 0 ? 
                      alignmentInfo.nextAlignedOffset : 
                      alignmentInfo.prevAlignedOffset;
     } else {
-      // For small movements, use predicted position
+      // For smaller movements, use predicted position
       const predictedStopOffset = offset + targetVelocity / deceleration;
       
       // Find closest alignment point to predicted position
@@ -202,9 +227,9 @@ export function createFlowScroll({
       }
     }
     
-    // Set a reduced velocity to smoothly move to target
+    // Set a reduced velocity to smoothly move to the target
     const distance = targetOffset - offset;
-    velocity = distance * deceleration * 0.3;
+    velocity = distance * deceleration * 0.2; // Reduced from 0.3
     targetVelocity = velocity;
     
     // Cap velocity for consistency

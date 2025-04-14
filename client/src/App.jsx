@@ -1,3 +1,4 @@
+// App-komponenten visar navigeringsfält, sidinnehåll och sidfot
 import { Outlet } from 'react-router-dom';
 
 import Navbar from './components/app/Navbar';

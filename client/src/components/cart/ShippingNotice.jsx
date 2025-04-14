@@ -12,7 +12,8 @@ const ShippingNotice = () => {
       }}
     >
       <Typography variant="body1">
-        Frakt <strong>49 kr</strong> eller handla för över <strong>500 kr</strong> och få <strong>fri frakt</strong>!
+        Shipping <strong>$49</strong> or shop for over <strong>$500</strong> and
+        get <strong>free shipping</strong>!
       </Typography>
     </Box>
   );

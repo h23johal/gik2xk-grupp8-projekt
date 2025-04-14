@@ -4,18 +4,18 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 const SortDropdown = ({ value, onChange }) => {
   return (
     <FormControl variant="outlined" sx={{ minWidth: 200, marginBottom: 2 }}>
-      <InputLabel id="sort-label">Sortera efter</InputLabel>
+      <InputLabel id="sort-label">Sort by</InputLabel>
       <Select
         labelId="sort-label"
         value={value}
         onChange={onChange}
-        label="Sortera efter"
+        label="Sort by"
       >
-        <MenuItem value="default">Standard</MenuItem>
-        <MenuItem value="priceAsc">Pris: Låg till Hög</MenuItem>
-        <MenuItem value="priceDesc">Pris: Hög till Låg</MenuItem>
-        <MenuItem value="nameAsc">Namn: A till Ö</MenuItem>
-        <MenuItem value="nameDesc">Namn: Ö till A</MenuItem>
+        <MenuItem value="default">Default</MenuItem>
+        <MenuItem value="priceAsc">Price: Low to High</MenuItem>
+        <MenuItem value="priceDesc">Price: High to Low</MenuItem>
+        <MenuItem value="nameAsc">Name: A to Z</MenuItem>
+        <MenuItem value="nameDesc">Name: Z to A</MenuItem>
       </Select>
     </FormControl>
   );

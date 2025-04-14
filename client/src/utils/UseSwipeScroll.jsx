@@ -1,3 +1,4 @@
+// En hook för att hantera svep-scroll med mus- och touch-händelser
 import { useState, useRef } from "react";
 
 export function useSwipeScroll({ flowScroll, onMove, direction = "x" } = {}) {
@@ -57,7 +58,6 @@ export function useSwipeScroll({ flowScroll, onMove, direction = "x" } = {}) {
     } else if (onMove && typeof onMove === "function") {
       onMove(delta);
     }
-    e.preventDefault();
   };
 
   const handleTouchEnd = () => {
@@ -77,6 +77,7 @@ export function useSwipeScroll({ flowScroll, onMove, direction = "x" } = {}) {
       onTouchStart: handleTouchStart,
       onTouchMove: handleTouchMove,
       onTouchEnd: handleTouchEnd,
+      style: { touchAction: direction === "x" ? "pan-y" : "pan-x" }
     },
   };
 }

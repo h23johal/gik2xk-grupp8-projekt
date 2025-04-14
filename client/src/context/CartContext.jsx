@@ -13,14 +13,14 @@ export const CartProvider = ({ children }) => {
   const { user, openAuthModal } = useAuth();
   const [cartItems, setCartItems] = useState([]);
 
-  // 🔹 Ladda varukorgen från backend när användaren loggar in
+  // Ladda varukorgen från backend när användaren loggar in
   useEffect(() => {
     if (user?.id) {
       loadCart(user.id);
     }
   }, [user]);
 
-  // 🔹 Hämta varukorg från backend
+  // Hämta varukorg från backend
   const loadCart = async (userId) => {
     try {
       const cartData = await getCart(userId);
@@ -28,11 +28,11 @@ export const CartProvider = ({ children }) => {
         setCartItems(cartData);
       }
     } catch (error) {
-      console.error("Kunde inte hämta varukorg:", error);
+      console.error("Could not fetch cart:", error);
     }
   };
 
-  // 🔹 Lägg till produkt i varukorgen
+  // Lägg till produkt i varukorgen
   const addToCartHandler = async (product, amount) => {
     if (!user) {
       openAuthModal();
@@ -41,13 +41,13 @@ export const CartProvider = ({ children }) => {
 
     try {
       await addToCart(user.id, product.id, amount);
-      await loadCart(user.id); // 🔹 Ladda om varukorgen efter att en produkt lagts till
+      await loadCart(user.id); // Ladda om varukorgen efter att en produkt lagts till
     } catch (error) {
-      console.error("Kunde inte lägga till i varukorgen:", error);
+      console.error("Could not add to cart:", error);
     }
   };
 
-  // 🔹 Ta bort produkt från varukorgen
+  // Ta bort produkt från varukorgen
   const removeFromCartHandler = async (productId) => {
     if (!user) {
       openAuthModal();
@@ -57,25 +57,25 @@ export const CartProvider = ({ children }) => {
     // Hitta cart_id från cartItems
     const cartItem = cartItems.find((item) => item.product_id === productId);
     if (!cartItem) {
-      console.error("Ingen varukorg hittades för produkt:", productId);
+      console.error("No cart found for product:", productId);
       return;
     }
 
     const cartId = cartItem.cart_id;
     if (!cartId) {
-      console.error("Cart ID saknas vid borttagning");
+      console.error("Cart ID is missing during removal");
       return;
     }
 
     try {
       await removeFromCart(cartId, productId);
-      await loadCart(user.id); // 🔹 Ladda om varukorgen efter borttagning
+      await loadCart(user.id); // Ladda om varukorgen efter borttagning
     } catch (error) {
-      console.error("Kunde inte ta bort produkten från varukorgen:", error);
+      console.error("Could not remove product from cart:", error);
     }
   };
 
-  // 🔹 Uppdatera kvantitet
+  // Uppdatera kvantitet
   const updateQuantityHandler = async (productId, newQuantity) => {
     if (!user) {
       openAuthModal();
@@ -83,7 +83,7 @@ export const CartProvider = ({ children }) => {
     }
 
     const cartId = cartItems.length > 0 ? cartItems[0].cart_id : null;
-    if (!cartId) return console.error("Cart ID saknas vid uppdatering");
+    if (!cartId) return console.error("Cart ID is missing during update");
 
     if (newQuantity <= 0) {
       return await removeFromCartHandler(productId);
@@ -99,12 +99,12 @@ export const CartProvider = ({ children }) => {
         )
       );
     } catch (error) {
-      console.error("Kunde inte uppdatera produktens kvantitet:", error);
+      console.error("Could not update product quantity:", error);
     }
   };
 
 
-  // 🔹 Beräkna total antal produkter
+  // Beräkna total antal produkter
   const cartCount = cartItems.reduce((total, item) => total + item.amount, 0);
 
   return (
